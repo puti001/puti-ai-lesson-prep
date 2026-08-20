@@ -550,4 +550,4 @@ $$\text{高品質教學 Prompt} = \text{角色 (Role)} + \text{任務 (Task)} + 
 
 ---
 
-屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 點此前往(https://padlet.com/clongwh/puti_ai_tools)
+屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，[更多 Puti-AI 教學工具](https://padlet.com/clongwh/puti_ai_tools)
