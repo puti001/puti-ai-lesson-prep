@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puti-AI | 素養導向 AI 備課實戰指南與提示詞工具箱</title>
+  <title>Puti-AI | 備課增能系統</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -102,7 +102,7 @@
         </div>
         <div>
           <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-500">Puti-AI Teaching Suite</span>
-          <h1 class="text-base sm:text-lg font-black tracking-tight leading-none text-slate-900 dark:text-white">素養導向 AI 備課實戰指南</h1>
+          <h1 class="text-base sm:text-lg font-black tracking-tight leading-none text-slate-900 dark:text-white">Puti-AI 備課增能系統</h1>
         </div>
       </div>
 
@@ -135,7 +135,7 @@
           100% 參數模板化 · 涵蓋作答證據與 AI 治理 · 全套 40 個實戰指南
         </div>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
-          目標、評量、治理與作答證據對齊的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">AI 備課增能系統</span>
+          目標、評量、治理與作答證據對齊的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">Puti-AI 備課增能系統</span>
         </h2>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
           完整涵蓋課前架構、課堂提問、作答證據深度分析、AI 生成教材多面向審查、學生 AI 作業規範與素養試題檢核。
@@ -165,7 +165,7 @@
           </div>
         </div>
         <div class="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
-          <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+          <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0">3</span>
           <div>
             <strong class="text-slate-800 dark:text-slate-200 block">替換括號內容生成</strong>
             <span class="text-slate-500 dark:text-slate-400 text-[11px]">貼入常用 AI，填入班級參數產出成品</span>
@@ -359,10 +359,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
       <div class="flex items-center justify-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
         <i data-lucide="shield-check" class="w-4 h-4 text-brand-600"></i>
-        <span>Puti-AI 教學輔助工具系列</span>
+        <span>Puti-AI 備課增能系統</span>
       </div>
       <p class="text-xs text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，<a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">更多 Puti-AI 教學工具</a>
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 點此前往(https://padlet.com/clongwh/puti_ai_tools)
       </p>
       <div class="text-[11px] text-slate-400">
         © 2026 Puti-AI · Powered by Modern Web Audio & Tailwind CSS
@@ -824,7 +824,7 @@
         badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
         title: '29. 學生學習證據深度分析與下一步精準補救教學（匿名）',
         scenario: '收回 Exit Ticket、學習單或小考後，深入分析真實作答證據。',
-        value: '區分統計與原始作答、小樣本質性約束、免負面標籤分組與重新檢核題。',
+        value: '區分統計與原始作答、樣本數不足質性約束、禁少量資料推論個別能力與重新檢核題。',
         prompt: `【學生真實作答數據/文字記錄（已完全去識別化/匿名）】：
 [請貼上 Exit Ticket、學習單、小考答題分佈或課堂觀察紀錄]
 
@@ -832,7 +832,7 @@
 
 請根據上述真實學習證據，進行深入學情分析與補救教學規劃：
 1. 【常見迷思概念分類與原始證據】：整理出學生最集中的 2~3 個錯誤概念，剖析背後的思維卡點，並具體引用學生的原始作答語句/算式為佐證（嚴禁隨意給學生貼負面標籤）。（⚠️ 證據約束：若僅提供「人數統計或答題分佈」而沒有學生「原始作答語句/算式/選項細節」，請勿自行過度推測其具體迷思原因，僅能進行整體分佈狀態分析與建議後續抽樣訪談方向）。
-2. 【理解程度分佈評估（小樣本約束）】：若作答樣本數較少（例如小於 15 份），請勿輸出不具統計意義的百分比，應改以「質性描述＋具體人數分佈」，並說明判斷依據與不確定性。
+2. 【理解程度分佈評估（樣本數不足約束）】：若作答樣本數不足時，請勿輸出不具統計意義的百分比，應改以「質性描述＋具體人數分佈」，並說明判斷依據與不確定性；且不得由少量資料推論個別學生整體能力，嚴禁貼標籤。
 3. 【不具負面標籤的彈性分組與同儕鷹架】：設計組內互助、動態分站任務的彈性分組策略。
 4. 【下一節課 5～10 分鐘補救教學】：設計開場可立即實施的「對比澄清提問」與概念重構引導話術。
 5. 【不同程度學生後續任務卡】：提供基礎鞏固卡與進階探究卡。
@@ -978,13 +978,13 @@
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
         title: '38. AI 生成教材上線前的多面向品質審查檢核',
         scenario: '將 AI 產出的教案、學習單或簡報在印給學生前進行嚴格審查。',
-        value: '標註嚴重度等級、來源頁碼、授權狀態、是否可改作與修正定稿。',
+        value: '標註嚴重度等級、以最新指引為準、來源頁碼、授權狀態與修正定稿。',
         prompt: `【待審查之 AI 生成教材內容】：
 [請貼上欲檢查的教案、學習單或評量內容]
 
 【教學對象與學科】：國小〔年級〕〔學科〕
 
-請依據教育部 AI 使用指引與 UNESCO 教師能力架構，對上述內容進行多面向品質審查，並逐項評估與修訂：
+請依據教育部 AI 使用指引與 UNESCO 教師能力架構（⚠️ 請以使用者提供的最新版本文件為準；若未提供特定版本，則以現行最新公告原則為基準），對上述內容進行多面向品質審查，並逐項評估與修訂：
 1. 【課綱與素養對齊度】：是否符合該年段核心素養，而非超綱或偏離重點？
 2. 【學科事實與科學正確性】：是否有科學概念錯誤、歷史事實捏造或文字幻覺？
 3. 【年齡與認知適切性】：用詞與排版難度是否符合國小〔年級〕認知負荷？
@@ -1036,7 +1036,7 @@
 2. 【指標對齊與認知層次】：題目真正測驗的是高層次推論、理解，還是單純記憶？
 3. 【答案合理性與評分依據】：選擇題檢查是否只有「單一最佳答案」；開放式/非選題檢查是否有「明確客觀之評分指引與給分依據」。
 4. 【誘答選項品質診斷】：錯誤選項是否均基於常見迷思（合理誘答），而非湊數的荒謬選項？
-5. 【國教院原則修訂版】：提供修訂前後對照表，並輸出「修訂後的高品質素養題定稿」。`
+5. 【國教院原則修訂版】：提供修訂前後對照表，並輸出「修訂後的高品質素養題定稿」。」`
       }
     ];
 
