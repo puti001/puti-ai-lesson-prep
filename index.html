@@ -40,8 +40,9 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
     
+    /* 系統字型備援 */
     body {
-      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     
     .glass-card {
@@ -118,7 +119,7 @@
           <i id="themeIcon" data-lucide="moon" class="w-4 h-4 text-slate-600 dark:text-slate-300"></i>
         </button>
 
-        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" aria-label="前往更多 Puti-AI 教學工具庫" class="hidden md:inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm transition">
+        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" aria-label="前往更多 Puti-AI 教學工具" class="hidden md:inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm transition">
           <span>更多 Puti-AI 教學工具</span>
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
@@ -192,7 +193,7 @@
           </button>
         </div>
 
-        <!-- 6 大分類膠囊 -->
+        <!-- 6 大分類膠囊（具備 aria-pressed 無障礙標記） -->
         <div class="flex flex-wrap items-center justify-center gap-2 pt-1" id="categoryPills" role="toolbar" aria-label="指南類別篩選">
           <button onclick="setCategory('all')" aria-pressed="true" class="cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-cat="all">
             <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
@@ -359,10 +360,10 @@
         <span>Puti-AI 教學輔助工具系列</span>
       </div>
       <p class="text-xs text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，<a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">更多 Puti-AI 教學工具 點此前往(https://padlet.com/clongwh/puti_ai_tools)</a>
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，<a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">更多 Puti-AI 教學工具</a>
       </p>
       <div class="text-[11px] text-slate-400">
-        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">更多 Puti-AI 教學工具</a> · © 2026 Puti-AI
+        © 2026 Puti-AI · Powered by Modern Web Audio & Tailwind CSS
       </div>
     </div>
   </footer>
@@ -379,10 +380,10 @@
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
         title: '01. 生成「指標—活動—評量」三位一體完整教案骨架',
         scenario: '單元備課起手式，建立對應學習內容與表現代碼的教案。',
-        value: '將學習表現、學習內容與評量證據置於核心，產出可直接貼入教案的表格。',
+        value: '將學習表現、學習內容與評量證據置於核心，防編造代碼。',
         prompt: `我正在規劃〔年級〕〔學科〕單元：『〔單元主題與核心概念〕』，教學時間共〔40〕分鐘。
 請為我產出一份以「學習表現、學習內容與可觀察評量證據」為核心的完整教案骨架：
-1. 【核心指標對齊】：明確對應課綱之「學習表現代碼與條目」及「學習內容代碼與條目」，並轉換為可觀察檢核的具體學習目標。
+1. 【核心指標對齊】：明確對應課綱之「學習表現代碼與條目」及「學習內容代碼與條目」，並轉換為可觀察檢核的具體學習目標。（⚠️ 若我未提供正式課綱條目或版本，請標示「需依正式課綱核對」，嚴禁自行編造代碼）。
 2. 【評量證據預設】：在規劃活動前，先列出能證明學生達成上述目標的評量證據形式（如實作記錄、口語論證、學習單成品）。
 3. 【教學歷程表格】：包含時間分配（引起動機、發展活動、總結活動）、教師關鍵引導提問、學生活動任務與對應的形成性評量檢核點。
 4. 【動態差異化支持】：針對課堂中理解落後與超前學生的即時彈性支持策略。`
@@ -552,14 +553,14 @@
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
         title: '13. 閱讀文本分級化與階梯式鷹架調整 (Tiered Reading)',
         scenario: '輸入指定原文，產出入門、標準、進階三種閱讀難度文本。',
-        value: '嚴格保留原文事實與核心數據，不得自行添造未經證實資料。',
+        value: '嚴格保留原文事實與數據，若無數據則明確標示不捏造。',
         prompt: `【原始文本輸入】：
 [請貼上欲分級的原始閱讀文本]
 
-請將上述文本改寫為三個不同閱讀難度的梯次版本（要求：必須嚴格保留原文的事實與數據，不可自行增加未提及的資料）：
+請將上述文本改寫為三個不同閱讀難度的梯次版本（要求：必須嚴格保留原文的事實與數據，不可自行增加未提及的資料；若原文未提供數據，進階版請標示「原文未提供數據，本項目略過」，嚴禁捏造）：
 【Level 1 入門版（初階閱讀）】：簡化句型與生難詞、標註重點關鍵字，並附 2 題是非題檢核理解。
 【Level 2 標準版（中年級適用）】：保留完整段落因果結構，附 2 題概念問答題。
-【Level 3 進階版（高年級/挑戰）】：融入深度因果分析與數據比較，附 1 題開放式短評寫作引導。`
+【Level 3 進階版（高年級/挑戰）】：融入深度因果分析與數據比較（限基於原文），附 1 題開放式短評寫作引導。`
       },
       {
         id: 14,
@@ -874,7 +875,7 @@
 若欄位內容包含逗號，請以雙引號（"）包覆。
 欄位順序：
 題目內容,選項A,選項B,選項C,選項D,正確答案,解析說明
-（備註：產出之純 CSV 文字可直接儲存為 .csv 匯入 Google 試算表，或透過 Form Builder 等外掛一鍵生成 Google 表單）。`
+（備註：Google 表單原生不支援直接匯入 CSV，產出之純 CSV 文字可複製至 Google 試算表，再搭配 Form Builder 等外掛一鍵轉為 Google 表單測驗題）。`
       },
       {
         id: 35,
