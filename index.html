@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puti-AI | 素養導向 AI 備課實戰指南與提示詞工具箱</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            accent: {
+              500: '#3b82f6',
+              600: '#2563eb',
+            }
+          },
+          animation: {
+            'bounce-short': 'bounce 0.5s ease-in-out 1',
+            'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    
+    .dark .glass-card {
+      background: rgba(30, 41, 59, 0.88);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+    }
+
+    .prompt-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+    }
+    .dark .prompt-box {
+      background: #0f172a;
+      border: 1px dashed #334155;
+    }
+
+    /* 自訂捲軸 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- 頂部浮動導航列 -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- 品牌 Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i data-lucide="sparkles" class="w-6 h-6 animate-pulse-fast"></i>
+        </div>
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-500">Puti-AI Teaching Suite</span>
+          <h1 class="text-base sm:text-lg font-black tracking-tight leading-none text-slate-900 dark:text-white">素養導向 AI 備課指南</h1>
+        </div>
+      </div>
+
+      <!-- 右側控制項（音效、主題、快速跳轉） -->
+      <div class="flex items-center gap-2">
+        <!-- 音效開關按鈕 -->
+        <button id="soundToggleBtn" onclick="toggleSound()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 text-xs font-medium" title="開關音效">
+          <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4 text-brand-600"></i>
+          <span id="soundText" class="hidden sm:inline">音效開</span>
+        </button>
+
+        <!-- 深淺色切換按鈕 -->
+        <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs" title="切換深淺模式">
+          <i id="themeIcon" data-lucide="moon" class="w-4 h-4 text-slate-600 dark:text-slate-300"></i>
+        </button>
+
+        <!-- 外部工具庫連結 -->
+        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="hidden md:inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm transition">
+          <span>更多教學工具</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主視覺 Banner 與快速統計 -->
+  <section class="relative overflow-hidden bg-gradient-to-b from-white to-slate-100 dark:from-slate-900 dark:to-slate-950 py-10 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold mb-4">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          全場景雙軌協同 · 39 個實戰提示詞模板
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-4">
+          從課程架構到課後迭代的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">AI 備課增能系統</span>
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+          結合「通用對話型 AI（ChatGPT / Claude / Gemini / Copilot）」的發散創意與「文件知識庫型 AI（NotebookLM）」的精準依據，一鍵複製即戰力提示詞，打造高效教學。
+        </p>
+      </div>
+
+      <!-- 快捷搜尋與分類過濾 -->
+      <div class="max-w-4xl mx-auto space-y-4">
+        <!-- 搜尋列 -->
+        <div class="relative">
+          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="搜尋備課關鍵字（如：暖身活動、三層次提問、Rubric 評分規準、家長信、IEP、Google 表單...）" 
+            class="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+            oninput="handleSearch()"
+          >
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- 分類膠囊標籤 -->
+        <div class="flex flex-wrap items-center justify-center gap-2 pt-2" id="categoryPills">
+          <button onclick="setCategory('all')" class="cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-cat="all">
+            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+            <span>全部指南 (39)</span>
+          </button>
+          <button onclick="setCategory('c1')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c1">
+            <i data-lucide="compass" class="w-3.5 h-3.5 text-blue-500"></i>
+            <span>一、課前架構 (9)</span>
+          </button>
+          <button onclick="setCategory('c2')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c2">
+            <i data-lucide="message-square" class="w-3.5 h-3.5 text-amber-500"></i>
+            <span>二、教學流程 (7)</span>
+          </button>
+          <button onclick="setCategory('c3')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c3">
+            <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+            <span>三、教材評量 (6)</span>
+          </button>
+          <button onclick="setCategory('c4')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c4">
+            <i data-lucide="users" class="w-3.5 h-3.5 text-indigo-500"></i>
+            <span>四、班級經營 (6)</span>
+          </button>
+          <button onclick="setCategory('c5')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c5">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-rose-500"></i>
+            <span>五、課後反思 (2)</span>
+          </button>
+          <button onclick="setCategory('c6')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c6">
+            <i data-lucide="rocket" class="w-3.5 h-3.5 text-purple-500"></i>
+            <span>六、前瞻實踐 (9)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 互動特色區：五星 Prompt 生成器 & AI 選用決策矩陣 -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- 五星 Prompt 萬用產生器 -->
+      <div class="glass-card rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="p-2 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
+                <i data-lucide="award" class="w-5 h-5"></i>
+              </span>
+              <h3 class="text-base font-bold">五星 Prompt 萬用產生器</h3>
+            </div>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">快速填空</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">輸入 5 大核心要素，即時為您組合高品質的教學提示詞。</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">1. 角色 (Role)</label>
+              <input id="builderRole" type="text" value="你是一位擁有 15 年國小教學經驗的自然專任教師與課程專家" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">2. 任務 (Task)</label>
+              <input id="builderTask" type="text" value="設計一堂 40 分鐘的『磁鐵性質與生活應用』探究教案" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">3. 對象 (Target)</label>
+              <input id="builderTarget" type="text" value="國小三年級學生，先備知識已知磁鐵能吸鐵" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">4. 情境 (Context)</label>
+              <input id="builderContext" type="text" value="教室配備平板與實驗器材，採 4 人小組合作" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">5. 限制與格式 (Constraints)</label>
+              <input id="builderConstraints" type="text" value="請以 Markdown 表格呈現時間分配、教師提問、學生活動與評量指標，文字精簡具體。" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+          <span class="text-[11px] text-slate-400">點擊下方按鈕一鍵組裝並複製</span>
+          <button onclick="copyGeneratedPrompt()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>合成並複製五星 Prompt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AI 工具選用決策速查卡 -->
+      <div class="glass-card rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="p-2 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
+                <i data-lucide="git-branch" class="w-5 h-5"></i>
+              </span>
+              <h3 class="text-base font-bold">雙軌 AI 選用決策矩陣</h3>
+            </div>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">時機指南</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">依照「當下的備課任務特性」選擇最適合的大腦：</p>
+          
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-start gap-2.5">
+              <div class="w-5 h-5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">發散</div>
+              <div>
+                <span class="font-bold text-slate-800 dark:text-slate-200">通用對話型 AI (ChatGPT / Claude / Gemini / Copilot)</span>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">活動發想、多層次提問、觀念講解改寫、分層學習單、家長信與日常評語。</p>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-start gap-2.5">
+              <div class="w-5 h-5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">依據</div>
+              <div>
+                <span class="font-bold text-slate-800 dark:text-slate-200">文件知識庫型 AI (NotebookLM)</span>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">100% 依據專屬 PDF / 課綱、YouTube 影片逐字稿轉學習單、Audio Overview 語音播客。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+          <span>✨ 雙軌協同：知識庫 AI 萃取重點 $\rightarrow$ 對話 AI 擴展創意</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心卡片列表 -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+    
+    <!-- 搜尋結果計數與重置提示 -->
+    <div class="flex items-center justify-between mb-4 px-1">
+      <div class="text-xs font-semibold text-slate-500 dark:text-slate-400" id="resultCountText">
+        顯示全部 39 項備課指南
+      </div>
+      <div class="text-xs text-brand-600 dark:text-brand-400 font-medium">
+        💡 點擊「複製提示詞」立即拷貝至剪貼簿
+      </div>
+    </div>
+
+    <!-- 卡片 Grid Container -->
+    <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <!-- 卡片內容將由 JavaScript 動態渲染 -->
+    </div>
+
+    <!-- 無搜尋結果提示 -->
+    <div id="noResults" class="hidden text-center py-16">
+      <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="search-x" class="w-8 h-8"></i>
+      </div>
+      <h4 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">找不到相符的備課指南</h4>
+      <p class="text-xs text-slate-400 mb-4">請嘗試更換關鍵字，例如「暖身」、「提問」、「評量」、「IEP」</p>
+      <button onclick="clearSearch()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-xs font-semibold rounded-xl hover:bg-slate-300 transition">清除搜尋條件</button>
+    </div>
+  </main>
+
+  <!-- 複製成功的 Toast 浮動提示 -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-2xl shadow-xl text-xs font-bold border border-slate-800 dark:border-slate-200">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 dark:text-emerald-600"></i>
+    <span id="toastMessage">提示詞已成功複製到剪貼簿！</span>
+  </div>
+
+  <!-- 頁腳版權宣告區（嚴格符合規則要求） -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 mt-12 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+      <div class="flex items-center justify-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+        <i data-lucide="shield-check" class="w-4 h-4 text-brand-600"></i>
+        <span>Puti-AI 教學輔助工具系列</span>
+      </div>
+      <p class="text-xs text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">點此前往(https://padlet.com/clongwh/puti_ai_tools)</a>。
+      </p>
+      <div class="text-[11px] text-slate-400">
+        © 2026 Puti-AI · Powered by Modern Web Audio & Tailwind CSS
+      </div>
+    </div>
+  </footer>
+
+  <!-- 39 個指南數據與核心邏輯 JS -->
+  <script>
+    // 39 個原創指南數據
+    const guides = [
+      // 階段一：課前架構與知識統整 (c1)
+      {
+        id: 1,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '01. 快速生成素養導向三維教學目標',
+        scenario: '單元課程啟動前，撰寫教案或教學進度計畫。',
+        value: '對標核心素養，同步涵蓋認知（知識概念）、技能（實作探究）、情意（態度價值）。',
+        prompt: `我正在規劃〔三年級〕〔自然科學〕單元：『〔磁鐵的性質與生活應用〕』。請依據素養導向教學原則，為我條列出本單元的：
+1. 知識目標（學生需掌握的核心科學原理與概念）
+2. 技能目標（學生能實際動手操作、記錄或驗證的探究技能）
+3. 情意目標（生活觀察態度、團隊合作或解決問題的素養）
+請以條列式輸出，每點具體明確，符合該年段認知發展水準。`
+      },
+      {
+        id: 2,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '02. 長篇課綱與校本教材核心提煉',
+        scenario: '手邊有數十頁的新課綱指引、校本特色教材或教學指引手冊。',
+        value: '100% 依據上傳文本精準歸納，杜絕 AI 幻覺，快速掌握學習重點與實作清單。',
+        prompt: `請根據上傳的校本課程指引與單元教材 PDF，為我萃取：
+1. 本單元對應的三大學習表現與學習內容代碼
+2. 學生在學習此單元時最容易出現的 2 個迷思概念
+3. 手冊中建議的關鍵教學活動與器材準備清單。`
+      },
+      {
+        id: 3,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '03. 規劃單元分堂教學架構與進度表',
+        scenario: '學期初排課、分堂節奏規劃（如 4 節課的進度分配）。',
+        value: '邏輯清晰搭建單元骨架（引入 → 展開 → 探究 → 評量統整）。',
+        prompt: `請為〔五年級〕〔社會科〕『〔台灣的地形與生活發展〕』設計一份共 4 節課（每節 40 分鐘）的單元教學進度表。
+請以表格呈現，欄位包含：節次、單元子題、核心概念、教學活動流程（起承轉合）、評量方式與延伸課後探究。`
+      },
+      {
+        id: 4,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '04. 跨版本教材對比與優點整合摘要',
+        scenario: '備課時手邊有兩到三個不同出版社版本，想截長補短。',
+        value: '快速進行跨文本比對，找出共同核心並吸取各版本範例長處。',
+        prompt: `我已上傳 A、B 兩家出版社同一單元的教科書章節。請為我分析：
+1. 兩版本在『概念引入案例』與『實驗活動安排』上的主要差異
+2. 兩者共同的核心概念重點
+3. 請融合兩版優點，提供一份適合班級教學的統整式學習摘要。`
+      },
+      {
+        id: 5,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '05. 教育研究文獻與政策公文重點速讀',
+        scenario: '研讀長篇教學法論文、跨領域專案指引或公文評鑑指標。',
+        value: '附帶精確引文出處與頁碼，長文快速萃取行動指引。',
+        prompt: `請根據上傳的『跨領域素養導向評量研究報告』，摘要出：
+1. 評量設計的 4 大核心原則
+2. 報告中提到的 2 個課堂實施成功案例
+3. 教師在命題時應避免的常見偏誤，並標註引文頁碼。`
+      },
+      {
+        id: 6,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '06. 規劃教師每週備課與行政節奏清單',
+        scenario: '開學前夕或每週五下午，安排下一週的教學與行政節奏。',
+        value: '每日聚焦一項核心主軸，包含檢核框（Checkbox）節奏明快。',
+        prompt: `請為一位國小導師規劃週一至週五的『一週高效備課與班級行政清單』。
+每天需聚焦一項核心主軸（例如：週一引起動機設計、週二教材簡報調整、週三學習單編寫、週四差異化作業、週五評量檢核與親師週報），以 Markdown 檢核框（- [ ]）格式呈現。`
+      },
+      {
+        id: 7,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '07. 建立學期永續教學資源資料庫',
+        scenario: '學期初建立專屬學科知識庫 Notebook，集中管理素材。',
+        value: '統一資料夾與筆記命名，將優質教案與反思固定為專屬來源。',
+        prompt: `請幫我為本學期『五年級自然科學』建立知識庫目錄架構：
+包含：單元教案庫、實驗影音素材連結、分層學習單、形成性題庫與課後反思筆記，並提供標準檔案命名規範。`
+      },
+      {
+        id: 8,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '08. 產生學年共備高效研討提綱',
+        scenario: '擔任學年共備召集人，需在 45 分鐘內帶領團隊聚焦研討。',
+        value: '明確劃分時間配比（難點確認、活動發想、分工產出）。',
+        prompt: `我們學年預計進行〔四年級〕〔國語科〕『〔說明文閱讀理解策略〕』的共備會議（時間 45 分鐘）。
+請設計一份結構化的共備討論提綱，包含：
+1. 單元學習難點與迷思確認（10分鐘）
+2. 核心教學策略與共備活動發想（20分鐘）
+3. 跨班分工與評量工具設計（15分鐘）。`
+      },
+      {
+        id: 9,
+        cat: 'c1',
+        catName: '一、課前架構',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '09. 共備研討筆記轉化為具體行動清單',
+        scenario: '共備會議結束後，將發言紀錄轉為可執行的分工表。',
+        value: '自動歸納教學共識、負責人欄位與下次共備準備事項。',
+        prompt: `根據今天學年共備的研討紀錄筆記，請整理出：
+1. 今日達成的三項教學共識
+2. 各班級老師的分工事項與繳交期限表格（包含：教具準備、學習單編寫、簡報製作）
+3. 下次共備需帶來的課堂實施成果。`
+      },
+
+      // 階段二：教學流程與互動設計 (c2)
+      {
+        id: 10,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '10. 設計 5 分鐘課堂引起動機暖身活動',
+        scenario: '課堂一開始，讓學生快速沉澱並聚焦在今日主題。',
+        value: '提供猜謎、3-2-1 快速提問法、圖片聯想等多種破冰形式。',
+        prompt: `教學主題是『〔生活中的熱傳導與保溫〕』，對象為〔小學五年級〕。
+請設計 3 個不同形式、可在 3~5 分鐘內完成的課堂破冰暖身活動（例如：日常現象猜謎、3-2-1 快速提問法、實物圖片聯想），需能有效引發好奇心且操作簡便。`
+      },
+      {
+        id: 11,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '11. 規劃分組分層的差異化課堂任務',
+        scenario: '班級學生先備知識與理解速度差異大時，實施分層教學。',
+        value: '明確區分【基礎鷹架組】與【進階挑戰組】的任務指引。',
+        prompt: `針對『〔分數的乘法與面積模型〕』概念，請設計兩組不同梯度的課堂練習任務：
+1. 【基礎組（鷹架支持）】：著重圖形塗色分割、具體物操作與基本公式對應。
+2. 【挑戰組（深度延伸）】：著重生活情境題解構、逆向思考與文字題改編。
+請分別說明任務目標與教師引導語。`
+      },
+      {
+        id: 12,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '12. 設計由淺入深的三層次引導提問句',
+        scenario: '備課時撰寫提問講稿，引導課堂討論逐步深化。',
+        value: '兼顧「事實理解」→「分析推論」→「評鑑創造」三層次。',
+        prompt: `請針對『〔台灣高鐵與一日生活圈的形成〕』主題，設計三個層次分明的引導式課堂提問：
+1. 【事實與理解層次】：確認基礎事實（如：高鐵站點與交通時間變化）。
+2. 【分析與推論層次】：探討因果關係（如：交通革新對城鄉經濟與生活形態的影響）。
+3. 【評鑑與創造層次】：開放式決策思維（如：如果你是城市規劃師，你會如何改善偏鄉交通？）。`
+      },
+      {
+        id: 13,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '13. 抽象概念的多層次與比喻式講解改寫',
+        scenario: '抽象科學或社會概念難以理解時，提供多種比喻說法。',
+        value: '生成生活比喻版、標準課堂版與資優延伸版。',
+        prompt: `請將『〔生態系中的食物鏈與能量流動〕』概念改寫為三種不同理解層次的說明講稿：
+1. 【低年段/生活比喻版】：運用『工廠輸送帶』或『餐廳傳菜』的生活化譬喻。
+2. 【標準課堂版】：適合中高年級的清晰概念講解。
+3. 【延伸專業版】：適合資優或課後探究的生態金字塔與能量守恆補充。`
+      },
+      {
+        id: 14,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '14. 設計課室英語與雙語教學情境指令',
+        scenario: '雙語綜合、美勞或體育課堂中的日常指導。',
+        value: '提供中文、地道英文句型與口語發音/重音提示。',
+        prompt: `我正在規劃一堂〔雙語體育課：籃球基本運球與傳球〕。請提供 8 句最常用的課堂口語指令（如：請排成四行、注意聽哨音、跟你的隊友擊掌、把球收在腰間），格式包含：繁體中文、自然地道的英語表達、發音與重音提示。`
+      },
+      {
+        id: 15,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '15. 閱讀文本分級化與階梯式鷹架調整',
+        scenario: '針對不同閱讀能力的學生提供相同主題但不同梯度的文本。',
+        value: '分層閱讀 (Tiered Reading)，兼顧各程度學童成就感。',
+        prompt: `請將以下這段關於『〔台灣特有種台灣黑熊的生態保育〕』的介紹短文，改寫成三種難度梯度版本：
+【入門版】：字句簡短、標註重點詞彙並搭配簡單是非檢核題。
+【標準版】：完整記敘論述，搭配概念問答。
+【進階版】：加入保育衝突數據分析，引導撰寫短評。`
+      },
+      {
+        id: 16,
+        cat: 'c2',
+        catName: '二、教學流程',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '16. 設計高層次探究思考與辯論題目',
+        scenario: '高年級專題探究、時事議題討論或班級辯論會。',
+        value: '結構化產出正反論點與引導學生尋找證據的關鍵問題。',
+        prompt: `主題為『〔一次性塑膠用品禁用與生活便利的權衡〕』。請為國小高年級設計 2 個結構化的課堂辯論或探究題目，並附帶：正反雙方可能主張的 3 個核心論點、以及引導學生尋找支持證據的引導問題。`
+      },
+
+      // 階段三：教材製作與多元評量 (c3)
+      {
+        id: 17,
+        cat: 'c3',
+        catName: '三、教材評量',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '17. 草擬素養導向學習單與生活應用題',
+        scenario: '設計單元課堂即時檢測或課後自主探究學習單。',
+        value: '包含生活情境題、圖表判讀與開放探索題，排版整潔。',
+        prompt: `請為〔四年級〕〔生活數學〕單元『〔統計圖表與生活消費〕』設計一份 1 頁 A4 的學習單架構：
+包含：
+1. 情境引入題（以校園園遊會記帳為背景）
+2. 圖表判讀與計算題 2 題
+3. 一題開放式生活實踐題（規劃一份 100 元的合理點心預算）。`
+      },
+      {
+        id: 18,
+        cat: 'c3',
+        catName: '三、教材評量',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '18. 規劃視覺化教學簡報重點版面架構',
+        scenario: '製作教學簡報（PPT / Canva）前，先提煉純文字重點。',
+        value: '每頁不超過 3 點，字數精簡，並提供插圖概念建議。',
+        prompt: `我需要製作 5 頁關於『〔地震的成因與避難三步驟〕』的教學簡報。請為每頁規劃：
+1. 簡報核心標題
+2. 視覺化重點文字（每頁不超過 3 點，每點在 15 字以內）
+3. 建議搭配的示意插圖或圖表說明。`
+      },
+      {
+        id: 19,
+        cat: 'c3',
+        catName: '三、教材評量',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '19. 產生情境引導與班級常規海報文案',
+        scenario: '教室環境佈置、學習角落標語或習慣養成海報。',
+        value: '產出吸睛主標、4 點正向行動指引與好記口號。',
+        prompt: `請為班級的『〔自主學習探究角〕』設計一套情境海報文案：
+包含：吸睛主題標題、4 條正向好記的行動公約（短句）、以及一句激勵自主探索的班級口號。`
+      },
+      {
+        id: 20,
+        cat: 'c3',
+        catName: '三、教材評量',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '20. 規劃結構化板書佈局與概念思維圖',
+        scenario: '上課前預先規劃黑板板書，增進學生視覺化結構記憶。',
+        value: '用符號與左右分區展現板書層次，上課書寫不雜亂。',
+        prompt: `針對『〔植物各部位的構造與功能（根莖葉花果種）〕』，請為我設計一份黑板板書架構圖。請用文字符號（如 ├──、→、[框]）展現黑板左中右分區佈局與核心概念層次。`
+      },
+      {
+        id: 21,
+        cat: 'c3',
+        catName: '三、教材評量',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '21. 產生多元形成性評量題（含迷思辨析）',
+        scenario: '隨堂隨選測驗、即時反饋系統（Kahoot/Quizizz）命題。',
+        value: '含正確答案、詳細解析，以及誘答選項背後的迷思診斷。',
+        prompt: `請針對『〔光線的直進、反射與折射〕』為〔五年級〕設計 4 題單選題。每題需提供：正確答案、詳細解析，以及針對 3 個錯誤選項分別說明其背後反映的學生迷思概念。`
+      },
+      {
+        id: 22,
+        cat: 'c3',
+        catName: '三、教材評量',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '22. 設計課堂總結出門單 (Exit Ticket)',
+        scenario: '下課前 3 分鐘快速檢視全班今日學習吸收狀況。',
+        value: '包含核心檢核、最大收穫與困惑提問三大區塊。',
+        prompt: `請為今日課堂主題『〔小數的除法運算〕』設計一份可在 3 分鐘內作答完畢的極簡版 Exit Ticket（出門單）：
+包含：
+1. 今日核心概念檢核題 1 題
+2. 一個我今天最清楚的觀念
+3. 一個我還想進一步搞懂的疑問。`
+      },
+
+      // 階段四：班級經營與個別支持 (c4)
+      {
+        id: 23,
+        cat: 'c4',
+        catName: '四、班級經營',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '23. 全校研習與處室宣導重點轉化',
+        scenario: '開學前夕處理大量處室宣導文件、研習逐字稿與行事曆。',
+        value: '快速提煉導師必知死線、請假流程與校安 SOP。',
+        prompt: `根據上傳的開學前全體教師研習資料，請幫我整理出：
+1. 與導師班級經營直接相關的關鍵日程與表單繳交死線
+2. 新學期學生出缺勤與請假通報規範變更
+3. 校園偶發事件處理標準作業流程（SOP）。`
+      },
+      {
+        id: 24,
+        cat: 'c4',
+        catName: '四、班級經營',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '24. 撰寫親師溝通指引與開學通知信初稿',
+        scenario: '開學給家長的一封信、班級常規通知與親師合作守則。',
+        value: '展現溫暖與教育理念，清楚條列必備學用品與溝通時段。',
+        prompt: `請為一位國小導師撰寫『開學給家長的一封信』。語氣需展現專業、溫暖、親切且條理分明。
+內容包含：
+1. 歡迎詞與班級教育核心理念
+2. 開學常規與學童必備文具生活用品提醒
+3. 親師溝通方式與最佳聯絡時段守則。`
+      },
+      {
+        id: 25,
+        cat: 'c4',
+        catName: '四、班級經營',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '25. 規劃開學第一堂課破冰話術與師生互動',
+        scenario: '接任新班級的第一堂課，建立良好的師生連結與親和力。',
+        value: '包含 3 分鐘幽默自介與 5 分鐘全班互動問答小遊戲。',
+        prompt: `我是一位新接手〔四年級〕班級的導師。請幫我設計開學第一堂課的 3 分鐘自我介紹與破冰開場講稿，並設計一個 5 分鐘能引導全班參與的『尋找共同點』快速互動小遊戲。`
+      },
+      {
+        id: 26,
+        cat: 'c4',
+        catName: '四、班級經營',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '26. 制定正向引導的班級常規與激勵機制',
+        scenario: '制定民主、正向表述且富童趣的班規與加分辦法。',
+        value: '擺脫「不要...」的負面字眼，化為冒險家守則與合作勳章。',
+        prompt: `請將生硬負面的班規要求（如：不要吵鬧、不要亂丟垃圾、不要遲到），轉化為 5 條以正面積極語言表述的『班級冒險家守則』，並搭配一套具體可行、強調合作榮譽的點數獎勵機制。`
+      },
+      {
+        id: 27,
+        cat: 'c4',
+        catName: '四、班級經營',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '27. 設計特殊需求生（ADHD/閱讀困難）課堂支持策略',
+        scenario: '班上有注意力不足過動或閱讀困難學童時，規劃課堂調整。',
+        value: '提供視覺提示、分段任務、小天使同儕等可在普通班落實的策略。',
+        prompt: `班上有一位容易在聽講時分心、書寫速度較慢的三年級學生。請提供 4 個可在普通班課堂中自然落實的個別化學習支持策略（例如：視覺檢核卡、分段指引、同儕小天使分工、多元作答形式）。`
+      },
+      {
+        id: 28,
+        cat: 'c4',
+        catName: '四、班級經營',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '28. 萃取個別化教育計畫 (IEP) 課堂執行檢核清單',
+        scenario: '閱讀特教移轉的 IEP 文件，提煉普通班日常具體配合要點。',
+        value: '整理為座位調整、情緒應對與定期評量三大向度檢核卡。',
+        prompt: `請從這份 IEP 文件中，精準摘錄出普通班導師在日常教學中需落實的：
+1. 課堂座位安排與環境調整建議
+2. 情緒波動時的正向應對步驟
+3. 定期評量時的調整措施（如延長時間、報讀支援）。`
+      },
+
+      // 階段五：課後反思與知識迭代 (c5)
+      {
+        id: 29,
+        cat: 'c5',
+        catName: '五、課後反思',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '29. 語音零碎心得轉化為結構化教學反思日誌',
+        scenario: '下課後透過手機語音輸入零碎心得，自動轉為專業反思。',
+        value: '自動歸納課堂亮點、問題成因與下次改善行動 (Action Items)。',
+        prompt: `這是我今天上完『〔科學浮力實驗〕』後的隨手語音筆記：『今天時間掌控有點趕，最後各組收拾器材太混亂；但第二組發現沉下去的黏土捏成船型就能浮起來，全班反應很棒，下次應該讓他們多分享這段...』
+請幫我將上述雜記整理為專業的教學反思日誌：
+1. 本堂教學亮點與成功策略
+2. 遭遇問題與原因剖析
+3. 下次教學優化的具體改善行動（Action Items）。`
+      },
+      {
+        id: 30,
+        cat: 'c5',
+        catName: '五、課後反思',
+        badge: '文件知識庫 AI',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '30. 整合實務經驗迭代升級為教案資產 2.0',
+        scenario: '單元結束或學期末，將反思筆記與原教案整合成永續教材。',
+        value: '直接產出升級版教案 2.0，標註時間與活動調整細節。',
+        prompt: `請比對資料庫中的『原始教學教案』與本學期的『課後反思筆記』，為我生成一份『優化升級版教案 2.0』，特別標註活動流程調整處、時間分配改善建議以及新增的學生迷思提醒。`
+      },
+
+      // 階段六：前瞻實踐與理論深化 (c6)
+      {
+        id: 31,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '31. UbD 重理解逆向課程設計（以終為始架構）',
+        scenario: '公開授課、大型主題統整單元或校訂課程教案設計。',
+        value: '預期結果 → 評量證據 → 學習活動，三階段構建嚴謹教案。',
+        prompt: `請依據 UbD（Understanding by Design）逆向設計架構，為〔六年級〕〔社會/自然跨領域〕主題『〔氣候變遷與在地水資源保護〕』規劃一份單元教案架構：
+1. 【階段一：預期學習結果】：核心概念（Big Ideas）、本質問題（Essential Questions）、核心素養指標。
+2. 【階段二：評量證據】：真實情境表現任務（GRASPS 模型）、多元檢核方式。
+3. 【階段三：學習計畫】：符合 WHERETO 架構的教學歷程設計。`
+      },
+      {
+        id: 32,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '32. 素養導向表現任務與 Rubrics 四級評量規準表',
+        scenario: '實作評量、專題探究成果、小組海報發表的客觀評分。',
+        value: '明確四等級標準（優異、熟練、基礎、待加強）與可觀察指標。',
+        prompt: `學生需完成一項表現任務：『〔為社區設計一份防汛避難宣導圖卡〕』。
+請為此任務設計一份評量規準表（Rubric），包含：
+- 評量向度（如：資訊正確性、視覺版面傳達、問題解決洞察、團隊發表）。
+- 表現層級：4 級（優異表現）、3 級（符合標準）、2 級（接近標準）、1 級（需要協助），每個欄位需有具體可觀察的描述指標。`
+      },
+      {
+        id: 33,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '33. PBL 專題導向學習與核心驅動問題',
+        scenario: '彈性學習節數、校訂主題或 SDGs 永續議題探究。',
+        value: '產出生活化驅動問題 (Driving Question) 與跨學科整合點。',
+        prompt: `我們要為〔五年級〕規劃一個為期 6 週的 PBL 專題：『〔改善校園落葉堆肥與環境美化〕』。
+請提供：
+1. 一個具挑戰性且貼近學生生活的【核心驅動問題（Driving Question）】
+2. 跨學科知識整合點（自然分解原理、數學面積測量、語文倡議文案）
+3. 最終向全校師生發表的【公開成果形式（Public Product）】建議。`
+      },
+      {
+        id: 34,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '34. 課堂遊戲化機制與沉浸式闖關任務',
+        scenario: '單元總複習、期末闖關活動，提升學習投入度。',
+        value: '結合情境劇情、三道梯度任務（操作、解謎、大魔王）與積分勳章。',
+        prompt: `請將〔四年級數學〕『〔幾何圖形與周長面積〕』複習課程，改編成一個沉浸式闖關任務：『〔失落王國的幾何密碼〕』。
+需包含：
+1. 任務背景情境與角色引導
+2. 三道不同挑戰梯度的關卡（基礎操作關、生活解謎關、終極大魔王挑戰）
+3. 小組合作計分與榮譽勳章機制。`
+      },
+      {
+        id: 35,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: 'NotebookLM 專屬',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '35. 一鍵生成雙人 AI 語音播客導讀教材',
+        scenario: '製作學生課前預習音訊、無障礙聽覺教材、教師通勤導讀。',
+        value: '利用 Audio Overview 將文字一鍵生成 5 分鐘自然科普對話。',
+        prompt: `請以兩位生動有趣的科普主持人風格，針對小學四年級聽眾，用口語對話的方式深入淺出解釋這份教材中的『生活中的熱傳遞與保溫原理』，多使用生活化比喻，時間約 5 分鐘。`
+      },
+      {
+        id: 36,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '36. 批判性思維培養：AI 故意出錯偵錯法',
+        scenario: '培養學生概念精熟與批判思考（Spot the Errors）。',
+        value: '刻意埋入 3 個學生常見迷思，引導學生化身小偵探揪出錯誤。',
+        prompt: `請根據『〔物質受熱膨脹與熱脹冷縮〕』概念，撰寫一篇 250 字的學生生活短文。
+請在文章中故意埋入 3 個常見的科學觀念迷思（例如：誤以為熱脹冷縮是物體質量變重）。
+請在文末附上【教師專用偵錯答案與課堂提問引導清單】。`
+      },
+      {
+        id: 37,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '37. 自動化出題：Google 表單 (Forms) CSV 快速輸出',
+        scenario: '快速建構線上隨堂測驗，避免一題題手動複製貼上。',
+        value: '直接輸出標準 CSV 欄位，方便串接試算表與表單外掛。',
+        prompt: `請針對〔五年級自然〕『〔太陽與影子變化〕』設計 5 題單選題。
+請直接以標準 CSV 格式輸出，欄位包含：『題目內容, 選項A, 選項B, 選項C, 選項D, 正確答案, 解析說明』，以利我直接匯入試算表與表單外掛。`
+      },
+      {
+        id: 38,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: 'NotebookLM 專屬',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        title: '38. 優質 YouTube 影音教材直接入庫萃取',
+        scenario: '找到優質科普或歷史 YouTube 影片，快速轉為觀影導引單。',
+        value: '直接貼上影片網址，自動抓取字幕逐字稿提煉重點。',
+        prompt: `請根據這部 10 分鐘的科普影音字幕，整理出：
+1. 影片說明的 3 大核心概念
+2. 設計 3 題學生在觀看時需邊看邊記錄的『觀影導引思考題』。`
+      },
+      {
+        id: 39,
+        cat: 'c6',
+        catName: '六、前瞻實踐',
+        badge: '通用對話 AI',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        title: '39. 個別化學期日常綜合評語與成長心態文字生成',
+        scenario: '期末撰寫學生成績單評語、綜合表現紀錄。',
+        value: '輸入客觀關鍵字，生成兼具溫度、專業與成長心態的文字。',
+        prompt: `請為國小學生撰寫期末成績單的『日常綜合表現評語』（字數約 80~100 字）。
+語氣需溫暖肯定、具體且富含成長心態（Growth Mindset）。
+學生表現特質：【熱心服務、自然實驗探究敏銳、小組討論積極，但個人數學書寫時偶有粗心漏題】。
+請提供 2 種不同語氣風格（溫暖親切風 / 條理激勵風）供我選擇。`
+      }
+    ];
+
+    // ==========================================
+    // Web Audio API 合成音效引擎 (無需外載音檔)
+    // ==========================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    // 複製成功音效（清脆的高音雙和弦）
+    function playCopySound() {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        
+        // 振盪器 1
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now); // D5
+        osc1.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+        gain1.gain.setValueAtTime(0.2, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.25);
+
+        // 振盪器 2 (加強共鳴)
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(1174.66, now + 0.05); // D6
+        gain2.gain.setValueAtTime(0.15, now + 0.05);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.05);
+        osc2.stop(now + 0.3);
+      } catch (e) {
+        console.warn('Audio play error:', e);
+      }
+    }
+
+    // 點擊切換標籤音效（輕微 Pop 聲）
+    function playClickSound() {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(200, now + 0.06);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      } catch (e) {}
+    }
+
+    // 切換音效開關
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      const text = document.getElementById('soundText');
+      if (soundEnabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        text.innerText = '音效開';
+        playClickSound();
+        showToast('音效已開啟 🔊');
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+        text.innerText = '音效關';
+        showToast('音效已靜音 🔇');
+      }
+      lucide.createIcons();
+    }
+
+    // ==========================================
+    // 深淺主題切換
+    // ==========================================
+    function toggleTheme() {
+      playClickSound();
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        themeIcon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        themeIcon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+
+    // 初始化深淺主題
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      setTimeout(() => {
+        document.getElementById('themeIcon')?.setAttribute('data-lucide', 'sun');
+        lucide.createIcons();
+      }, 50);
+    }
+
+    // ==========================================
+    // 渲染卡片核心邏輯
+    // ==========================================
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function renderCards() {
+      const grid = document.getElementById('cardsGrid');
+      const noResults = document.getElementById('noResults');
+      const resultCountText = document.getElementById('resultCountText');
+
+      const filtered = guides.filter(item => {
+        const matchCat = (currentCategory === 'all') || (item.cat === currentCategory);
+        const searchLower = currentSearch.toLowerCase().trim();
+        const matchSearch = !searchLower || 
+          item.title.toLowerCase().includes(searchLower) ||
+          item.scenario.toLowerCase().includes(searchLower) ||
+          item.value.toLowerCase().includes(searchLower) ||
+          item.prompt.toLowerCase().includes(searchLower);
+        return matchCat && matchSearch;
+      });
+
+      resultCountText.innerText = `顯示 ${filtered.length} 項指南（總計 39 項）`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="glass-card rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group border border-slate-200/80 dark:border-slate-800/80 hover:-translate-y-1">
+          <div>
+            <!-- 卡片頂部標籤 -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg ${item.badgeColor}">
+                ${item.badge}
+              </span>
+              <span class="text-[11px] font-medium text-slate-400">
+                ${item.catName}
+              </span>
+            </div>
+
+            <!-- 標題 -->
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors leading-snug">
+              ${item.title}
+            </h3>
+
+            <!-- 適用情境與核心價值 -->
+            <div class="space-y-1.5 mb-4 text-xs">
+              <p class="text-slate-600 dark:text-slate-300">
+                <strong class="text-slate-900 dark:text-slate-100">🎯 時機：</strong>${item.scenario}
+              </p>
+              <p class="text-slate-500 dark:text-slate-400">
+                <strong class="text-slate-700 dark:text-slate-300">💡 價值：</strong>${item.value}
+              </p>
+            </div>
+
+            <!-- 提示詞預覽區 -->
+            <div class="relative prompt-box rounded-xl p-3.5 mb-3 font-mono text-xs text-slate-700 dark:text-slate-300 leading-relaxed overflow-x-auto max-h-48 overflow-y-auto">
+              <pre class="whitespace-pre-wrap font-sans text-xs">${escapeHtml(item.prompt)}</pre>
+            </div>
+          </div>
+
+          <!-- 一鍵複製按鈕 -->
+          <div class="pt-2">
+            <button onclick="copyPrompt(${item.id}, this)" class="w-full bg-slate-900 hover:bg-brand-600 active:scale-95 dark:bg-slate-800 dark:hover:bg-brand-600 text-white py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span>複製提示詞</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // HTML 跳脫防止 XSS
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // ==========================================
+    // 篩選與搜尋互動
+    // ==========================================
+    function setCategory(cat) {
+      playClickSound();
+      currentCategory = cat;
+      
+      // 更新標籤按鈕外觀
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = 'cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm';
+        } else {
+          btn.className = 'cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100';
+        }
+      });
+
+      renderCards();
+    }
+
+    function handleSearch() {
+      const val = document.getElementById('searchInput').value;
+      currentSearch = val;
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (val) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderCards();
+    }
+
+    function clearSearch() {
+      playClickSound();
+      document.getElementById('searchInput').value = '';
+      currentSearch = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderCards();
+    }
+
+    // ==========================================
+    // 複製提示詞與 Toast 回饋
+    // ==========================================
+    function copyPrompt(id, btnElement) {
+      const guide = guides.find(g => g.id === id);
+      if (!guide) return;
+
+      navigator.clipboard.writeText(guide.prompt).then(() => {
+        playCopySound();
+        showToast(`已成功複製「${guide.title.split(' ')[1]}」提示詞！`);
+
+        // 按鈕短暫變換狀態
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i><span class="text-emerald-400">已複製！</span>`;
+        btnElement.classList.add('bg-emerald-700', 'dark:bg-emerald-800');
+        lucide.createIcons();
+
+        setTimeout(() => {
+          btnElement.innerHTML = originalHtml;
+          btnElement.classList.remove('bg-emerald-700', 'dark:bg-emerald-800');
+          lucide.createIcons();
+        }, 1500);
+      });
+    }
+
+    // 複製自訂五星 Prompt
+    function copyGeneratedPrompt() {
+      const role = document.getElementById('builderRole').value;
+      const task = document.getElementById('builderTask').value;
+      const target = document.getElementById('builderTarget').value;
+      const context = document.getElementById('builderContext').value;
+      const constraints = document.getElementById('builderConstraints').value;
+
+      const fullPrompt = `【角色設定】：${role}
+【核心任務】：${task}
+【目標對象】：${target}
+【教學情境脈絡】：${context}
+【輸出格式與限制】：${constraints}`;
+
+      navigator.clipboard.writeText(fullPrompt).then(() => {
+        playCopySound();
+        showToast('五星萬用 Prompt 已組裝並複製到剪貼簿！');
+      });
+    }
+
+    // 顯示 Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.innerText = msg;
+      
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    // 初始化渲染
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCards();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
