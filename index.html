@@ -45,14 +45,14 @@
     }
     
     .glass-card {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.85);
     }
     
     .dark .glass-card {
-      background: rgba(30, 41, 59, 0.88);
-      border: 1px solid rgba(51, 65, 85, 0.8);
+      background: rgba(30, 41, 59, 0.92);
+      border: 1px solid rgba(51, 65, 85, 0.85);
     }
 
     .prompt-box {
@@ -101,18 +101,18 @@
       <!-- 右側控制項（音效、主題、快速跳轉） -->
       <div class="flex items-center gap-2">
         <!-- 音效開關按鈕 -->
-        <button id="soundToggleBtn" onclick="toggleSound()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 text-xs font-medium" title="開關音效">
+        <button id="soundToggleBtn" onclick="toggleSound()" aria-label="切換音效開關" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 text-xs font-medium" title="開關音效">
           <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4 text-brand-600"></i>
           <span id="soundText" class="hidden sm:inline">音效開</span>
         </button>
 
         <!-- 深淺色切換按鈕 -->
-        <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs" title="切換深淺模式">
+        <button onclick="toggleTheme()" aria-label="切換深色或淺色外觀主題" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs" title="切換深淺模式">
           <i id="themeIcon" data-lucide="moon" class="w-4 h-4 text-slate-600 dark:text-slate-300"></i>
         </button>
 
         <!-- 外部工具庫連結 -->
-        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="hidden md:inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm transition">
+        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" aria-label="前往 Puti-AI 教學工具庫" class="hidden md:inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm transition">
           <span>更多教學工具</span>
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
@@ -120,66 +120,101 @@
     </div>
   </header>
 
-  <!-- 主視覺 Banner 與快速統計 -->
-  <section class="relative overflow-hidden bg-gradient-to-b from-white to-slate-100 dark:from-slate-900 dark:to-slate-950 py-10 border-b border-slate-200 dark:border-slate-800">
+  <!-- 主視覺 Banner 與快速新手三步驟 -->
+  <section class="relative overflow-hidden bg-gradient-to-b from-white to-slate-100 dark:from-slate-900 dark:to-slate-950 py-8 border-b border-slate-200 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div class="text-center max-w-3xl mx-auto mb-8">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold mb-4">
+      
+      <!-- 標題與簡介 -->
+      <div class="text-center max-w-3xl mx-auto mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold mb-3">
           <i data-lucide="zap" class="w-3.5 h-3.5"></i>
           全場景雙軌協同 · 39 個實戰提示詞模板
         </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-4">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
           從課程架構到課後迭代的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">AI 備課增能系統</span>
         </h2>
-        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
           結合「通用對話型 AI（ChatGPT / Claude / Gemini / Copilot）」的發散創意與「文件知識庫型 AI（NotebookLM）」的精準依據，一鍵複製即戰力提示詞，打造高效教學。
         </p>
+
+        <!-- 安全與隱私提醒 Alert -->
+        <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-amber-800 dark:text-amber-300 text-xs text-left max-w-xl mx-auto">
+          <i data-lucide="shield-alert" class="w-4 h-4 shrink-0 text-amber-600"></i>
+          <span><strong>教師守則：</strong>請勿將學生姓名等隱私個資輸入公開 AI 模型；所有產出內容均須經教師專業審核。</span>
+        </div>
       </div>
 
-      <!-- 快捷搜尋與分類過濾 -->
-      <div class="max-w-4xl mx-auto space-y-4">
+      <!-- 新手快速上手 3 步驟導引 -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto mb-6 text-xs">
+        <div class="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300 flex items-center justify-center font-bold text-xs shrink-0">1</span>
+          <div>
+            <strong class="text-slate-800 dark:text-slate-200 block">挑選備課情境</strong>
+            <span class="text-slate-500 dark:text-slate-400 text-[11px]">利用下方分類或搜尋欄鎖定需求</span>
+          </div>
+        </div>
+        <div class="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+          <div>
+            <strong class="text-slate-800 dark:text-slate-200 block">一鍵複製提示詞</strong>
+            <span class="text-slate-500 dark:text-slate-400 text-[11px]">點擊卡片按鈕自動拷貝帶參數模板</span>
+          </div>
+        </div>
+        <div class="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+          <div>
+            <strong class="text-slate-800 dark:text-slate-200 block">貼入常用 AI 生成</strong>
+            <span class="text-slate-500 dark:text-slate-400 text-[11px]">替換括號內容即可產出高品質教材</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 搜尋與分類過濾 -->
+      <div class="max-w-4xl mx-auto space-y-3">
         <!-- 搜尋列 -->
         <div class="relative">
+          <label for="searchInput" class="sr-only">搜尋備課關鍵字</label>
           <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
           <input 
             type="text" 
             id="searchInput" 
+            aria-label="搜尋備課關鍵字"
             placeholder="搜尋備課關鍵字（如：暖身活動、三層次提問、Rubric 評分規準、家長信、IEP、Google 表單...）" 
-            class="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+            class="w-full pl-12 pr-10 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
             oninput="handleSearch()"
           >
-          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <button id="clearSearchBtn" onclick="clearSearch()" aria-label="清除搜尋內容" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
 
         <!-- 分類膠囊標籤 -->
-        <div class="flex flex-wrap items-center justify-center gap-2 pt-2" id="categoryPills">
-          <button onclick="setCategory('all')" class="cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-cat="all">
+        <div class="flex flex-wrap items-center justify-center gap-2 pt-1" id="categoryPills">
+          <button onclick="setCategory('all')" class="cat-btn active-cat px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-cat="all">
             <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
             <span>全部指南 (39)</span>
           </button>
-          <button onclick="setCategory('c1')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c1">
+          <button onclick="setCategory('c1')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c1">
             <i data-lucide="compass" class="w-3.5 h-3.5 text-blue-500"></i>
             <span>一、課前架構 (9)</span>
           </button>
-          <button onclick="setCategory('c2')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c2">
+          <button onclick="setCategory('c2')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c2">
             <i data-lucide="message-square" class="w-3.5 h-3.5 text-amber-500"></i>
             <span>二、教學流程 (7)</span>
           </button>
-          <button onclick="setCategory('c3')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c3">
+          <button onclick="setCategory('c3')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c3">
             <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-500"></i>
             <span>三、教材評量 (6)</span>
           </button>
-          <button onclick="setCategory('c4')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c4">
+          <button onclick="setCategory('c4')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c4">
             <i data-lucide="users" class="w-3.5 h-3.5 text-indigo-500"></i>
             <span>四、班級經營 (6)</span>
           </button>
-          <button onclick="setCategory('c5')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c5">
+          <button onclick="setCategory('c5')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c5">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-rose-500"></i>
             <span>五、課後反思 (2)</span>
           </button>
-          <button onclick="setCategory('c6')" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c6">
+          <button onclick="setCategory('c6')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c6">
             <i data-lucide="rocket" class="w-3.5 h-3.5 text-purple-500"></i>
             <span>六、前瞻實踐 (9)</span>
           </button>
@@ -189,50 +224,50 @@
   </section>
 
   <!-- 互動特色區：五星 Prompt 生成器 & AI 選用決策矩陣 -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
       
       <!-- 五星 Prompt 萬用產生器 -->
-      <div class="glass-card rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-5 shadow-sm flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="p-2 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
-                <i data-lucide="award" class="w-5 h-5"></i>
+              <span class="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
+                <i data-lucide="award" class="w-4 h-4"></i>
               </span>
-              <h3 class="text-base font-bold">五星 Prompt 萬用產生器</h3>
+              <h3 class="text-sm sm:text-base font-bold">五星 Prompt 萬用產生器</h3>
             </div>
-            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">快速填空</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">快速填空</span>
           </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">輸入 5 大核心要素，即時為您組合高品質的教學提示詞。</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">輸入 5 大核心要素，即時為您組合高品質教學提示詞：</p>
           
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
             <div>
-              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">1. 角色 (Role)</label>
-              <input id="builderRole" type="text" value="你是一位擁有 15 年國小教學經驗的自然專任教師與課程專家" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              <label for="builderRole" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">1. 角色 (Role)</label>
+              <input id="builderRole" type="text" value="你是一位擁有 15 年國小教學經驗的自然專任教師與課程專家" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
             </div>
             <div>
-              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">2. 任務 (Task)</label>
-              <input id="builderTask" type="text" value="設計一堂 40 分鐘的『磁鐵性質與生活應用』探究教案" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              <label for="builderTask" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">2. 任務 (Task)</label>
+              <input id="builderTask" type="text" value="設計一堂 40 分鐘的『磁鐵性質與生活應用』探究教案" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
             </div>
             <div>
-              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">3. 對象 (Target)</label>
-              <input id="builderTarget" type="text" value="國小三年級學生，先備知識已知磁鐵能吸鐵" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              <label for="builderTarget" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">3. 對象 (Target)</label>
+              <input id="builderTarget" type="text" value="國小三年級學生，先備知識已知磁鐵能吸鐵" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
             </div>
             <div>
-              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">4. 情境 (Context)</label>
-              <input id="builderContext" type="text" value="教室配備平板與實驗器材，採 4 人小組合作" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              <label for="builderContext" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">4. 情境 (Context)</label>
+              <input id="builderContext" type="text" value="教室配備平板與實驗器材，採 4 人小組合作" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
             </div>
             <div class="sm:col-span-2">
-              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">5. 限制與格式 (Constraints)</label>
-              <input id="builderConstraints" type="text" value="請以 Markdown 表格呈現時間分配、教師提問、學生活動與評量指標，文字精簡具體。" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              <label for="builderConstraints" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">5. 限制與格式 (Constraints)</label>
+              <input id="builderConstraints" type="text" value="請以 Markdown 表格呈現時間分配、教師提問、學生活動與評量指標，文字精簡具體。" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
             </div>
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
-          <span class="text-[11px] text-slate-400">點擊下方按鈕一鍵組裝並複製</span>
-          <button onclick="copyGeneratedPrompt()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+        <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+          <span class="text-[11px] text-slate-400">點擊右側按鈕直接組裝並複製</span>
+          <button onclick="copyGeneratedPrompt()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             <span>合成並複製五星 Prompt</span>
           </button>
@@ -240,16 +275,16 @@
       </div>
 
       <!-- AI 工具選用決策速查卡 -->
-      <div class="glass-card rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-5 shadow-sm flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="p-2 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
-                <i data-lucide="git-branch" class="w-5 h-5"></i>
+              <span class="p-1.5 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
+                <i data-lucide="git-branch" class="w-4 h-4"></i>
               </span>
-              <h3 class="text-base font-bold">雙軌 AI 選用決策矩陣</h3>
+              <h3 class="text-sm sm:text-base font-bold">雙軌 AI 選用決策矩陣</h3>
             </div>
-            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">時機指南</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">時機指南</span>
           </div>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">依照「當下的備課任務特性」選擇最適合的大腦：</p>
           
@@ -265,25 +300,25 @@
               <div class="w-5 h-5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">依據</div>
               <div>
                 <span class="font-bold text-slate-800 dark:text-slate-200">文件知識庫型 AI (NotebookLM)</span>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400">100% 依據專屬 PDF / 課綱、YouTube 影片逐字稿轉學習單、Audio Overview 語音播客。</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">以指定教材 PDF / 課綱為主要依據、YouTube 影音轉學習單、Audio Overview 語音播客。</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-          <span>✨ 雙軌協同：知識庫 AI 萃取重點 $\rightarrow$ 對話 AI 擴展創意</span>
+        <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+          <span>✨ 雙軌協同：知識庫 AI 萃取重點 → 對話 AI 擴展創意</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 核心卡片列表 -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex-1 w-full">
     
     <!-- 搜尋結果計數與重置提示 -->
     <div class="flex items-center justify-between mb-4 px-1">
-      <div class="text-xs font-semibold text-slate-500 dark:text-slate-400" id="resultCountText">
+      <div class="text-xs font-semibold text-slate-500 dark:text-slate-400" id="resultCountText" aria-live="polite">
         顯示全部 39 項備課指南
       </div>
       <div class="text-xs text-brand-600 dark:text-brand-400 font-medium">
@@ -308,8 +343,8 @@
   </main>
 
   <!-- 複製成功的 Toast 浮動提示 -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-2xl shadow-xl text-xs font-bold border border-slate-800 dark:border-slate-200">
-    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 dark:text-emerald-600"></i>
+  <div id="toast" role="alert" aria-live="assertive" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-2xl shadow-xl text-xs font-bold border border-slate-800 dark:border-slate-200">
+    <i id="toastIcon" data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 dark:text-emerald-600"></i>
     <span id="toastMessage">提示詞已成功複製到剪貼簿！</span>
   </div>
 
@@ -357,7 +392,7 @@
         badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
         title: '02. 長篇課綱與校本教材核心提煉',
         scenario: '手邊有數十頁的新課綱指引、校本特色教材或教學指引手冊。',
-        value: '100% 依據上傳文本精準歸納，杜絕 AI 幻覺，快速掌握學習重點與實作清單。',
+        value: '以指定教材 PDF 為主要依據，大幅降低幻覺，快速掌握學習重點與實作清單。',
         prompt: `請根據上傳的校本課程指引與單元教材 PDF，為我萃取：
 1. 本單元對應的三大學習表現與學習內容代碼
 2. 學生在學習此單元時最容易出現的 2 個迷思概念
@@ -878,7 +913,6 @@
         initAudio();
         const now = audioCtx.currentTime;
         
-        // 振盪器 1
         const osc1 = audioCtx.createOscillator();
         const gain1 = audioCtx.createGain();
         osc1.type = 'sine';
@@ -891,7 +925,6 @@
         osc1.start(now);
         osc1.stop(now + 0.25);
 
-        // 振盪器 2 (加強共鳴)
         const osc2 = audioCtx.createOscillator();
         const gain2 = audioCtx.createGain();
         osc2.type = 'triangle';
@@ -1064,12 +1097,11 @@
       playClickSound();
       currentCategory = cat;
       
-      // 更新標籤按鈕外觀
       document.querySelectorAll('.cat-btn').forEach(btn => {
         if (btn.getAttribute('data-cat') === cat) {
-          btn.className = 'cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm';
+          btn.className = 'cat-btn active-cat px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm';
         } else {
-          btn.className = 'cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100';
+          btn.className = 'cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100';
         }
       });
 
@@ -1097,17 +1129,48 @@
     }
 
     // ==========================================
-    // 複製提示詞與 Toast 回饋
+    // 堅固的剪貼簿複製邏輯 (含 execCommand 備援)
     // ==========================================
-    function copyPrompt(id, btnElement) {
+    async function writeToClipboardRobust(text) {
+      // 優先使用 Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          console.warn('Navigator clipboard failed, trying fallback...', err);
+        }
+      }
+
+      // 備援：建立隱藏 textarea 並使用 execCommand
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return successful;
+      } catch (err) {
+        console.error('Fallback clipboard copy failed:', err);
+        return false;
+      }
+    }
+
+    // 複製特定卡片提示詞
+    async function copyPrompt(id, btnElement) {
       const guide = guides.find(g => g.id === id);
       if (!guide) return;
 
-      navigator.clipboard.writeText(guide.prompt).then(() => {
+      const success = await writeToClipboardRobust(guide.prompt);
+      if (success) {
         playCopySound();
         showToast(`已成功複製「${guide.title.split(' ')[1]}」提示詞！`);
 
-        // 按鈕短暫變換狀態
         const originalHtml = btnElement.innerHTML;
         btnElement.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i><span class="text-emerald-400">已複製！</span>`;
         btnElement.classList.add('bg-emerald-700', 'dark:bg-emerald-800');
@@ -1118,11 +1181,13 @@
           btnElement.classList.remove('bg-emerald-700', 'dark:bg-emerald-800');
           lucide.createIcons();
         }, 1500);
-      });
+      } else {
+        showToast('複製失敗，請手動選取文字複製', true);
+      }
     }
 
     // 複製自訂五星 Prompt
-    function copyGeneratedPrompt() {
+    async function copyGeneratedPrompt() {
       const role = document.getElementById('builderRole').value;
       const task = document.getElementById('builderTask').value;
       const target = document.getElementById('builderTarget').value;
@@ -1135,18 +1200,31 @@
 【教學情境脈絡】：${context}
 【輸出格式與限制】：${constraints}`;
 
-      navigator.clipboard.writeText(fullPrompt).then(() => {
+      const success = await writeToClipboardRobust(fullPrompt);
+      if (success) {
         playCopySound();
         showToast('五星萬用 Prompt 已組裝並複製到剪貼簿！');
-      });
+      } else {
+        showToast('複製失敗，請手動複製文字', true);
+      }
     }
 
-    // 顯示 Toast
-    function showToast(msg) {
+    // 顯示 Toast 浮動反饋
+    function showToast(msg, isError = false) {
       const toast = document.getElementById('toast');
       const toastMessage = document.getElementById('toastMessage');
-      toastMessage.innerText = msg;
+      const toastIcon = document.getElementById('toastIcon');
       
+      toastMessage.innerText = msg;
+      if (isError) {
+        toastIcon.setAttribute('data-lucide', 'alert-circle');
+        toastIcon.className = 'w-4 h-4 text-rose-400 dark:text-rose-600';
+      } else {
+        toastIcon.setAttribute('data-lucide', 'check-circle-2');
+        toastIcon.className = 'w-4 h-4 text-emerald-400 dark:text-emerald-600';
+      }
+      lucide.createIcons();
+
       toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
       toast.classList.add('translate-y-0', 'opacity-100');
 
