@@ -133,13 +133,13 @@
       <div class="text-center max-w-3xl mx-auto mb-6">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold mb-3">
           <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-          100% 參數模板化 · 嚴格專業審查通過 · 36 個精選指南
+          100% 參數模板化 · 專業審查定稿版 · 36 個精選指南
         </div>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
           目標、評量與活動對齊的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">AI 備課增能系統</span>
         </h2>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
-          每個提示詞均已「結構化參數化」，替換括號內容即可產出完整成品。兼顧教育倫理、特教融合與資料安全。
+          每個提示詞均已完全參數模板化，替換括號內容即可產出完整教案、評量與教學指引。
         </p>
 
         <!-- 安全與個資防護 Alert -->
@@ -192,7 +192,7 @@
           </button>
         </div>
 
-        <!-- 6 大分類膠囊（具備 aria-pressed 無障礙標記） -->
+        <!-- 6 大分類膠囊 -->
         <div class="flex flex-wrap items-center justify-center gap-2 pt-1" id="categoryPills" role="toolbar" aria-label="指南類別篩選">
           <button onclick="setCategory('all')" aria-pressed="true" class="cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-cat="all">
             <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
@@ -252,7 +252,7 @@
             </div>
             <div>
               <label for="builderTask" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">2. 任務 (Task)</label>
-              <input id="builderTask" type="text" value="設計一份〔單元主題〕的完整教案骨架，包含三維目標與評量證據" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
+              <input id="builderTask" type="text" value="設計一份〔單元主題〕的完整教案骨架，包含學習指標對齊與評量證據" class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs focus:ring-1 focus:ring-amber-500 outline-none">
             </div>
             <div>
               <label for="builderTarget" class="block font-semibold text-slate-700 dark:text-slate-300 mb-0.5">3. 對象 (Target)</label>
@@ -359,7 +359,7 @@
         <span>Puti-AI 教學輔助工具系列</span>
       </div>
       <p class="text-xs text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">點此前往(https://padlet.com/clongwh/puti_ai_tools)</a>。
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，<a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">更多 Puti-AI 教學工具 點此前往(https://padlet.com/clongwh/puti_ai_tools)</a>
       </p>
       <div class="text-[11px] text-slate-400">
         <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">更多 Puti-AI 教學工具</a> · © 2026 Puti-AI
@@ -377,15 +377,15 @@
         catName: '一、課前架構',
         badge: '通用對話 AI',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
-        title: '01. 生成「目標—活動—評量」三位一體完整教案骨架',
+        title: '01. 生成「指標—活動—評量」三位一體完整教案骨架',
         scenario: '單元備課起手式，建立對應學習內容與表現代碼的教案。',
-        value: '避免目標與活動脫節，產出可直接貼入教學計畫書的 Markdown 表格。',
+        value: '將學習表現、學習內容與評量證據置於核心，產出可直接貼入教案的表格。',
         prompt: `我正在規劃〔年級〕〔學科〕單元：『〔單元主題與核心概念〕』，教學時間共〔40〕分鐘。
-請為我產出一份「目標—活動—評量」高度對齊的完整教案骨架，需包含：
-1. 【學習指標對齊】：條列對應的學習表現代碼、學習內容代碼，並具體寫出可觀察的認知、技能、情意三維目標。
-2. 【教學歷程表格】：包含時間分配（引起動機、發展活動、總結活動）、教師關鍵引導提問、學生活動任務與具體操作。
-3. 【評量證據】：對應各教學環節的形成性檢核指標（口語發表、實作記錄、學習單等）。
-4. 【差異化支持策略】：針對學習落後與超前學生的即時課堂調整方案。`
+請為我產出一份以「學習表現、學習內容與可觀察評量證據」為核心的完整教案骨架：
+1. 【核心指標對齊】：明確對應課綱之「學習表現代碼與條目」及「學習內容代碼與條目」，並轉換為可觀察檢核的具體學習目標。
+2. 【評量證據預設】：在規劃活動前，先列出能證明學生達成上述目標的評量證據形式（如實作記錄、口語論證、學習單成品）。
+3. 【教學歷程表格】：包含時間分配（引起動機、發展活動、總結活動）、教師關鍵引導提問、學生活動任務與對應的形成性評量檢核點。
+4. 【動態差異化支持】：針對課堂中理解落後與超前學生的即時彈性支持策略。`
       },
       {
         id: 2,
@@ -723,13 +723,13 @@
         badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
         title: '25. 萃取個別化教育計畫 (IEP) 課堂執行檢核清單（嚴格匿名）',
         scenario: '閱讀特教移轉的 IEP 文件，提煉普通班日常具體配合要點。',
-        value: '⚠️ 請務必先將學生姓名學號去識別化；回答 100% 限於文件內容。',
+        value: '⚠️ 請務必先將學生姓名學號去識別化；僅引用文件已記載內容。',
         prompt: `【重要隱私提醒：上傳前請確認已將學生姓名、學號等個資完全去識別化（匿名）】
-請從上傳的已匿名 IEP 文件中，嚴格依據文本內容摘錄出普通班導師在日常教學中需落實的：
+請從上傳的已匿名 IEP 文件中，僅引用文件已記載內容摘錄出普通班導師在日常教學中需落實的：
 1. 課堂座位安排與環境調整建議
 2. 情緒波動時的正向應對步驟
 3. 定期評量時的調整措施（如延長時間、報讀支援）。
-回答必須 100% 依據文件記載，未提及之處請註明「文件未記載」，嚴禁自行補充推論。`
+回答必須嚴格限於文件已有記載內容，未提及之處請明確註明「文件未記載」，嚴禁自行補充推論。`
       },
 
       // 階段五：課後反思與知識迭代 (c5, 共 2 項)
@@ -758,9 +758,15 @@
         badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
         title: '27. 整合實務經驗迭代升級為教案資產 2.0（前後對照）',
         scenario: '單元結束或學期末，將反思筆記與原教案整合成永續教材。',
-        value: '產出升級版教案 2.0，並提供修改前後詳細對照表。',
-        prompt: `請比對資料庫中的『原始教學教案 (1.0)』與本學期的『課後反思筆記』：
-1. 【前後修改對照表】：列出在「時間分配」、「引導提問」與「活動步驟」上的具體修改原因與差異。
+        value: '輸入原始教案與反思筆記，產出教案 2.0 與詳細修改前後對照表。',
+        prompt: `【請上傳或貼上原始教案 (1.0)】：
+[請貼上原始教學教案內容]
+
+【請上傳或貼上本學期課後反思筆記】：
+[請貼上本單元各課的反思筆記]
+
+請比對上述兩份資料：
+1. 【前後修改對照表】：條列在「時間分配」、「引導提問」與「活動步驟」上的具體修改原因與差異。
 2. 【優化升級版教案 2.0】：產出包含最新修正的完整單元教案，並特別標註學生常見迷思提醒。`
       },
 
@@ -860,14 +866,15 @@
         catName: '六、前瞻實踐',
         badge: '通用對話 AI',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
-        title: '34. Google 表單純 CSV 格式輸出（免手動複製）',
-        scenario: '快速建構線上測驗，輸出純 CSV 程式碼區塊以便外掛匯入。',
-        value: '只輸出標準純 CSV，嚴格處理逗號雙引號包覆，不加 Markdown 贅詞。',
+        title: '34. Google 表單純 CSV 文字快速出題（免手動複製）',
+        scenario: '快速建構線上測驗，只輸出純 CSV 文字以利直接匯入。',
+        value: '只輸出標準純 CSV，不要任何 Markdown 圍欄（```）或多餘問候語。',
         prompt: `請針對〔年級〕〔學科〕『〔測驗主題〕』設計 5 題單選題。
-【格式嚴格要求】：請只輸出純文字 CSV 程式碼區塊（不要包含任何額外問候語或解釋文字）。若欄位內容包含逗號請以雙引號包覆。
+【格式嚴格要求】：請直接輸出「純 CSV 文字內容」，不要包含任何 Markdown 程式碼標籤（例如 \`\`\`csv）、問候語或後續說明文字。
+若欄位內容包含逗號，請以雙引號（"）包覆。
 欄位順序：
 題目內容,選項A,選項B,選項C,選項D,正確答案,解析說明
-（備註：此 CSV 可直接匯入 Google 試算表或透過表單外掛自動生成 Google 表單測驗）。`
+（備註：產出之純 CSV 文字可直接儲存為 .csv 匯入 Google 試算表，或透過 Form Builder 等外掛一鍵生成 Google 表單）。`
       },
       {
         id: 35,
@@ -875,12 +882,12 @@
         catName: '六、前瞻實踐',
         badge: '文件知識庫 AI',
         badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
-        title: '35. YouTube 影音轉觀影導引單與時間戳記（需帶時間碼字幕）',
+        title: '35. YouTube 帶時間碼字幕轉觀影導引單',
         scenario: '找到優質科普或歷史 YouTube 影片，快速轉為觀影導引單。',
         value: '依據帶時間碼字幕逐字稿，提取精確時間戳記與關鍵思考題。',
-        prompt: `請根據上傳的「帶時間碼字幕逐字稿 (SRT/VTT)」或 YouTube 影音來源，為學生設計一份「邊看邊思考的觀影任務單」：
+        prompt: `請根據上傳的「帶時間碼字幕逐字稿 (SRT/VTT)」，為學生設計一份「邊看邊思考的觀影任務單」：
 1. 【核心概念摘要】：影片說明的 3 大關鍵知識點。
-2. 【時間戳記思考題】：必須依據字幕時間碼（如 02:15、05:40），設計 3 題引導學生觀察影片細節的檢核題（若未附時間碼，請提示「未附時間碼，僅列概念順序」）。
+2. 【時間戳記思考題】：必須依據字幕中的時間碼（如 02:15、05:40），設計 3 題引導學生觀察影片細節的檢核題（若字幕未附時間碼，請明確提示「未附時間碼，僅列概念順序」）。
 3. 【課後延伸討論】：一題結合日常生活的反思應用題。`
       },
       {
@@ -1007,7 +1014,7 @@
     }
 
     // ==========================================
-    // 渲染卡片核心邏輯
+    // 渲染卡片核心邏輯 (全欄位嚴格 XSS Escape)
     // ==========================================
     let currentCategory = 'all';
     let currentSearch = '';
@@ -1042,24 +1049,24 @@
         <div class="glass-card rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group border border-slate-200/80 dark:border-slate-800/80 hover:-translate-y-1">
           <div>
             <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg ${item.badgeColor}">
-                ${item.badge}
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg ${escapeHtml(item.badgeColor)}">
+                ${escapeHtml(item.badge)}
               </span>
               <span class="text-[11px] font-medium text-slate-400">
-                ${item.catName}
+                ${escapeHtml(item.catName)}
               </span>
             </div>
 
             <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors leading-snug">
-              ${item.title}
+              ${escapeHtml(item.title)}
             </h3>
 
             <div class="space-y-1.5 mb-4 text-xs">
               <p class="text-slate-600 dark:text-slate-300">
-                <strong class="text-slate-900 dark:text-slate-100">🎯 時機：</strong>${item.scenario}
+                <strong class="text-slate-900 dark:text-slate-100">🎯 時機：</strong>${escapeHtml(item.scenario)}
               </p>
               <p class="text-slate-500 dark:text-slate-400">
-                <strong class="text-slate-700 dark:text-slate-300">💡 價值：</strong>${item.value}
+                <strong class="text-slate-700 dark:text-slate-300">💡 價值：</strong>${escapeHtml(item.value)}
               </p>
             </div>
 
@@ -1069,7 +1076,7 @@
           </div>
 
           <div class="pt-2">
-            <button onclick="copyPrompt(${item.id}, this)" aria-label="複製「${item.title}」提示詞" class="w-full bg-slate-900 hover:bg-brand-600 active:scale-95 dark:bg-slate-800 dark:hover:bg-brand-600 text-white py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+            <button onclick="copyPrompt(${item.id}, this)" aria-label="複製「${escapeHtml(item.title)}」提示詞" class="w-full bg-slate-900 hover:bg-brand-600 active:scale-95 dark:bg-slate-800 dark:hover:bg-brand-600 text-white py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
               <i data-lucide="copy" class="w-4 h-4"></i>
               <span>複製提示詞</span>
             </button>
@@ -1081,7 +1088,7 @@
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     function setCategory(cat) {
