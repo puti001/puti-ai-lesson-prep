@@ -132,13 +132,13 @@
       <div class="text-center max-w-3xl mx-auto mb-6">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold mb-3">
           <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-          100% 參數模板化 · 附使用頻率標籤 · 全套 40 個實戰指南
+          100% 參數模板化 · 涵蓋證據分析與 AI 治理 · 全套 41 個實戰指南
         </div>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
-          目標、評量、治理與證據對齊的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">AI 備課增能系統</span>
+          目標、評量、治理與作答證據對齊的 <span class="bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">AI 備課增能系統</span>
         </h2>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
-          每張卡片均標註使用頻率（如：每天、每週、開學前、期末、視需要），助您按教學節奏精準取用。
+          完整涵蓋課前架構、課堂提問、作答證據深度分析、AI 生成教材多面向審查、學生 AI 作業規範與素養試題檢核。
         </p>
 
         <!-- 安全與個資防護 Alert -->
@@ -182,7 +182,7 @@
             type="text" 
             id="searchInput" 
             aria-label="搜尋備課關鍵字或使用頻率"
-            placeholder="搜尋關鍵字或頻率（如：每天、每週、每單元、開學前、期末、教案骨架、作答證據、六面向審查...）" 
+            placeholder="搜尋關鍵字或頻率（如：每天、每週、每單元、開學前、期末、作答證據分析、品質審查、AI規範...）" 
             class="w-full pl-12 pr-10 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
             oninput="handleSearch()"
           >
@@ -195,7 +195,7 @@
         <div class="flex flex-wrap items-center justify-center gap-2 pt-1" id="categoryPills" role="toolbar" aria-label="指南類別篩選">
           <button onclick="setCategory('all')" aria-pressed="true" class="cat-btn active-cat px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-cat="all">
             <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
-            <span>全部指南 (40)</span>
+            <span>全部指南 (41)</span>
           </button>
           <button onclick="setCategory('c1')" aria-pressed="false" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c1">
             <i data-lucide="compass" class="w-3.5 h-3.5 text-blue-500"></i>
@@ -223,7 +223,7 @@
           </button>
           <button onclick="setCategory('c7')" aria-pressed="false" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100" data-cat="c7">
             <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-teal-500"></i>
-            <span>七、AI 治理與查核 (3)</span>
+            <span>七、AI 治理與查核 (4)</span>
           </button>
         </div>
       </div>
@@ -300,7 +300,7 @@
               <div class="w-5 h-5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">發散</div>
               <div>
                 <span class="font-bold text-slate-800 dark:text-slate-200">通用對話型 AI (ChatGPT / Claude / Gemini / Copilot)</span>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400">教案骨架、提問追問、六面向品質審查、學生 AI 學習規範、試題檢核與評語。</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">教案骨架、提問追問、多面向品質審查、學生 AI 學習規範、試題檢核與評語。</p>
               </div>
             </div>
             <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-start gap-2.5">
@@ -325,7 +325,7 @@
     
     <div class="flex items-center justify-between mb-4 px-1">
       <div class="text-xs font-semibold text-slate-500 dark:text-slate-400" id="resultCountText" aria-live="polite">
-        顯示全部 40 項備課指南
+        顯示全部 41 項備課指南
       </div>
       <div class="text-xs text-brand-600 dark:text-brand-400 font-medium">
         💡 點擊「複製提示詞」立即拷貝至剪貼簿
@@ -343,7 +343,7 @@
         <i data-lucide="search-x" class="w-8 h-8"></i>
       </div>
       <h4 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">找不到相符的備課指南</h4>
-      <p class="text-xs text-slate-400 mb-4">請嘗試更換關鍵字或頻率標籤，例如「每天」、「每週」、「每單元」、「期末」</p>
+      <p class="text-xs text-slate-400 mb-4">請嘗試更換關鍵字或頻率標籤，例如「每天」、「每週」、「作答證據」、「品質審查」</p>
       <button onclick="clearSearch()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-xs font-semibold rounded-xl hover:bg-slate-300 transition">清除搜尋條件</button>
     </div>
   </main>
@@ -370,7 +370,7 @@
     </div>
   </footer>
 
-  <!-- 40 個精選指南數據與核心邏輯 JS -->
+  <!-- 41 個精選指南數據與核心邏輯 JS -->
   <script>
     const guides = [
       // 階段一：課前架構與知識統整 (c1, 共 7 項)
@@ -386,7 +386,7 @@
         value: '將學習表現、學習內容與評量證據置於核心，防編造代碼。',
         prompt: `我正在規劃〔年級〕〔學科〕單元：『〔單元主題與核心概念〕』，教學時間共〔40〕分鐘。
 請為我產出一份以「學習表現、學習內容與可觀察評量證據」為核心的完整教案骨架：
-1. 【核心指標對齊】：明確對應課綱之「學習表現代碼與條目」及「學習內容代碼與條目」，並轉換為可觀察檢核的具體學習目標。（⚠️ 若我未提供正式課綱版本或來源文件，請標示「需依正式課綱核對」，不可自行捏造代碼或條目）。
+1. 【核心指標對齊】：明確對應課綱之「學習表現代碼與條目」及「學習內容代碼與條目」，並轉換為可觀察檢核的具體學習目標。（⚠️ 若未提供正式課綱版本或來源文件，不可自行捏造學習表現代碼與學習內容代碼，請標示「需依正式課綱核對」）。
 2. 【評量證據預設】：在規劃活動前，先列出能證明學生達成上述目標的評量證據形式（如實作記錄、口語論證、學習單成品）。
 3. 【教學歷程表格】：包含時間分配（引起動機、發展活動、總結活動）、教師關鍵引導提問、學生活動任務與對應的形成性評量檢核點。
 4. 【動態差異化支持】：針對課堂中理解落後與超前學生的即時彈性支持策略。`
@@ -963,7 +963,7 @@
 【要求】：語氣溫暖肯定、具體指出亮點並以「成長心態（Growth Mindset）」提出改進建議。請提供「溫暖親切風」與「條理激勵風」2 種版本供教師挑選。`
       },
 
-      // 階段七：AI 素養與教學治理 (c7, 共 3 項)
+      // 階段七：AI 素養與教學治理 (c7, 共 4 項)
       {
         id: 38,
         cat: 'c7',
@@ -971,21 +971,23 @@
         freq: '每次出教材 / 視需要',
         badge: '通用對話 AI',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
-        title: '38. AI 生成教材上線前的六面向品質審查檢核',
+        title: '38. AI 生成教材上線前的多面向品質審查檢核',
         scenario: '將 AI 產出的教案、學習單或簡報在印給學生前進行嚴格審查。',
-        value: '對齊教育部指引與 UNESCO 框架，檢驗課綱、正確性、年齡、偏見、著作權與個資。',
+        value: '拆解個資、著作權、偏見、可及性與正確性，嚴格把關上課素材。',
         prompt: `【待審查之 AI 生成教材內容】：
 [請貼上欲檢查的教案、學習單或評量內容]
 
 【教學對象與學科】：國小〔年級〕〔學科〕
 
-請依據教育部 AI 使用指引與教學專業，對上述內容進行「六面向品質嚴格審查」，並逐項評估與修訂：
+請依據教育部 AI 使用指引與 UNESCO 教師能力架構，對上述內容進行多面向品質審查，並逐項評估與修訂：
 1. 【課綱與素養對齊度】：是否符合該年段核心素養，而非超綱或偏離重點？
-2. 【事實與學科正確性】：是否有科學概念錯誤、歷史事實捏造或文字幻覺？
+2. 【學科事實與科學正確性】：是否有科學概念錯誤、歷史事實捏造或文字幻覺？
 3. 【年齡與認知適切性】：用詞與排版難度是否符合國小〔年級〕認知負荷？
-4. 【文化包容與偏見檢核】：是否存在性別、族群、城鄉刻板印象或道德說教？
-5. 【個資、智財與可及性】：是否侵犯著作權？是否適合不同閱讀需求學童？
-6. 【具體修訂對照表與修正定稿】：條列所有問題並直接產出「修訂後可直接使用版本」。`
+4. 【文化、性別與族群偏見檢核】：是否存在性別、族群、城鄉刻板印象或道德說教？
+5. 【個資防護與機密安全】：是否包含任何未去識別化的學生或教師個資？
+6. 【著作權、授權與透明引用】：是否侵犯他人著作權？是否已加註 AI 輔助生成說明？
+7. 【閱讀與多模態可及性】：用字排版是否便於不同閱讀需求學童理解？
+8. 【具體修訂對照表與修正定稿】：條列所有問題並直接產出「修訂後可直接使用版本」。`
       },
       {
         id: 39,
@@ -995,17 +997,18 @@
         badge: '通用對話 AI',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
         title: '39. 學生生成式 AI 課堂作業規範與學習歷程記錄表',
-        scenario: '在課堂引導高年級學生使用 AI 進行探究、寫作或專題研究時。',
-        value: '建立 AI 人本倫理意識，產出允許/禁止清單、Prompt 提問歷程表與引用規範。',
+        scenario: '在課堂引導學生使用 AI 輔助探究時，建立動態紅綠燈與口頭檢核機制。',
+        value: '依年級調整規則，包含 Prompt 歷程表記錄與 Oral Check 真實理解檢核。',
         prompt: `我們即將在〔年級〕〔學科/主題〕引導學生在課堂任務中使用生成式 AI 輔助探究。
-請為此課堂設計一套「學生 AI 學習倫理與歷程記錄模組」：
-1. 【課堂 AI 使用紅綠燈（學生版清單）】：
+請為此課堂設計一套「學生 AI 學習倫理、歷程記錄與理解檢核模組」：
+1. 【課堂 AI 使用紅綠燈（依年級與學校政策動態調整，非一體適用）】：
    - 🟢 綠燈（鼓勵使用）：腦力激盪、尋找靈感、文法修飾、程式除錯。
-   - 🟡 黃燈（需查證標註）：事實查詢（必須手動查證第二來源並附網址）。
+   - 🟡 黃燈（需查證標註）：事實查詢（必須手動查證第二來源並附出處）。
    - 🔴 紅燈（嚴格禁止）：直接複製貼上 AI 回答當作自己的作業、輸入真實個資。
 2. 【AI 提問與反思歷程記錄表（學生學習單欄位）】：包含「我問了 AI 什麼（Prompt）」、「AI 怎麼回答」、「我發現哪裡可能有誤或不足」、「我如何修改為自己的想法」。
-3. 【透明揭露與引用聲明範例】：一段 30 字的作業頁尾 AI 輔助聲明填空範本。
-4. 【多元評量規準 (Rubric)】：包含「批判性查證」與「原創性貢獻」評分規準。`
+3. 【口頭說明與理解檢核 (Oral Defense Check)】：設計 2 個課堂口頭提問，確認學生是真正理解概念而非僅有文字生成紀錄。
+4. 【透明揭露與引用聲明範例】：一段 30 字的作業頁尾 AI 輔助聲明填空範本。
+5. 【多元評量規準 (Rubric)】：包含「批判性查證」與「原創性貢獻」評分規準。`
       },
       {
         id: 40,
@@ -1014,20 +1017,43 @@
         freq: '段考前 / 命題時',
         badge: '通用對話 AI',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
-        title: '40. 素養導向評量題品質檢核與預試修訂（國教院標準）',
+        title: '40. 依國教院素養導向評量原則進行題目檢核與修訂',
         scenario: '段考出題、單元評量或題庫命題後的品質審核與防爭議修改。',
-        value: '依照國教院素養試題規準，檢核真實情境、唯一解、誘答合理性與語意清晰度。',
+        value: '依國教院規準檢核真實情境、唯一最佳解/評分規準與誘答迷思。',
         prompt: `【待檢核之原創試題與答案】：
 [請貼上設計好的 1~3 題素養導向題目、選項與參考答案]
 
 【適用年級與評量目標】：國小〔年級〕，測驗核心概念為『〔概念〕』
 
-請依據國家教育研究院「素養導向評量品質規準」，進行深度審查與修訂：
+請依據國家教育研究院「素養導向評量品質原則」，進行深度審查與修訂：
 1. 【情境真實性檢核】：情境是否為學生真實生活經驗或有意義的探究脈絡，而非「偽素養（穿靴戴帽的長題幹）」？
 2. 【指標對齊與認知層次】：題目真正測驗的是高層次推論、理解，還是單純記憶？
-3. 【答案唯一性與無爭議性】：是否有語意歧義、題幹線索過多或出現第二個合理答案？
+3. 【答案合理性與評分依據】：選擇題檢查是否只有「單一最佳答案」；開放式/非選題檢查是否有「明確客觀之評分指引與給分依據」。
 4. 【誘答選項品質診斷】：錯誤選項是否均基於常見迷思（合理誘答），而非湊數的荒謬選項？
-5. 【國教院標準修訂版】：提供修訂前後對照表，並輸出「修訂後的高品質素養題定稿」。`
+5. 【國教院原則修訂版】：提供修訂前後對照表，並輸出「修訂後的高品質素養題定稿」。`
+      },
+      {
+        id: 41,
+        cat: 'c7',
+        catName: '七、AI 治理與查核',
+        freq: '每週 / 測驗後',
+        badge: '雙軌適用',
+        badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
+        title: '41. 學生學習證據深度分析與下一步精準補救教學（匿名）',
+        scenario: '收回 Exit Ticket、學習單或小考後，深入分析真實作答證據。',
+        value: '迷思分類、免負面標籤分組、5~10 分鐘補救策略與重新檢核題。',
+        prompt: `【學生真實作答數據/文字記錄（已去識別化/匿名）】：
+[請貼上 Exit Ticket、學習單、小考答題分佈或課堂觀察紀錄]
+
+【教學單元與年級】：國小〔年級〕〔學科〕『〔單元主題〕』
+
+請根據上述真實學習證據，進行深入學情分析與補救教學規劃：
+1. 【常見迷思概念分類】：整理出學生最集中的 2~3 個錯誤概念，剖析背後的思維卡點與認知盲區。
+2. 【理解程度分佈統計】：客觀估算「完全掌握」、「部分理解（含特定迷思）」、「尚未理解」的分佈狀態。
+3. 【不具負面標籤的彈性分組與同儕鷹架】：設計組內互助、動態分站任務的彈性分組策略。
+4. 【下一節課 5～10 分鐘補救教學】：設計開場可立即實施的「對比澄清提問」與概念重構引導話術。
+5. 【不同程度學生後續任務卡】：提供基礎鞏固卡與進階探究卡。
+6. 【重新檢核題 (Re-check Question)】：設計 1 道能立即檢視補救成效的課堂小測驗題。`
       }
     ];
 
@@ -1160,7 +1186,7 @@
         return matchCat && matchSearch;
       });
 
-      resultCountText.innerText = `顯示 ${filtered.length} 項指南（總計 40 項）`;
+      resultCountText.innerText = `顯示 ${filtered.length} 項指南（總計 41 項）`;
 
       if (filtered.length === 0) {
         grid.innerHTML = '';
