@@ -656,10 +656,10 @@
                 <i data-lucide="copy" class="w-4 h-4 text-amber-400"></i>
                 <span>一鍵複製 Prompt</span>
               </button>
-              <button onclick="openInGemini()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-600/40 active:scale-95 transition">
+              <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" onclick="copyPromptBeforeNavigate(event)" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-600/40 active:scale-95 transition">
                 <i data-lucide="external-link" class="w-4 h-4 text-amber-300"></i>
                 <span>🚀 直達 Gemini 實測生成</span>
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -679,25 +679,19 @@
       });
     }
 
-    // 自動複製並在直達 Gemini (同步觸發，100% 避開瀏覽器彈窗攔截)
-    function openInGemini() {
+    // 點擊原生 <a> 標籤直達 Gemini 前先複製提示詞
+    function copyPromptBeforeNavigate(event) {
       const text = document.getElementById('stage_prompt_text').innerText;
       
-      // 1. 同步開啟 Gemini 分頁（防止被瀏覽器當作非同步彈窗攔截）
-      const newWin = window.open('https://gemini.google.com/', '_blank');
-      
-      // 2. 複製提示詞至剪貼簿
+      // 複製提示詞
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          playSfx('copy');
-          triggerHaptic('success');
-          showToast('已複製提示詞！已為您開啟 Gemini，請直接貼上');
-        }).catch(() => {
-          fallbackCopyText(text);
-        });
+        navigator.clipboard.writeText(text);
       } else {
         fallbackCopyText(text);
       }
+      playSfx('copy');
+      triggerHaptic('success');
+      showToast('已複製提示詞！已在新分頁開啟 Gemini');
     }
 
     // 備用複製方案 (相容所有瀏覽器與本機環境)
