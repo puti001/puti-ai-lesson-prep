@@ -939,17 +939,45 @@
       updateThumbnailSelection();
     }
 
-    // 自動複製並在新分頁打開 Gemini
+    // 自動複製並在直達 Gemini (同步觸發，100% 避開瀏覽器彈窗攔截)
     function openInGemini() {
       const text = document.getElementById('stage_prompt_text').innerText;
-      navigator.clipboard.writeText(text).then(() => {
+      
+      // 1. 同步開啟 Gemini 分頁（防止被瀏覽器當作非同步彈窗攔截）
+      const newWin = window.open('https://gemini.google.com/', '_blank');
+      
+      // 2. 複製提示詞至剪貼簿
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          playSfx('copy');
+          triggerHaptic('success');
+          showToast('已複製提示詞！已為您開啟 Gemini，請直接貼上');
+        }).catch(() => {
+          fallbackCopyText(text);
+        });
+      } else {
+        fallbackCopyText(text);
+      }
+    }
+
+    // 備用複製方案 (相容所有瀏覽器與本機環境)
+    function fallbackCopyText(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
         playSfx('copy');
         triggerHaptic('success');
-        showToast('已複製提示詞！正在為您開啟 Gemini...');
-        setTimeout(() => {
-          window.open('https://gemini.google.com/', '_blank');
-        }, 300);
-      });
+        showToast('已複製提示詞！已為您開啟 Gemini，請直接貼上');
+      } catch (err) {
+        showToast('已開啟 Gemini，請手動複製提示詞');
+      }
+      document.body.removeChild(textArea);
     }
 
     // 更新主舞台動態 Prompt
