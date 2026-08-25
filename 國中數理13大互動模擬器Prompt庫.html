@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO & Google 搜尋優化與品牌識別 -->
+  <title>Puti-AI | 國中自然與數學 13 大動態互動模擬小工具 AI 提示詞大禮包</title>
+  <meta name="description" content="Puti-AI 屏東縣後庄國小黃朝榮老師 (Puti老師) 專為國中自然科與數學科教師打造的 13 大動態互動實驗模擬器 AI Prompt 大禮包。涵蓋酸鹼滴定、碰撞理論、原子結構、光合作用、細胞胞器、孟德爾遺傳、歐姆定律、透鏡成像、單擺守恆、地球公轉、月相變化、二次函數拋物線、畢氏定理。">
+  <meta name="keywords" content="Puti-AI, 黃朝榮, 國中自然科, 國中理化, 國中生物, 國中地科, 國中數學, 互動模擬器, HTML5實驗模擬, AI提示詞, Gemini Prompt, 108課綱探究與實作">
+  <meta name="author" content="屏東縣後庄國小 黃朝榮老師 (Puti-AI)">
+  <meta property="og:title" content="Puti-AI | 國中自然與數學 13 大動態互動模擬小工具 AI 提示詞大禮包">
+  <meta property="og:description" content="Puti-AI 專為國中數理科教師設計的 Canva 風格簡報 3D 互動 Prompt 庫。一鍵生成免安裝 HTML5 互動實驗！">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            puti: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+              gold: '#f59e0b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 解決 GPU 縮放模糊，確保字體 100% 銳利清晰 */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* 3D 翻牌核心樣式 */
+    .perspective-1500 {
+      perspective: 1500px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .slide-card-inner {
+      transition: transform 0.65s cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+    .slide-card-flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* 自定義縮圖橫向滾動條 */
+    .thumbnail-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    .thumbnail-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 9999px;
+    }
+    .dark .thumbnail-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .thumbnail-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .dark .thumbnail-scroll::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+    .thumbnail-scroll::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
+
+    /* 聚光燈舞台光暈 */
+    .stage-glow-light {
+      background: radial-gradient(circle at 50% 35%, rgba(99, 102, 241, 0.09) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 75%);
+    }
+    .stage-glow-dark {
+      background: radial-gradient(circle at 50% 35%, rgba(99, 102, 241, 0.22) 0%, rgba(16, 185, 129, 0.08) 50%, transparent 75%);
+    }
+
+    /* Toast 動畫 */
+    @keyframes toastUp {
+      0% { transform: translate(-50%, 40px); opacity: 0; }
+      100% { transform: translate(-50%, 0); opacity: 1; }
+    }
+    .toast-slide {
+      animation: toastUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- 頂部導航列：Puti-AI 國中數理互動模擬小工具 Prompt 庫 -->
+  <header class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Puti-AI 醒目品牌與標題 -->
+      <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" class="flex items-center gap-3.5 group" onmouseenter="playSfx('hover')">
+        <div class="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 via-indigo-600 to-amber-400 p-0.5 shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform duration-300 shrink-0">
+          <div class="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <span class="font-black text-2xl bg-gradient-to-r from-emerald-600 to-indigo-600 dark:from-emerald-400 dark:to-indigo-400 bg-clip-text text-transparent">P</span>
+          </div>
+          <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="font-black tracking-tight text-xl sm:text-2xl text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition flex items-center gap-1.5">
+              <span>Puti-AI</span>
+              <span class="text-emerald-600 dark:text-emerald-400">國中數理 13 大互動模擬器</span>
+              <span class="text-indigo-600 dark:text-indigo-400">Prompt 庫</span>
+            </h1>
+            <span class="px-2.5 py-0.5 text-xs font-black tracking-wide uppercase rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300">實戰典藏版</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bold mt-0.5">
+            化學 ╳ 生物 ╳ 物理 ╳ 地科 ╳ 數學 ｜ 屏東縣後庄國小 黃朝榮老師作品
+          </p>
+        </div>
+      </a>
+
+      <!-- 右側控制按鈕（導流按鈕群、視圖、音效、明暗切換） -->
+      <div class="flex items-center gap-1.5 sm:gap-2 self-end md:self-center">
+        <!-- 回全校解痛錦囊導流按鈕 -->
+        <a href="國中教師AI解痛錦囊卡牌.html" onmouseenter="playSfx('hover')" class="px-2 sm:px-2.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 text-xs font-black transition flex items-center gap-1 border border-indigo-200 dark:border-indigo-800">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400"></i>
+          <span>全校錦囊</span>
+        </a>
+
+        <!-- 前往文史社會 12 大神器專區導流按鈕 -->
+        <a href="國中文史與社會12大互動神器Prompt庫.html" onmouseenter="playSfx('hover')" class="px-2 sm:px-2.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 text-xs font-black transition flex items-center gap-1 border border-amber-200 dark:border-amber-800 shadow-sm">
+          <i data-lucide="scroll" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400"></i>
+          <span>📜 文史社會</span>
+        </a>
+
+        <!-- 前往 6 格教學漫畫專區導流按鈕 -->
+        <a href="國中全學科6格教學漫畫分鏡產生器.html" onmouseenter="playSfx('hover')" class="px-2 sm:px-2.5 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 dark:bg-pink-950/60 dark:hover:bg-pink-900/80 text-pink-700 dark:text-pink-300 text-xs font-black transition flex items-center gap-1 border border-pink-200 dark:border-pink-800 shadow-sm">
+          <i data-lucide="palette" class="w-3.5 h-3.5 text-pink-600 dark:text-pink-400"></i>
+          <span>🎨 6格漫畫</span>
+        </a>
+
+        <!-- 視圖切換按鈕 -->
+        <button id="btnViewMode" onmouseenter="playSfx('hover')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+          <i data-lucide="grid" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" id="viewModeIcon"></i>
+          <span id="viewModeText" class="hidden sm:inline">全覽網格</span>
+        </button>
+
+        <!-- 音效開關 -->
+        <button id="btnSoundToggle" onmouseenter="playSfx('hover')" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+          <i data-lucide="volume-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" id="soundIcon"></i>
+          <span id="soundText" class="hidden sm:inline">音效已開</span>
+        </button>
+
+        <!-- 明暗模式切換 (預設為亮色) -->
+        <button id="btnThemeToggle" onmouseenter="playSfx('hover')" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 transition border border-slate-200 dark:border-slate-700 shadow-sm" title="切換明暗模式">
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-amber-500"></i>
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Canva 簡報模式視圖 (預設焦點舞台) -->
+  <div id="presentationView" class="flex-1 flex flex-col justify-between w-full max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 stage-glow-light dark:stage-glow-dark">
+    
+    <!-- 上方輔助列：目前頁碼、五大領域分類篩選標籤、鍵盤導航提示 -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-4">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0" id="filterContainer">
+        <button onmouseenter="playSfx('hover')" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-emerald-600 text-white shadow-sm" data-category="all">
+          全部 (13)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="chemistry">
+          🧪 化學領域 (3)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="biology">
+          🌿 生物領域 (3)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="physics">
+          ⚡ 物理領域 (3)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="earth">
+          🌍 地球科學 (2)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="math">
+          📐 數學領域 (2)
+        </button>
+      </div>
+
+      <!-- 簡報頁碼與操作提示 -->
+      <div class="flex items-center gap-3 text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400">
+        <span class="hidden md:inline-flex items-center gap-1 bg-slate-200/60 dark:bg-slate-800/60 px-3 py-1 rounded-lg">
+          <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded border text-xs">←</kbd>
+          <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded border text-xs">→</kbd> 切換
+        </span>
+        <span class="px-3.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-xl font-black text-sm sm:text-base">
+          <span id="currentSlideNum">01</span> / <span id="totalSlideNum">13</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- 中央簡報卡片舞台 (Main Stage：大字體 ＋ 模擬器亮點 ＋ 飽滿排版) -->
+    <div class="relative w-full flex items-center justify-center my-auto py-2 sm:py-4">
+      
+      <!-- 左切換箭頭 -->
+      <button id="btnPrevSlide" onmouseenter="playSfx('hover')" onclick="prevSlide()" class="absolute -left-2 sm:-left-6 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white shadow-xl hover:bg-emerald-50 hover:border-emerald-400 dark:hover:bg-slate-700 flex items-center justify-center transition active:scale-95" title="上一張 (鍵盤 ←)">
+        <i data-lucide="chevron-left" class="w-7 h-7"></i>
+      </button>
+
+      <!-- 3D 簡報主卡片外框 -->
+      <div id="mainStageCard" class="perspective-1500 w-full max-w-4xl h-[520px] sm:h-[550px]">
+        <div id="slideCardInner" class="slide-card-inner relative w-full h-full transform-style-3d cursor-pointer" onclick="toggleSlideFlip(event)">
+          
+          <!-- 卡片正面 (模擬器核心功能與動態呈現亮點) -->
+          <div id="stageFront" class="card-front absolute inset-0 w-full h-full bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200/90 dark:border-slate-700/80 p-6 sm:p-9 flex flex-col justify-between backface-hidden shadow-2xl transition-all overflow-hidden">
+            <!-- 內容由 JS 動態填入 -->
+          </div>
+
+          <!-- 卡片背面 (完整可執行 Prompt ＋ 一鍵複製 ＋ 直達 Gemini 實測) -->
+          <div id="stageBack" class="card-back absolute inset-0 w-full h-full bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-9 flex flex-col justify-between backface-hidden rotate-y-180 shadow-2xl border-2 border-emerald-500/50 overflow-hidden" onclick="event.stopPropagation()">
+            <!-- 內容由 JS 動態填入 -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 右切換箭頭 -->
+      <button id="btnNextSlide" onmouseenter="playSfx('hover')" onclick="nextSlide()" class="absolute -right-2 sm:-right-6 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white shadow-xl hover:bg-emerald-50 hover:border-emerald-400 dark:hover:bg-slate-700 flex items-center justify-center transition active:scale-95" title="下一張 (鍵盤 →)">
+        <i data-lucide="chevron-right" class="w-7 h-7"></i>
+      </button>
+    </div>
+
+    <!-- 底部 Canva 風格縮圖滑桿 (Thumbnail Filmstrip Carousel) -->
+    <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs sm:text-sm font-black tracking-wide text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+          <i data-lucide="film" class="w-4 h-4 text-emerald-500"></i>
+          <span>13 大模擬器縮圖快選滑桿（點擊立即跳轉）</span>
+        </span>
+        <button onclick="toggleSlideFlip(event)" class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span>翻轉當前卡片</span>
+        </button>
+      </div>
+
+      <!-- 橫向滾動縮圖列 -->
+      <div id="thumbnailStrip" class="thumbnail-scroll flex items-center gap-3 overflow-x-auto py-2 px-1 scroll-smooth">
+        <!-- 縮圖將由 JS 動態生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 全覽網格模式視圖 (Grid View Mode，預設隱藏) -->
+  <div id="gridView" class="hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="gridCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 網格卡片渲染 -->
+    </div>
+  </div>
+
+  <!-- 底部版權宣告與 Padlet 連結 (固定符合使用者規範) -->
+  <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-850 py-8 mt-10 text-slate-500 dark:text-slate-400 text-xs transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+      <p class="text-slate-600 dark:text-slate-300 font-medium max-w-3xl mx-auto leading-relaxed text-xs sm:text-sm">
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 
+        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener noreferrer" class="text-emerald-600 dark:text-amber-400 hover:underline font-bold transition">
+          點此前往
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- 複製成功的浮動 Toast -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900 text-white dark:bg-emerald-600 text-sm font-bold px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 border border-slate-700 dark:border-emerald-400">
+    <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 dark:text-white"></i>
+    <span id="toastMessage">已成功複製提示詞！可直接至 Gemini 貼上執行</span>
+  </div>
+
+  <!-- JavaScript 核心：13大數理模擬器資料庫與互動邏輯 -->
+  <script>
+    // 13 大國中自然與數學動態互動模擬器資料庫
+    const simData = [
+      {
+        id: 1,
+        category: "chemistry",
+        categoryName: "化學領域",
+        icon: "flask-conical",
+        emoji: "🧪",
+        tag: "酸鹼滴定與 pH 曲線",
+        title: "酸鹼中和滴定與 pH 變化曲線模擬器",
+        desc: "可動態調整滴定管滴入體積滑桿，模擬錐形瓶內酚酞指示劑變色過程（無色漸變洋紅），右側實時繪製經典 S 型滴定曲線與當量點劇烈陡升現象。",
+        features: "⚡ 核心亮點：S型滴定曲線動態繪製、酚酞顏色即時漸變、當量點數值精確標示",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「酸鹼中和滴定與 pH 變化曲線」互動教學小工具：\n1. 【實驗設定】：錐形瓶內裝 20mL 的 0.1M HCl 溶液（起始 pH=1），滴定管內裝 0.1M NaOH 滴定液，當量點位於 20mL。\n2. 【控制面板】：包含滴入體積滑桿（0~40mL，精度 0.1mL）、單滴/微量加算按鈕（每次 +0.1mL）、連續自動滴定開關與重置按鈕。\n3. 【動態呈現】：左側繪製實驗滴定管滴液動畫與錐形瓶變色（酚酞指示劑：pH<8.2 為無色，pH>10.0 漸變為粉紅/洋紅色）。\n4. 【圖表分析】：右側動態繪製 S 型滴定曲線（X 軸：NaOH 滴入量 0~40mL，Y 軸：pH 0~14），標註當量點（pH=7）處的劇烈陡升現象與即時 pH 數值。"
+      },
+      {
+        id: 2,
+        category: "chemistry",
+        categoryName: "化學領域",
+        icon: "atom",
+        emoji: "💥",
+        tag: "反應速率與碰撞理論",
+        title: "反應速率、碰撞理論與催化劑模擬器",
+        desc: "2D 粒子運動與碰撞動畫，可即時調整環境溫度與反應物濃度，切換是否加入催化劑，右側同步繪製活化能位能圖（Potential Energy Curve）。",
+        features: "⚡ 核心亮點：微觀粒子碰撞動力學、催化劑降低活化能對比圖、反應速率即時統計",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「反應速率、碰撞理論與催化劑」互動教學小工具：\n1. 【控制面板】：可調整環境溫度（0℃~100℃）、反應物濃度（0.1M~2.0M）及切換「是否加入催化劑」開關。\n2. 【動態呈現】：左側框內以 2D 粒子運動與碰撞動畫呈現，粒子的運動速度隨溫度上升而變快，粒子密度隨濃度增加而變高，粒子相互碰撞時機率發生反應變色。\n3. 【圖表分析】：右側繪製反應途徑位能圖（Potential Energy Curve），明顯標示並對比「未加催化劑」與「加入催化劑」時活化能障礙（Ea vs Ea'）的降低情形，並實時統計有效碰撞頻率與反應速率。"
+      },
+      {
+        id: 3,
+        category: "chemistry",
+        categoryName: "化學領域",
+        icon: "circle-dot",
+        emoji: "⚛️",
+        tag: "1~20 號元素電子殼層",
+        title: "原子結構與 1~20 號元素電子殼層模擬器",
+        desc: "滑桿自由選取原子序 1~20（氫到鈣），中央動態呈現原子核（質子＋中子）與核外 K、L、M、N 殼層電子的動態繞核旋轉與排列規則。",
+        features: "⚡ 核心亮點：電子繞核動態軌道、2,8,8,2 殼層分配、元素週期表資訊即時卡",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「原子結構與 1~20 號元素電子殼層」互動教學小工具：\n1. 【控制面板】：提供滑桿讓使用者選取原子序 Z=1~20（從氫 H 到鈣 Ca）。\n2. 【動態呈現】：中央呈現原子結構動態圖。原子核內依據質量數繪製振動的質子與中子粒子；核外電子依據 K, L, M, N 殼層（電子數上限 2, 8, 8, 2）在各自軌道上動態繞核旋轉。\n3. 【資訊卡片】：右側面板即時計算並顯示：元素名稱與符號、質子數（p+）、中子數（n0）、電子數（e-）、原子量以及各殼層電子分配狀態（例如鈉 Na: 2, 8, 1）。"
+      },
+      {
+        id: 4,
+        category: "biology",
+        categoryName: "生物領域",
+        icon: "leaf",
+        emoji: "🌿",
+        tag: "光合作用與限速因子",
+        title: "光合作用速率（光照與 CO2 限速效應）模擬器",
+        desc: "燒杯水草在光照下釋放氧氣氣泡動畫，提供「光照強度」與「CO2 濃度」雙獨立滑桿，直觀展示生物學中經典的『限速因子效應』。",
+        features: "⚡ 核心亮點：水草氣泡動態釋放、產氧速率即時計算、限速因子高原曲線",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「光合作用速率」互動教學小工具：\n1. 【控制面板】：提供兩個獨立滑桿：「光照強度（0~100%）」與「CO2 濃度（0~100%）」。\n2. 【動態呈現】：畫面呈現裝有水草的燒杯，水草在光照下進行光合作用產生氧氣氣泡。氣泡冒出的頻率與大小會隨即時光合作用速率動態改變。\n3. 【教學數據】：即時計算產氧速率（mL/min），並呈現經典的限速因子效應（例如：當 CO2 濃度極低時，即使光照開到 100%，產氧速率也會受限於 CO2 而無法提升）。"
+      },
+      {
+        id: 5,
+        category: "biology",
+        categoryName: "生物領域",
+        icon: "box",
+        emoji: "🔬",
+        tag: "動植物細胞結構導覽",
+        title: "動植物細胞結構與胞器互動導覽小工具",
+        desc: "可切換「植物細胞」與「動物細胞」，滑鼠點擊葉綠體、細胞核、粒線體、液胞、細胞壁等胞器，自動發出脈衝光圈並展開會考重點導覽卡。",
+        features: "⚡ 核心亮點：動植物細胞特徵對照、胞器脈衝高亮、會考常考能量工廠重點",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「動植物細胞結構導覽」互動教學小工具：\n1. 【控制面板】：可切換「植物細胞」與「動物細胞」模式，並提供胞器下拉選單（細胞核、粒線體、葉綠體、液胞、細胞壁）。\n2. 【動態呈現】：畫面繪製細胞結構圖。植物細胞需繪製明顯的細胞壁、大液胞與葉綠體；動物細胞則無細胞壁與葉綠體。\n3. 【互動功能】：當使用者選擇特定胞器（或直接用滑鼠點擊畫面上的胞器）時，該胞器會出現脈衝高亮光圈與標示線，右側同步展開卡片說明該胞器的主要功能（如粒線體為細胞呼吸作用與能量發電廠）及會考常考重點。"
+      },
+      {
+        id: 6,
+        category: "biology",
+        categoryName: "生物領域",
+        icon: "dna",
+        emoji: "🧬",
+        tag: "孟德爾遺傳棋盤法",
+        title: "孟德爾單基因遺傳（棋盤法與分離律）模擬器",
+        desc: "自由選取雙親基因型（AA、Aa、aa），動態填入 2x2 Punnett Square 棋盤格，即時計算子代基因型比例（1:2:1）與表現型比例（3:1）。",
+        features: "⚡ 核心亮點：2x2 棋盤格自動配對、顯隱性色彩高亮、子代表現型比例即時算",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「孟德爾單基因遺傳棋盤法」互動教學小工具：\n1. 【控制面板】：可分別選擇親代 1（精子）與親代 2（卵子）的基因型，選項包含：AA（顯性純合）、Aa（異型合子）、aa（隱性純合）。\n2. 【動態呈現】：畫面繪製 2x2 棋盤格（Punnett Square），標明兩親代產生的配子，並自動將基因組合填入四個方格中。\n3. 【數據統計】：即時計算並顯示子代基因型比例（如 1 AA : 2 Aa : 1 aa）與表現型比例（如高莖:矮莖 = 3:1），並以不同色彩高亮顯性與隱性特徵。"
+      },
+      {
+        id: 7,
+        category: "physics",
+        categoryName: "物理領域",
+        icon: "zap",
+        emoji: "⚡",
+        tag: "歐姆定律與串並聯電路",
+        title: "歐姆定律與串並聯電路 (V=IR) 模擬器",
+        desc: "可切換「單一燈泡」、「串聯電路」、「並聯電路」，調整電壓與電阻，導線上黃色電子點流速隨電流改變，燈泡發光亮度依功率動態變化。",
+        features: "⚡ 核心亮點：導線電子流動動畫、燈泡亮度功率光暈、伏特計安培計即時讀數",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「歐姆定律與串並聯電路」互動教學小工具：\n1. 【控制面板】：切換電路模式：「單一燈泡」、「串聯電路」、「並聯電路」；電源電壓滑桿 V（1V~24V）；燈泡電阻滑桿 R（1Ω~50Ω）。\n2. 【動態呈現】：繪製完整的電路圖（含電池、導線、燈泡與儀表）。導線上以黃色點動態呈現電子流動，流速隨電流 I 大小改變；燈泡發光亮度與外圍光暈半徑依據發光功率 P 即時變化（串聯時燈泡變暗，並聯時保持亮等）。\n3. 【數據儀表】：即時顯示伏特計與安培計讀數，計算總電阻、總電流與總功率。"
+      },
+      {
+        id: 8,
+        category: "physics",
+        categoryName: "物理領域",
+        icon: "eye",
+        emoji: "🔍",
+        tag: "凸凹透鏡成像光路線",
+        title: "透鏡成像規律與光路線圖（凸/凹透鏡）模擬器",
+        desc: "切換凸透鏡或凹透鏡，拖曳物體調整物距與焦距，動態追蹤三條主要光線（平行折射過焦點、過光心直行、過焦點折射平行）並判定成像性質。",
+        features: "⚡ 核心亮點：三條主要光線實時追蹤、實像/虛像動態繪製、成像性質自動判定",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「透鏡成像規律與光路線圖」互動教學小工具：\n1. 【控制面板】：切換「凸透鏡（會聚）」與「凹透鏡（發散）」；焦距滑桿 f（5cm~30cm）；物距滑桿 p（5cm~80cm）。\n2. 【動態呈現】：畫面上繪製主光軸、透鏡、焦點 F 與兩倍焦距 2F。在物體處繪製箭頭，並實時追蹤繪製三條主要光線（平行主軸過焦點、過光心直行、過焦點折射平行）。\n3. 【成像判定】：動態繪製生成之影像（實像畫實線、虛像畫虛線），並文字標示成像性質（如：倒立放大實像、正立縮小虛像、或平行發散不成像）。"
+      },
+      {
+        id: 9,
+        category: "physics",
+        categoryName: "物理領域",
+        icon: "activity",
+        emoji: "⏱️",
+        tag: "單擺週期與能量守恆",
+        title: "單擺週期與能量守恆 (動能與位能轉換) 模擬器",
+        desc: "平滑簡諧單擺動畫，可調節擺長、起始角度，並切換「地球、月球、木星」不同重力加速度，右側即時以動態柱狀圖呈現動能與位能轉換。",
+        features: "⚡ 核心亮點：真實物理簡諧擺動、重力位能與動能動態柱狀圖、多星球重力切換",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「單擺週期與能量守恆」互動教學小工具：\n1. 【控制面板】：擺長滑桿 L（0.5m~3.0m）；重力加速度 g 下拉選單（地球 9.8m/s²、月球 1.6m/s²、木星 24.8m/s²）；初始擺角滑桿 θ（5°~60°）。\n2. 【動態呈現】：畫面呈現單擺隨時間流逝的平滑簡諧擺動動畫。\n3. 【物理計算與圖表】：依據 T=2π√(L/g) 即時計算擺動週期 T（秒）。同時於右側以動態柱狀圖即時呈現最高點到最低點之間，重力位能 U 與動能 K 的互相轉換與能量守恆。"
+      },
+      {
+        id: 10,
+        category: "earth",
+        categoryName: "地球科學",
+        icon: "globe",
+        emoji: "🌍",
+        tag: "地球公轉與四季太陽直射",
+        title: "地球公轉、四季與太陽直射角度模擬器",
+        desc: "呈現太陽與地球 23.5° 傾角公轉軌道，提供春分/夏至/秋分/冬至快捷鍵，右側實時呈現北半球地面觀察者視角的人影長度與正午仰角變化。",
+        features: "⚡ 核心亮點：地軸 23.5° 傾角公轉動畫、地面觀察者太陽仰角、四季人影長短即時算",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「地球公轉與四季變化」互動教學小工具：\n1. 【控制面板】：一年 365 天公轉日期滑桿（包含「春分 3/21」、「夏至 6/21」、「秋分 9/23」、「冬至 12/22」快捷按鈕）與連續公轉播放/暫停按鈕。\n2. 【動態呈現】：畫面左側呈現太陽與地球橢圓公轉軌道，地球需保持固定 23.5° 地軸傾角繞太陽公轉。\n3. 【地面觀察者視角】：畫面右側呈現北半球地面觀察者視角，實時計算並繪製正午太陽仰角（90° - 緯度 ± 太陽赤緯）與人影/物影長度變化（夏至正午仰角最高、影最短、晝最長；冬至正午仰角最低、影最長、晝最短）。"
+      },
+      {
+        id: 11,
+        category: "earth",
+        categoryName: "地球科學",
+        icon: "moon",
+        emoji: "🌙",
+        tag: "月相變化與日月食位置",
+        title: "月相變化與日月食相對位置模擬器",
+        desc: "農曆初一至三十日期滑桿，畫面同時呈現「宇宙俯視視角（太陽光、地球與月球公轉軌道）」與「地球觀察者視角的真實月相盈虧盤」。",
+        features: "⚡ 核心亮點：宇宙俯視與地面觀測雙重視角、農曆日期對照、月相出沒時間方位",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「月相變化與日月食相對位置」互動教學小工具：\n1. 【控制面板】：農曆日期滑桿（農曆初一至三十，提供新月/初一、上弦月/初八、滿月/十五、下弦月/廿三快捷按鈕）。\n2. 【動態呈現】：\n   - 【宇宙俯視圖】：繪製太陽光（左側）、地球與月球繞地公轉軌道相對位置。\n   - 【地球視角月相盤】：畫面右側實時呈現從地球上觀測到的真彩月相圖案（新月/朔、眉月、上弦月、盈凸月、滿月/望、虧凸月、下弦月、殘月）。標示該月相之名稱與出沒時間/方位觀念。"
+      },
+      {
+        id: 12,
+        category: "math",
+        categoryName: "數學領域",
+        icon: "trending-up",
+        emoji: "📈",
+        tag: "二次函數拋物線解析",
+        title: "二次函數圖形拋物線 (y=ax²+bx+c) 模擬器",
+        desc: "提供 a、b、c 三項係數滑桿，直角坐標系即時繪製拋物線變形，自動解析開口方向、頂點座標、對稱軸方程式與判別式 b²-4ac 與 X 軸交點。",
+        features: "⚡ 核心亮點：滑桿動態變形拋物線、頂點對稱軸即時標示、判別式與交點個數分析",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「二次函數圖形拋物線」互動教學小工具：\n1. 【控制面板】：二次項係數滑桿 a（-5.0 ~ +5.0，a≠0）、一次項係數滑桿 b（-10 ~ +10）、常數項滑桿 c（-10 ~ +10）。\n2. 【動態呈現】：繪製直角坐標平面（X 軸、Y 軸與網格），並根據參數即時繪製對應的拋物線圖形。\n3. 【幾何解析】：\n   - 標示拋物線開口方向（a>0 向上, a<0 向下）與寬窄。\n   - 標明頂點座標 (-b/2a, (4ac-b²)/4a) 與對稱軸方程式 x = -b/2a。\n   - 計算判別式 D = b²-4ac，並說明圖形與 X 軸的交點個數（D>0 兩交點, D=0 一交點/相切, D<0 無交點）。"
+      },
+      {
+        id: 13,
+        category: "math",
+        categoryName: "數學領域",
+        icon: "triangle",
+        emoji: "📐",
+        tag: "畢氏定理幾何證明",
+        title: "畢氏定理幾何視覺化證明 (a²+b²=c²) 模擬器",
+        desc: "可自訂直角邊 a 與 b 長度，拖曳面積轉換進度條（0%~100%），以幾何切割圖形平滑移動與旋轉，直觀證明 a² + b² = c²。",
+        features: "⚡ 核心亮點：直角三角形三邊正方形、面積切割旋轉拼圖動畫、平方和數值直觀證明",
+        promptText: "請用 HTML5 + CSS + JavaScript 幫我生成一個單一檔案免安裝可直接運行的「畢氏定理幾何視覺化證明」互動教學小工具：\n1. 【控制面板】：直角邊 a 長度滑桿（3~10）、直角邊 b 長度滑桿（3~10），以及面積轉換進度滑桿（0% ~ 100%）。\n2. 【動態呈現】：\n   - 畫面中央繪製一個直角三角形，並分別在其三條邊外側建立正方形 a²、b² 與 c²。\n   - 當拖曳轉換進度條時，正方形 a² 與 b² 會以幾何切割圖形的形式平滑移動與旋轉，組合填滿斜邊上的正方形 c²。\n3. 【數值展示】：即時計算兩股平方和 a² + b² 以及斜邊平方 c² 的數值，直觀證明畢氏定理（勾股定理）。"
+      }
+    ];
+
+    // 全局狀態
+    let currentIndex = 0;
+    let filteredSims = [...simData];
+    let currentCategory = 'all';
+    let isFlipped = false;
+    let viewMode = 'presentation';
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    // 健全強大的 Web Audio API 聲音引擎
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    ['click', 'pointerdown', 'keydown', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, initAudio, { once: true });
+    });
+
+    function playSfx(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'hover') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(580, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } 
+        else if (type === 'flip') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(920, now + 0.09);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        }
+        else if (type === 'slide') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        }
+        else if (type === 'copy') {
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(659.25, now);
+          osc2.frequency.setValueAtTime(987.77, now + 0.08);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.08);
+          osc2.start(now + 0.08);
+          osc2.stop(now + 0.3);
+        }
+      } catch (e) {}
+    }
+
+    function triggerHaptic(type = 'light') {
+      if ('vibrate' in navigator) {
+        try {
+          if (type === 'light') navigator.vibrate(20);
+          else if (type === 'success') navigator.vibrate([25, 45, 25]);
+        } catch (e) {}
+      }
+    }
+
+    // 渲染中央 Canva 主舞台卡片
+    function renderMainStage() {
+      if (filteredSims.length === 0) return;
+      const sim = filteredSims[currentIndex];
+      if (!sim) return;
+
+      document.getElementById('currentSlideNum').innerText = sim.id < 10 ? '0' + sim.id : sim.id;
+      document.getElementById('totalSlideNum').innerText = simData.length;
+
+      // 正面內容渲染：超大字體 ＋ 領域標籤 ＋ 模擬亮點
+      const frontEl = document.getElementById('stageFront');
+      frontEl.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <!-- 頂部區 -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/10 to-indigo-500/20 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-slate-100 shadow-md border border-slate-200 dark:border-slate-700 text-2xl">
+                  ${sim.emoji}
+                </div>
+                <div>
+                  <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg border bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800">
+                    ${sim.categoryName} #${sim.id < 10 ? '0' + sim.id : sim.id}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold ml-2 hidden sm:inline">考點：${sim.tag}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-slate-800 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-black border border-emerald-200 dark:border-slate-700 shadow-sm">
+                <i data-lucide="rotate-cw" class="w-4 h-4 text-emerald-600"></i>
+                <span>點擊翻轉看 Prompt</span>
+              </div>
+            </div>
+
+            <!-- 超大標題與動態呈現說明 -->
+            <div class="space-y-4 pt-2">
+              <div class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/70 px-3 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800/50">
+                <i data-lucide="sparkles" class="w-4 h-4 text-emerald-500"></i>
+                <span>HTML5 免安裝互動模擬小工具</span>
+              </div>
+
+              <!-- 超大標題 (2xl ~ 4xl) -->
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight tracking-tight">
+                ${sim.title}
+              </h2>
+
+              <!-- 詳述 (text-base ~ text-lg 大字) -->
+              <p class="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal pt-2">
+                ${sim.desc}
+              </p>
+            </div>
+          </div>
+
+          <!-- 底部功能亮點與引導 -->
+          <div class="pt-4 mt-3 border-t border-slate-200/90 dark:border-slate-800 space-y-3">
+            <div class="text-xs sm:text-sm lg:text-base font-bold text-emerald-900 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-4 py-3 rounded-2xl border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-2.5">
+              <span class="text-xl">💡</span>
+              <span class="truncate font-black">${sim.features}</span>
+            </div>
+
+            <div class="flex items-center justify-between text-xs sm:text-sm lg:text-base pt-1">
+              <span class="text-slate-500 dark:text-slate-400 font-bold">適用工具：Google Gemini / Canvas</span>
+              <span class="font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 group-hover:translate-x-1 transition text-sm sm:text-base">
+                點擊翻轉查看完整 Prompt 指令 ➔
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 背面內容渲染：Prompt 框 ＋ 一鍵複製 ＋ 直達 Gemini
+      const backEl = document.getElementById('stageBack');
+      backEl.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <div>
+            <!-- 背面頂部 -->
+            <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-800">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">${sim.emoji}</span>
+                <span class="px-3 py-1 text-xs sm:text-sm font-black rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 uppercase tracking-wider">
+                  ${sim.categoryName} ｜ ${sim.tag}
+                </span>
+              </div>
+              <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <!-- 提示說明 -->
+            <div class="py-2">
+              <p class="text-xs sm:text-sm text-emerald-200 leading-relaxed font-semibold bg-emerald-950/80 p-3 rounded-2xl border border-emerald-800/60 shadow-inner">
+                ✨ 將以下提示詞複製貼給 Google Gemini，即可 10 秒生成免安裝、可在瀏覽器直接玩的 HTML5 互動模擬器！
+              </p>
+            </div>
+          </div>
+
+          <!-- Prompt 框 (大字體、高對比) -->
+          <div class="relative flex-1 my-1.5 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 overflow-y-auto max-h-[220px] text-xs sm:text-sm font-mono text-slate-200 leading-relaxed selection:bg-emerald-600 shadow-inner">
+            <pre id="stage_prompt_text" class="whitespace-pre-wrap">${sim.promptText}</pre>
+          </div>
+
+          <!-- 底部按鈕群：複製 ＋ 直達 Gemini -->
+          <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs text-slate-400 font-medium hidden sm:inline">複製後至 Gemini 貼上即自動編程運行</span>
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+              <button onclick="copyStagePrompt()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow transition active:scale-95">
+                <i data-lucide="copy" class="w-4 h-4 text-emerald-400"></i>
+                <span>一鍵複製 Prompt</span>
+              </button>
+              <button onclick="openInGemini()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/40 active:scale-95 transition">
+                <i data-lucide="external-link" class="w-4 h-4 text-amber-300"></i>
+                <span>🚀 直達 Gemini 實測生成</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+      updateThumbnailSelection();
+    }
+
+    // 複製主舞台 Prompt
+    function copyStagePrompt() {
+      const text = document.getElementById('stage_prompt_text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        playSfx('copy');
+        triggerHaptic('success');
+        showToast('已複製模擬器提示詞！可直接至 Gemini 貼上執行');
+      });
+    }
+
+    // 自動複製並在新分頁打開 Gemini
+    function openInGemini() {
+      const text = document.getElementById('stage_prompt_text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        playSfx('copy');
+        triggerHaptic('success');
+        showToast('已複製提示詞！正在為您開啟 Gemini...');
+        setTimeout(() => {
+          window.open('https://gemini.google.com/', '_blank');
+        }, 300);
+      });
+    }
+
+    // 主舞台卡片翻轉
+    function toggleSlideFlip(event) {
+      if (event) event.stopPropagation();
+      const innerCard = document.getElementById('slideCardInner');
+      isFlipped = !isFlipped;
+      if (isFlipped) {
+        innerCard.classList.add('slide-card-flipped');
+      } else {
+        innerCard.classList.remove('slide-card-flipped');
+      }
+      playSfx('flip');
+      triggerHaptic('light');
+    }
+
+    // 下一張簡報
+    function nextSlide() {
+      if (currentIndex < filteredSims.length - 1) {
+        currentIndex++;
+        isFlipped = false;
+        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+      }
+    }
+
+    // 上一張簡報
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        isFlipped = false;
+        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+      }
+    }
+
+    // 渲染底部 Canva 風格縮圖列
+    function renderThumbnails() {
+      const strip = document.getElementById('thumbnailStrip');
+      strip.innerHTML = '';
+
+      filteredSims.forEach((sim, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = `thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${idx === currentIndex ? 'border-emerald-600 bg-emerald-50/90 dark:bg-emerald-950/60 shadow-md scale-[1.02]' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300'}`;
+        thumb.setAttribute('data-idx', idx);
+        thumb.onmouseenter = () => playSfx('hover');
+        thumb.onclick = () => {
+          currentIndex = idx;
+          isFlipped = false;
+          document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+          playSfx('slide');
+          triggerHaptic('light');
+          renderMainStage();
+        };
+
+        thumb.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] font-black mb-1">
+            <span class="flex items-center gap-1">
+              <span>${sim.emoji}</span>
+              <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">#${sim.id < 10 ? '0' + sim.id : sim.id}</span>
+            </span>
+            <span class="text-slate-400 font-bold truncate max-w-[90px]">${sim.categoryName}</span>
+          </div>
+          <p class="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-2 leading-snug">
+            ${sim.title}
+          </p>
+        `;
+
+        strip.appendChild(thumb);
+      });
+    }
+
+    // 更新縮圖當前選取高亮並滾動置中
+    function updateThumbnailSelection() {
+      document.querySelectorAll('.thumbnail-item').forEach((el, idx) => {
+        if (idx === currentIndex) {
+          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-emerald-600 bg-emerald-50/90 dark:bg-emerald-950/60 shadow-md scale-[1.02] opacity-100';
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300';
+        }
+      });
+    }
+
+    // 渲染網格模式
+    function renderGridCards() {
+      const container = document.getElementById('gridCardsContainer');
+      container.innerHTML = '';
+
+      filteredSims.forEach((sim) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex flex-col justify-between space-y-4 hover:border-emerald-400 transition';
+        cardEl.onmouseenter = () => playSfx('hover');
+
+        cardEl.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="flex items-center gap-1.5">
+                <span class="text-lg">${sim.emoji}</span>
+                <span class="px-3 py-1 text-xs font-black rounded-lg border bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800">
+                  ${sim.categoryName} #${sim.id < 10 ? '0' + sim.id : sim.id}
+                </span>
+              </span>
+              <span class="text-xs text-slate-400 font-bold">${sim.tag}</span>
+            </div>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white leading-snug mb-2">
+              ${sim.title}
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+              ${sim.desc}
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <button onclick="switchToSlideById(${sim.id})" class="text-sm font-black text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1">
+              進入簡報舞台 ➔
+            </button>
+          </div>
+        `;
+        container.appendChild(cardEl);
+      });
+    }
+
+    function switchToSlideById(id) {
+      const idx = filteredSims.findIndex(s => s.id === id);
+      if (idx !== -1) {
+        currentIndex = idx;
+        toggleViewMode('presentation');
+        renderMainStage();
+      }
+    }
+
+    // 模式切換
+    function toggleViewMode(targetMode) {
+      viewMode = targetMode || (viewMode === 'presentation' ? 'grid' : 'presentation');
+      const presView = document.getElementById('presentationView');
+      const gridV = document.getElementById('gridView');
+      const modeText = document.getElementById('viewModeText');
+      const modeIcon = document.getElementById('viewModeIcon');
+
+      if (viewMode === 'presentation') {
+        presView.classList.remove('hidden');
+        gridV.classList.add('hidden');
+        modeText.innerText = '全覽網格';
+        modeIcon.setAttribute('data-lucide', 'grid');
+        renderMainStage();
+      } else {
+        presView.classList.add('hidden');
+        gridV.classList.remove('hidden');
+        modeText.innerText = '簡報模式';
+        modeIcon.setAttribute('data-lucide', 'presentation');
+        renderGridCards();
+      }
+      lucide.createIcons();
+    }
+
+    document.getElementById('btnViewMode').addEventListener('click', () => {
+      playSfx('slide');
+      toggleViewMode();
+    });
+
+    // 鍵盤左右鍵切換簡報
+    window.addEventListener('keydown', (e) => {
+      if (viewMode !== 'presentation') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        toggleSlideFlip();
+      }
+    });
+
+    // 分類篩選
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+          b.classList.add('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+        });
+        btn.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+        btn.classList.remove('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+
+        currentCategory = btn.getAttribute('data-category');
+        filteredSims = currentCategory === 'all' ? [...simData] : simData.filter(s => s.category === currentCategory);
+        currentIndex = 0;
+        isFlipped = false;
+        
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+        renderThumbnails();
+        if (viewMode === 'grid') renderGridCards();
+      });
+    });
+
+    // 亮色/暗色主題切換 (預設亮色)
+    const themeBtn = document.getElementById('btnThemeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      playSfx('flip');
+    });
+
+    // 音效開關
+    document.getElementById('btnSoundToggle').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundText').innerText = soundEnabled ? '音效已開' : '音效靜音';
+      const icon = document.getElementById('soundIcon');
+      if (soundEnabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        playSfx('flip');
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+      }
+      lucide.createIcons();
+    });
+
+    // Toast 提示
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      toastMsg.innerText = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-slide');
+      
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2500);
+    }
+
+    // 頁面初次加載
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMainStage();
+      renderThumbnails();
+    });
+  </script>
+</body>
+</html>

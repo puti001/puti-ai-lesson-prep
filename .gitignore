@@ -1,0 +1,19 @@
+# 敏感資訊與認證憑證
+*.json
+!package.json
+!tsconfig.json
+credentials.json
+token.json
+auth.py
+
+# 瀏覽器快取與 Debug Profile
+.browser_profile/
+chrome_debug_profile/
+google_chrome_profile/
+*.png
+*.jpg
+dog_photos_0822/
+
+# Python 快取
+__pycache__/
+*.pyc

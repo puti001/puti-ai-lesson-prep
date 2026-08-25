@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO & Google 搜尋優化與品牌識別 -->
+  <title>Puti-AI | 國中文史與社會科 12 大互動教學神器 AI 提示詞大禮包</title>
+  <meta name="description" content="Puti-AI 屏東縣後庄國小黃朝榮老師 (Puti老師) 專為國中文史與社會科教師打造的 12 大互動教學神器 AI Prompt 大禮包。涵蓋文言文劇本殺、詩詞情境生成、會考作文盲點診斷、英文情境對話、單字神曲克漏字、文法情境破關、歷史決策推演、地理 3D 視覺化、公民法治法庭模擬、跨科時事論證。">
+  <meta name="keywords" content="Puti-AI, 黃朝榮, 國中文言文, 國中英文, 國中歷史, 國中地理, 國中公民, 互動教學工具, AI提示詞, Gemini Prompt, 108課綱語文社會領域">
+  <meta name="author" content="屏東縣後庄國小 黃朝榮老師 (Puti-AI)">
+  <meta property="og:title" content="Puti-AI | 國中文史與社會科 12 大互動教學神器 AI 提示詞大禮包">
+  <meta property="og:description" content="Puti-AI 專為國中文科與社會科教師設計的 Canva 風格簡報 3D 互動 Prompt 庫。一鍵生成沉浸式互動文史社會教學工具！">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            puti: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+              gold: '#f59e0b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 解決 GPU 縮放模糊，確保字體 100% 銳利清晰 */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* 3D 翻牌核心樣式 */
+    .perspective-1500 {
+      perspective: 1500px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .slide-card-inner {
+      transition: transform 0.65s cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+    .slide-card-flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* 自定義縮圖橫向滾動條 */
+    .thumbnail-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    .thumbnail-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 9999px;
+    }
+    .dark .thumbnail-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .thumbnail-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .dark .thumbnail-scroll::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+    .thumbnail-scroll::-webkit-scrollbar-thumb:hover {
+      background: #f59e0b;
+    }
+
+    /* 聚光燈舞台光暈 */
+    .stage-glow-light {
+      background: radial-gradient(circle at 50% 35%, rgba(245, 158, 11, 0.09) 0%, rgba(225, 29, 72, 0.05) 50%, transparent 75%);
+    }
+    .stage-glow-dark {
+      background: radial-gradient(circle at 50% 35%, rgba(245, 158, 11, 0.22) 0%, rgba(225, 29, 72, 0.08) 50%, transparent 75%);
+    }
+
+    /* Toast 動畫 */
+    @keyframes toastUp {
+      0% { transform: translate(-50%, 40px); opacity: 0; }
+      100% { transform: translate(-50%, 0); opacity: 1; }
+    }
+    .toast-slide {
+      animation: toastUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- 頂部導航列：Puti-AI 國中文史與社會互動神器 Prompt 庫 -->
+  <header class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Puti-AI 醒目品牌與標題 -->
+      <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" class="flex items-center gap-3.5 group" onmouseenter="playSfx('hover')">
+        <div class="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-600 to-indigo-600 p-0.5 shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform duration-300 shrink-0">
+          <div class="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <span class="font-black text-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 dark:from-amber-400 dark:to-rose-400 bg-clip-text text-transparent">P</span>
+          </div>
+          <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="font-black tracking-tight text-xl sm:text-2xl text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition flex items-center gap-1.5">
+              <span>Puti-AI</span>
+              <span class="text-amber-600 dark:text-amber-400">國中文史與社會 12 大互動神器</span>
+              <span class="text-rose-600 dark:text-rose-400">Prompt 庫</span>
+            </h1>
+            <span class="px-2.5 py-0.5 text-xs font-black tracking-wide uppercase rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300">實戰典藏版</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bold mt-0.5">
+            國文 ╳ 英語 ╳ 歷史 ╳ 地理 ╳ 公民 ｜ 屏東縣後庄國小 黃朝榮老師作品
+          </p>
+        </div>
+      </a>
+
+      <!-- 右側控制按鈕（導流按鈕群、視圖、音效、明暗切換） -->
+      <div class="flex items-center gap-1.5 sm:gap-2 self-end md:self-center">
+        <!-- 導流按鈕群 -->
+        <a href="國中教師AI解痛錦囊卡牌.html" onmouseenter="playSfx('hover')" class="px-2 sm:px-2.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 text-xs font-black transition flex items-center gap-1 border border-indigo-200 dark:border-indigo-800">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400"></i>
+          <span>全校錦囊</span>
+        </a>
+        <a href="國中數理13大互動模擬器Prompt庫.html" onmouseenter="playSfx('hover')" class="px-2 sm:px-2.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/80 text-emerald-700 dark:text-emerald-300 text-xs font-black transition flex items-center gap-1 border border-emerald-200 dark:border-emerald-800">
+          <i data-lucide="flask-conical" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+          <span>數理專區</span>
+        </a>
+        <a href="國中全學科6格教學漫畫分鏡產生器.html" onmouseenter="playSfx('hover')" class="px-2 sm:px-2.5 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 dark:bg-pink-950/60 dark:hover:bg-pink-900/80 text-pink-700 dark:text-pink-300 text-xs font-black transition flex items-center gap-1 border border-pink-200 dark:border-pink-800 shadow-sm">
+          <i data-lucide="palette" class="w-3.5 h-3.5 text-pink-600 dark:text-pink-400"></i>
+          <span>🎨 6格漫畫</span>
+        </a>
+
+        <!-- 視圖切換按鈕 -->
+        <button id="btnViewMode" onmouseenter="playSfx('hover')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+          <i data-lucide="grid" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" id="viewModeIcon"></i>
+          <span id="viewModeText" class="hidden sm:inline">全覽網格</span>
+        </button>
+
+        <!-- 音效開關 -->
+        <button id="btnSoundToggle" onmouseenter="playSfx('hover')" class="p-2 sm:px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+          <i data-lucide="volume-2" class="w-4 h-4 text-amber-600 dark:text-amber-400" id="soundIcon"></i>
+        </button>
+
+        <!-- 明暗模式切換 (預設為亮色) -->
+        <button id="btnThemeToggle" onmouseenter="playSfx('hover')" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 transition border border-slate-200 dark:border-slate-700 shadow-sm" title="切換明暗模式">
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-amber-500"></i>
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Canva 簡報模式視圖 (預設焦點舞台) -->
+  <div id="presentationView" class="flex-1 flex flex-col justify-between w-full max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 stage-glow-light dark:stage-glow-dark">
+    
+    <!-- 上方輔助列：目前頁碼、五大領域分類篩選標籤、鍵盤導航提示 -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-4">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0" id="filterContainer">
+        <button onmouseenter="playSfx('hover')" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-amber-600 text-white shadow-sm" data-category="all">
+          全部 (12)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="chinese">
+          📖 國文領域 (3)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="english">
+          🔤 英語領域 (3)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="history">
+          🏛️ 歷史領域 (2)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="geography">
+          🗺️ 地理領域 (2)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="civics">
+          ⚖️ 公民領域 (2)
+        </button>
+      </div>
+
+      <!-- 簡報頁碼與操作提示 -->
+      <div class="flex items-center gap-3 text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400">
+        <span class="hidden md:inline-flex items-center gap-1 bg-slate-200/60 dark:bg-slate-800/60 px-3 py-1 rounded-lg">
+          <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded border text-xs">←</kbd>
+          <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded border text-xs">→</kbd> 切換
+        </span>
+        <span class="px-3.5 py-1 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded-xl font-black text-sm sm:text-base">
+          <span id="currentSlideNum">01</span> / <span id="totalSlideNum">12</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- 中央簡報卡片舞台 (Main Stage：大字體 ＋ 文史亮點 ＋ 飽滿排版) -->
+    <div class="relative w-full flex items-center justify-center my-auto py-2 sm:py-4">
+      
+      <!-- 左切換箭頭 -->
+      <button id="btnPrevSlide" onmouseenter="playSfx('hover')" onclick="prevSlide()" class="absolute -left-2 sm:-left-6 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white shadow-xl hover:bg-amber-50 hover:border-amber-400 dark:hover:bg-slate-700 flex items-center justify-center transition active:scale-95" title="上一張 (鍵盤 ←)">
+        <i data-lucide="chevron-left" class="w-7 h-7"></i>
+      </button>
+
+      <!-- 3D 簡報主卡片外框 -->
+      <div id="mainStageCard" class="perspective-1500 w-full max-w-4xl h-[520px] sm:h-[550px]">
+        <div id="slideCardInner" class="slide-card-inner relative w-full h-full transform-style-3d cursor-pointer" onclick="toggleSlideFlip(event)">
+          
+          <!-- 卡片正面 (文史社會互動功能與動態呈現亮點) -->
+          <div id="stageFront" class="card-front absolute inset-0 w-full h-full bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200/90 dark:border-slate-700/80 p-6 sm:p-9 flex flex-col justify-between backface-hidden shadow-2xl transition-all overflow-hidden">
+            <!-- 內容由 JS 動態填入 -->
+          </div>
+
+          <!-- 卡片背面 (完整可執行 Prompt ＋ 一鍵複製 ＋ 直達 Gemini 實測) -->
+          <div id="stageBack" class="card-back absolute inset-0 w-full h-full bg-gradient-to-br from-amber-950 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-9 flex flex-col justify-between backface-hidden rotate-y-180 shadow-2xl border-2 border-amber-500/50 overflow-hidden" onclick="event.stopPropagation()">
+            <!-- 內容由 JS 動態填入 -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 右切換箭頭 -->
+      <button id="btnNextSlide" onmouseenter="playSfx('hover')" onclick="nextSlide()" class="absolute -right-2 sm:-right-6 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white shadow-xl hover:bg-amber-50 hover:border-amber-400 dark:hover:bg-slate-700 flex items-center justify-center transition active:scale-95" title="下一張 (鍵盤 →)">
+        <i data-lucide="chevron-right" class="w-7 h-7"></i>
+      </button>
+    </div>
+
+    <!-- 底部 Canva 風格縮圖滑桿 (Thumbnail Filmstrip Carousel) -->
+    <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs sm:text-sm font-black tracking-wide text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+          <i data-lucide="film" class="w-4 h-4 text-amber-500"></i>
+          <span>12 大文史社會神器縮圖快選滑桿（點擊立即跳轉）</span>
+        </span>
+        <button onclick="toggleSlideFlip(event)" class="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span>翻轉當前卡片</span>
+        </button>
+      </div>
+
+      <!-- 橫向滾動縮圖列 -->
+      <div id="thumbnailStrip" class="thumbnail-scroll flex items-center gap-3 overflow-x-auto py-2 px-1 scroll-smooth">
+        <!-- 縮圖將由 JS 動態生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 全覽網格模式視圖 (Grid View Mode，預設隱藏) -->
+  <div id="gridView" class="hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="gridCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 網格卡片渲染 -->
+    </div>
+  </div>
+
+  <!-- 底部版權宣告與 Padlet 連結 (固定符合使用者規範) -->
+  <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-850 py-8 mt-10 text-slate-500 dark:text-slate-400 text-xs transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+      <p class="text-slate-600 dark:text-slate-300 font-medium max-w-3xl mx-auto leading-relaxed text-xs sm:text-sm">
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 
+        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener noreferrer" class="text-amber-600 dark:text-amber-400 hover:underline font-bold transition">
+          點此前往
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- 複製成功的浮動 Toast -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900 text-white dark:bg-amber-600 text-sm font-bold px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 border border-slate-700 dark:border-amber-400">
+    <i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 dark:text-white"></i>
+    <span id="toastMessage">已成功複製提示詞！可直接至 Gemini 貼上執行</span>
+  </div>
+
+  <!-- JavaScript 核心：12大文史社會神器資料庫與互動邏輯 -->
+  <script>
+    // 12 大國中文史與社會科動態互動神器資料庫
+    const humanitiesData = [
+      {
+        id: 1,
+        category: "chinese",
+        categoryName: "國文領域",
+        icon: "scroll",
+        emoji: "📜",
+        tag: "文言文角色扮演劇本殺",
+        title: "文言文沉浸式角色扮演與情境劇本殺產生器",
+        desc: "將生澀死板的文言文課文（如《岳陽樓記》、《項脊軒志》、《世說新語》），一鍵轉化為學生分組角色扮演的互動推理劇本，附帶文言關鍵字解謎任務！",
+        features: "⚡ 核心亮點：古文情境破冰、角色分工台詞對照、白話文言線索雙軌解鎖",
+        promptText: "請幫我將國中國文課文『[請輸入課文篇名，如：岳陽樓記 / 鄒忌諷齊王納諫 / 世說新語]』改編成一個 15 分鐘課堂互動劇本殺遊戲：\n1. 【角色分工】：設計 3-4 位性格鮮明的登場角色（包含歷史人物、侍從或旁觀者）。\n2. 【劇情衝突與線索】：以課文核心主旨為背景，設計一場衝突情境，每個角色持有 2 條關鍵線索（以白話文附帶文言文關鍵字詞）。\n3. 【解謎任務】：設計 2 道必須理解文言文句意與通假字/修辭才能推導出的真相問題。\n4. 【學習回饋】：遊戲結束後總結本課 3 個必考核心字義與作者寫作心境。"
+      },
+      {
+        id: 2,
+        category: "chinese",
+        categoryName: "國文領域",
+        icon: "feather",
+        emoji: "✍️",
+        tag: "會考作文六級分升級器",
+        title: "會考作文三至六級分「雷達圖診斷與升級梯」產生器",
+        desc: "輸入學生寫作段落，AI 自動以會考四向度（立意取材、結構組織、遣詞造句、錯別字標點）繪製雷達診斷，並提供「點石成金」升級示範！",
+        features: "⚡ 核心亮點：四向度雷達圖標準、三級分昇華六級分示範、具體精鍊修辭指引",
+        promptText: "請扮演臺灣國中會考作文閱卷評審委員。這是一位國中學生的寫作段落：\n『[請貼上學生作文草稿]』\n請完成以下診斷與升級輔導：\n1. 【四向度雷達評分】：針對「立意取材（1~6分）」、「結構組織（1~6分）」、「遣詞造句（1~6分）」、「標點符號（1~6分）」給出客觀等第與扣分痛點。\n2. 【盲點點穴】：指出本段落中最平淡乏力、或過於口語化的 2 句話。\n3. 【六級分升級版】：在保留學生原始思想與素材的前提下，將該段落改寫為具備『細膩感官描摹 ＋ 深刻情感昇華』的六級分範本，並標註修辭技巧。"
+      },
+      {
+        id: 3,
+        category: "chinese",
+        categoryName: "國文領域",
+        icon: "palette",
+        emoji: "🏮",
+        tag: "古典詩詞意象視覺化",
+        title: "古典詩詞「意境拆解 ╳ AI 繪畫 Prompt」產生器",
+        desc: "將唐詩宋詞中的抽象意象（如：東風夜放花千樹、孤舟蓑笠翁、落霞與孤齊飛），自動拆解為色彩、光影、構圖細節，並生成精準生圖指令。",
+        features: "⚡ 核心亮點：詩眼與主旨精析、水墨水彩風格構圖指引、Imagen 3 繁中精準生圖指令",
+        promptText: "請針對國中必讀古典詩詞『[請輸入詩詞名與全文，如：李清照《如夢令》/ 柳宗元《江雪》]』：\n1. 【意境與詩眼剖析】：分析本詩的感情基調（如：落寞、豪邁、悠閒）與 2 個最關鍵的『詩眼』動詞/形容詞。\n2. 【視覺場景構圖設計】：將詩句畫面拆解為具體視覺元素（前景、中景、遠景、光影氛圍、主色調）。\n3. 【AI 繁中生圖 Prompt】：寫出一段 16:9 高畫質古典水墨/水彩教科書風格的 Imagen 3 生圖提示詞，圖中告示牌或印章上寫著正確繁體中文詩名。"
+      },
+      {
+        id: 4,
+        category: "english",
+        categoryName: "英語領域",
+        icon: "message-square",
+        emoji: "🗣️",
+        tag: "國中生活情境口說對話",
+        title: "國中情境英語口說夥伴（分級 Socratic 對話機器人）",
+        desc: "自訂國中常見情境（速食店點餐、夜市問路、校園社團招募），AI 扮演特定外國朋友角色，以符合國中 1200 單字庫進行 5 回合互動口說！",
+        features: "⚡ 核心亮點：符合國中 1200 單字難度、生動語音對話模擬、即時文法溫和糾錯",
+        promptText: "你現在扮演一位在臺灣國中就讀的美國交換學生 Alex。我們現在要在校園福利社/英文課堂上進行情境對話：\n- 【教學目標】：訓練國中【{grade}】學生使用本課單字與句型。\n- 【對話主題】：[輸入情境，如：Planning a weekend trip to Taipei Zoo / Ordering bubble tea]。\n- 【規則】：\n1. 每次只說 1~2 句簡單地道的英文（使用國中 1200 基礎單字）。\n2. 拋出一個親切有趣的問題讓我回答。\n3. 當我用英文回答後，若有明顯文法錯誤，先用最溫柔的方式給出【Friendly Tip】，再繼續推進對話，共進行 4-5 回合。"
+      },
+      {
+        id: 5,
+        category: "english",
+        categoryName: "英語領域",
+        icon: "music",
+        emoji: "🎶",
+        tag: "單字神曲 ╳ 克漏字閉環",
+        title: "每課單字洗腦神曲創作 ＋ 聽歌克漏字測驗單產生器",
+        desc: "把英文課本單字串成押韻順口的歌詞，結合風格建議交給 Suno/MusicFX 生成歌曲，一秒自動挖空產出課堂聽力測驗單！",
+        features: "⚡ 核心亮點：押韻律動歌詞、課本生字自動標粗、Word Bank 聽歌克漏字測驗",
+        promptText: "這是國中【{grade}】英語第【二】課的 8 個核心生字：[請貼上單字，如：environment, reduce, plastic, protect, ocean, recycle, future, action]。\n請幫我完成以下 3 階段任務：\n1. 【歌詞創作】：創作一段 8 句輕快押韻、適合國中生的英文歌曲歌詞（Pop/Acoustic 風格），自然融入所有生字（單字加粗），附帶中文翻譯。\n2. 【聽歌克漏字學習單】：將歌詞中的所有目標生字挖空為填空題（____），下方附帶 Word Bank 字母提示與標準答案。\n3. 【課後提問】：設計 2 道關於歌詞核心主旨的單選閱讀理解題。"
+      },
+      {
+        id: 6,
+        category: "english",
+        categoryName: "英語領域",
+        icon: "shield-check",
+        emoji: "🧩",
+        tag: "易混淆文法迷思破關",
+        title: "國中魔王文法（現在完成式/被動語態/關係代名詞）闖關題組",
+        desc: "針對國中生最容易搞混的文法痛點，生成「生活化辨析圖表 ＋ 3 個經典誘答陷阱題 ＋ 趣味口訣」，徹底破除文法迷思！",
+        features: "⚡ 核心亮點：圖解時間軸概念、經典誘答選項解析、朗朗上口文法記憶口訣",
+        promptText: "請針對國中英語最常考且學生最容易混淆的文法主題『[請輸入文法，如：現在完成式 vs 過去簡單式 / 關係代名詞 who vs which vs that / 被動語態]』：\n1. 【白話圖解公式】：用最清楚的時間軸或箭頭比喻，說明兩者的核心差別（用國中生聽得懂的語言）。\n2. 【3 道會考誘答題組】：設計 3 題生活情境單選題，每個選項必須包含學生最常犯的經典錯誤誘答項。\n3. 【詳細解析與避坑口訣】：每題標註出題意圖與陷阱，並提供一句 10 個字以內的押韻口訣。"
+      },
+      {
+        id: 7,
+        category: "history",
+        categoryName: "歷史領域",
+        icon: "landmark",
+        emoji: "⚔️",
+        tag: "歷史關鍵轉折決策推演",
+        title: "歷史關鍵轉折點「如果我是當時決策者」互動推演器",
+        desc: "將歷史事件（如：商鞅變法、甲午戰爭、鄭成功攻臺、辛亥革命）改編為文字冒險分岐選項，讓學生親自扮演歷史人物做決策並看到推演後果！",
+        features: "⚡ 核心亮點：歷史決策分岐樹、情境代入歷史同理心、史實後果對比反思",
+        promptText: "請幫我將國中歷史課的重要歷史事件『[請輸入歷史主題，如：臺灣荷西時期轉折 / 戊戌變法 / 漢武帝對匈奴政策]』設計成一個互動推演歷史遊戲：\n1. 【情境與角色設定】：學生扮演當時的關鍵決策者（如：光緒皇帝 / 鄭成功 / 地方官員），交代當時面臨的 3 大棘手困境。\n2. 【3 個抉擇分支】：給出選項 A（史實選擇）、選項 B（妥協方案）、選項 C（激進冒險方案）。\n3. 【推演結果與史實對照】：分別分析每個選擇在經濟、軍事與民心上的短期與長期後果，並引導學生反思『為什麼史實中的人物最終做出那個決定？』"
+      },
+      {
+        id: 8,
+        category: "history",
+        categoryName: "歷史領域",
+        icon: "clock",
+        emoji: "⏳",
+        tag: "跨時代歷史時序對照",
+        title: "中西歷史同步軸與跨區域「同時代世界在發生什麼」對照表",
+        desc: "解決學生死記年代卻缺乏空間感與全球視野的痛點，一鍵生成「臺灣史 ╳ 中國史 ╳ 世界史」三線並行的大事記與生活對比！",
+        features: "⚡ 核心亮點：三線歷史時間軸同步、生活文化趣味對比、會考跨冊整合題",
+        promptText: "請針對國中歷史主題『[請輸入世紀或朝代，如：17世紀大航海時代 / 19世紀末帝國主義]』：\n1. 【三線同步時間軸】：用 Markdown 表格同時列出【臺灣】、【中國】與【世界（歐洲/美洲）】在該時期發生的 3 件對應重大歷史事件。\n2. 【跨時空生活對比】：用趣味生動的筆觸對比當時三地一般百姓的生活/科技/思想現況。\n3. 【1 題會考素養題組】：設計 1 題需要跨臺灣與世界史脈絡判讀的圖表或長文本閱讀題，附詳解。"
+      },
+      {
+        id: 9,
+        category: "geography",
+        categoryName: "地理領域",
+        icon: "map",
+        emoji: "🗺️",
+        tag: "等高線與地形剖面圖",
+        title: "等高線地形圖判讀與 3D 地形剖面互動教學產生器",
+        desc: "輸入等高線數據或特定地形（鞍部、山脊、山谷、峭壁、盆地），生成標準判讀題組與 ASCII/SVG 地形剖面示意圖，徹底破除空間盲點！",
+        features: "⚡ 核心亮點：山脊與山谷等高線 V 字方向辨析、坡度計算與河流流向判斷",
+        promptText: "請為國中地理『等高線地形圖與地形剖面』單元設計一份課堂互動探究題組：\n1. 【等高線圖文字模擬】：以標準規格描述一張等高線圖（包含等高線數值、閉合曲線方向、比例尺與河流標示）。\n2. 【4 大核心判讀問答】：\n   - 判斷 A 點與 B 點之間的地形為「山脊」還是「山谷」（說明等高線凸向高處或低處的判斷依據）。\n   - 計算河流流向與某條登山步道的平均坡度（百分比）。\n   - 判斷最佳露營地或水庫選址理由。\n3. 【剖面圖思考題】：給出甲乙連線的剖面圖形狀選項（4 選 1），並附帶詳細空間推導解析。"
+      },
+      {
+        id: 10,
+        category: "geography",
+        categoryName: "地理領域",
+        icon: "cloud-sun",
+        emoji: "🌦️",
+        tag: "臺灣氣候與季風水文分析",
+        title: "臺灣氣候、季風風向與降雨成因互動模擬分析器",
+        desc: "分析東北季風、西南季風、地形雨、梅雨、颱風對臺灣各地氣候的影響，生成雨量氣溫柱狀圖判讀與生活情境探究單！",
+        features: "⚡ 核心亮點：迎風面與背風面降雨機制、基隆雨港vs南部乾季成因、氣候圖判讀",
+        promptText: "請針對國中地理『臺灣的氣候與水資源』單元：\n1. 【季風與雨量機制表】：用表格條理對比【冬季東北季風】與【夏季西南季風】對臺灣北部、南部、東部與西部離島帶來的氣候特徵（氣溫、降雨類型、乾濕季）。\n2. 【雨量圖判讀挑戰】：提供兩座臺灣代表城市（如：基隆 vs 高雄）的 12 個月氣候圖特徵數據，引導學生從「年溫差」、「年雨量」與「降雨季節分佈」推導出城市名稱。\n3. 【在地時事生活題】：結合近期臺灣水庫蓄水率與乾旱/豪雨新聞，設計 2 道生活素養題。"
+      },
+      {
+        id: 11,
+        category: "civics",
+        categoryName: "公民領域",
+        icon: "scale",
+        emoji: "⚖️",
+        tag: "校園模擬法庭與權利爭端",
+        title: "少年法律事件與校園人權「模擬法庭審判劇本」產生器",
+        desc: "針對少年事件處理法、校園霸凌防制、民法行為能力、智慧財產權等熱門考點，生成 4 人角色的模擬審判案例與法條辨析！",
+        features: "⚡ 核心亮點：少年法庭程序、權利侵害 vs 法律責任辨析、憲法基本權利探究",
+        promptText: "請為國中公民『法律與生活（民法/刑法/少年事件處理法/行政法）』單元，設計一個 15 分鐘校園模擬法庭案例：\n1. 【真實生活爭議案例】：設計一個國中生常遇到的爭議事件（如：網路轉傳同學照片涉公然侮辱/著作權、或未成年網路購物契約效力爭議）。\n2. 【角色與攻防】：\n   - 原告/受害者主張與法條依據。\n   - 被告/行為人辯解與年齡行為能力分析（如：限制行為能力人/少年保護事件）。\n   - 法官/審判焦點提問。\n3. 【公民素養結論】：總結本案涉及的公民核心概念、法律救濟管道與正當法律程序。"
+      },
+      {
+        id: 12,
+        category: "civics",
+        categoryName: "公民領域",
+        icon: "users",
+        emoji: "🗳️",
+        tag: "政府體制與公共政策思辨",
+        title: "我國中央政府五院職權與公共政策「市政公聽會」思辨工具",
+        desc: "將五院職權制衡（總統、行政院、立法院、司法院、監察院）與公共政策（如：提高垃圾隨袋徵收費、少子化政策），改編成公聽會小組辯論！",
+        features: "⚡ 核心亮點：五院權力制衡圖解、公共利益 vs 個人自由辯證、政策利弊量化評估",
+        promptText: "請針對國中公民『我國中央政府體制與公共參與』單元：\n1. 【五院職權互動情境】：設計一個具體國家議題（如：立法院通過法案，行政院認為窒礙難行），用流程步驟清楚說明「覆議、釋憲、不信任案、解散國會」的啟動順序與門檻。\n2. 【公聽會角色辯論設計】：以一項地方公共議題（如：校園周邊設置行人徒步區 / 捷運延伸線興建）設計 3 方代表立場（地方居民、環保團體、商家代表），列出各自的核心訴求與妥協方案。\n3. 【1 題會考政府組織素養題】：設計 1 道長文本情境題，測驗五院職權制衡的判讀能力。"
+      }
+    ];
+
+    // 全局狀態
+    let currentIndex = 0;
+    let filteredItems = [...humanitiesData];
+    let currentCategory = 'all';
+    let isFlipped = false;
+    let viewMode = 'presentation';
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    // 健全強大的 Web Audio API 聲音引擎
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    ['click', 'pointerdown', 'keydown', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, initAudio, { once: true });
+    });
+
+    function playSfx(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'hover') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(580, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } 
+        else if (type === 'flip') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(920, now + 0.09);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        }
+        else if (type === 'slide') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        }
+        else if (type === 'copy') {
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(659.25, now);
+          osc2.frequency.setValueAtTime(987.77, now + 0.08);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.08);
+          osc2.start(now + 0.08);
+          osc2.stop(now + 0.3);
+        }
+      } catch (e) {}
+    }
+
+    function triggerHaptic(type = 'light') {
+      if ('vibrate' in navigator) {
+        try {
+          if (type === 'light') navigator.vibrate(20);
+          else if (type === 'success') navigator.vibrate([25, 45, 25]);
+        } catch (e) {}
+      }
+    }
+
+    // 渲染中央 Canva 主舞台卡片
+    function renderMainStage() {
+      if (filteredItems.length === 0) return;
+      const item = filteredItems[currentIndex];
+      if (!item) return;
+
+      document.getElementById('currentSlideNum').innerText = item.id < 10 ? '0' + item.id : item.id;
+      document.getElementById('totalSlideNum').innerText = humanitiesData.length;
+
+      // 正面內容渲染
+      const frontEl = document.getElementById('stageFront');
+      frontEl.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <!-- 頂部區 -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500/10 to-rose-500/20 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-slate-100 shadow-md border border-slate-200 dark:border-slate-700 text-2xl">
+                  ${item.emoji}
+                </div>
+                <div>
+                  <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg border bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800">
+                    ${item.categoryName} #${item.id < 10 ? '0' + item.id : item.id}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold ml-2 hidden sm:inline">核心：${item.tag}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-slate-800 text-amber-800 dark:text-amber-300 text-xs sm:text-sm font-black border border-amber-200 dark:border-slate-700 shadow-sm">
+                <i data-lucide="rotate-cw" class="w-4 h-4 text-amber-600"></i>
+                <span>點擊翻轉看 Prompt</span>
+              </div>
+            </div>
+
+            <!-- 超大標題與動態呈現說明 -->
+            <div class="space-y-4 pt-2">
+              <div class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-amber-800 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/70 px-3 py-1 rounded-lg border border-amber-200 dark:border-amber-800/50">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                <span>文史與社會沉浸式互動神器</span>
+              </div>
+
+              <!-- 超大標題 (2xl ~ 4xl) -->
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight tracking-tight">
+                ${item.title}
+              </h2>
+
+              <!-- 詳述 (text-base ~ text-lg 大字) -->
+              <p class="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal pt-2">
+                ${item.desc}
+              </p>
+            </div>
+          </div>
+
+          <!-- 底部功能亮點與引導 -->
+          <div class="pt-4 mt-3 border-t border-slate-200/90 dark:border-slate-800 space-y-3">
+            <div class="text-xs sm:text-sm lg:text-base font-bold text-amber-900 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-4 py-3 rounded-2xl border border-amber-200 dark:border-amber-800/60 flex items-center gap-2.5">
+              <span class="text-xl">💡</span>
+              <span class="truncate font-black">${item.features}</span>
+            </div>
+
+            <div class="flex items-center justify-between text-xs sm:text-sm lg:text-base pt-1">
+              <span class="text-slate-500 dark:text-slate-400 font-bold">適用工具：Google Gemini / Canvas / 課堂分組</span>
+              <span class="font-black text-amber-600 dark:text-amber-400 flex items-center gap-1.5 group-hover:translate-x-1 transition text-sm sm:text-base">
+                點擊翻轉查看完整 Prompt 指令 ➔
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 背面內容渲染：Prompt 框 ＋ 一鍵複製 ＋ 直達 Gemini
+      const backEl = document.getElementById('stageBack');
+      backEl.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <div>
+            <!-- 背面頂部 -->
+            <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-800">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">${item.emoji}</span>
+                <span class="px-3 py-1 text-xs sm:text-sm font-black rounded-lg bg-amber-500/20 text-amber-300 border border-amber-400/40 uppercase tracking-wider">
+                  ${item.categoryName} ｜ ${item.tag}
+                </span>
+              </div>
+              <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <!-- 提示說明 -->
+            <div class="py-2">
+              <p class="text-xs sm:text-sm text-amber-200 leading-relaxed font-semibold bg-amber-950/80 p-3 rounded-2xl border border-amber-800/60 shadow-inner">
+                ✨ 將以下提示詞複製貼給 Google Gemini，即可 10 秒產出高品質互動劇本、診斷規準、口說情境或辯論公聽會！
+              </p>
+            </div>
+          </div>
+
+          <!-- Prompt 框 (大字體、高對比) -->
+          <div class="relative flex-1 my-1.5 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 overflow-y-auto max-h-[220px] text-xs sm:text-sm font-mono text-slate-200 leading-relaxed selection:bg-amber-600 shadow-inner">
+            <pre id="stage_prompt_text" class="whitespace-pre-wrap">${item.promptText}</pre>
+          </div>
+
+          <!-- 底部按鈕群：複製 ＋ 直達 Gemini -->
+          <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs text-slate-400 font-medium hidden sm:inline">複製後至 Gemini 貼上即自動生成</span>
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+              <button onclick="copyStagePrompt()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow transition active:scale-95">
+                <i data-lucide="copy" class="w-4 h-4 text-amber-400"></i>
+                <span>一鍵複製 Prompt</span>
+              </button>
+              <button onclick="openInGemini()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-600/40 active:scale-95 transition">
+                <i data-lucide="external-link" class="w-4 h-4 text-amber-300"></i>
+                <span>🚀 直達 Gemini 實測生成</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+      updateThumbnailSelection();
+    }
+
+    // 複製主舞台 Prompt
+    function copyStagePrompt() {
+      const text = document.getElementById('stage_prompt_text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        playSfx('copy');
+        triggerHaptic('success');
+        showToast('已複製文史社會提示詞！可直接至 Gemini 貼上執行');
+      });
+    }
+
+    // 自動複製並在新分頁打開 Gemini
+    function openInGemini() {
+      const text = document.getElementById('stage_prompt_text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        playSfx('copy');
+        triggerHaptic('success');
+        showToast('已複製提示詞！正在為您開啟 Gemini...');
+        setTimeout(() => {
+          window.open('https://gemini.google.com/', '_blank');
+        }, 300);
+      });
+    }
+
+    // 主舞台卡片翻轉
+    function toggleSlideFlip(event) {
+      if (event) event.stopPropagation();
+      const innerCard = document.getElementById('slideCardInner');
+      isFlipped = !isFlipped;
+      if (isFlipped) {
+        innerCard.classList.add('slide-card-flipped');
+      } else {
+        innerCard.classList.remove('slide-card-flipped');
+      }
+      playSfx('flip');
+      triggerHaptic('light');
+    }
+
+    // 下一張簡報
+    function nextSlide() {
+      if (currentIndex < filteredItems.length - 1) {
+        currentIndex++;
+        isFlipped = false;
+        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+      }
+    }
+
+    // 上一張簡報
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        isFlipped = false;
+        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+      }
+    }
+
+    // 渲染底部 Canva 風格縮圖列
+    function renderThumbnails() {
+      const strip = document.getElementById('thumbnailStrip');
+      strip.innerHTML = '';
+
+      filteredItems.forEach((item, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = `thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${idx === currentIndex ? 'border-amber-600 bg-amber-50/90 dark:bg-amber-950/60 shadow-md scale-[1.02]' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300'}`;
+        thumb.setAttribute('data-idx', idx);
+        thumb.onmouseenter = () => playSfx('hover');
+        thumb.onclick = () => {
+          currentIndex = idx;
+          isFlipped = false;
+          document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+          playSfx('slide');
+          triggerHaptic('light');
+          renderMainStage();
+        };
+
+        thumb.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] font-black mb-1">
+            <span class="flex items-center gap-1">
+              <span>${item.emoji}</span>
+              <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">#${item.id < 10 ? '0' + item.id : item.id}</span>
+            </span>
+            <span class="text-slate-400 font-bold truncate max-w-[90px]">${item.categoryName}</span>
+          </div>
+          <p class="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-2 leading-snug">
+            ${item.title}
+          </p>
+        `;
+
+        strip.appendChild(thumb);
+      });
+    }
+
+    // 更新縮圖當前選取高亮並滾動置中
+    function updateThumbnailSelection() {
+      document.querySelectorAll('.thumbnail-item').forEach((el, idx) => {
+        if (idx === currentIndex) {
+          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-amber-600 bg-amber-50/90 dark:bg-amber-950/60 shadow-md scale-[1.02] opacity-100';
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300';
+        }
+      });
+    }
+
+    // 渲染網格模式
+    function renderGridCards() {
+      const container = document.getElementById('gridCardsContainer');
+      container.innerHTML = '';
+
+      filteredItems.forEach((item) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex flex-col justify-between space-y-4 hover:border-amber-400 transition';
+        cardEl.onmouseenter = () => playSfx('hover');
+
+        cardEl.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="flex items-center gap-1.5">
+                <span class="text-lg">${item.emoji}</span>
+                <span class="px-3 py-1 text-xs font-black rounded-lg border bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800">
+                  ${item.categoryName} #${item.id < 10 ? '0' + item.id : item.id}
+                </span>
+              </span>
+              <span class="text-xs text-slate-400 font-bold">${item.tag}</span>
+            </div>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white leading-snug mb-2">
+              ${item.title}
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+              ${item.desc}
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <button onclick="switchToSlideById(${item.id})" class="text-sm font-black text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
+              進入簡報舞台 ➔
+            </button>
+          </div>
+        `;
+        container.appendChild(cardEl);
+      });
+    }
+
+    function switchToSlideById(id) {
+      const idx = filteredItems.findIndex(s => s.id === id);
+      if (idx !== -1) {
+        currentIndex = idx;
+        toggleViewMode('presentation');
+        renderMainStage();
+      }
+    }
+
+    // 模式切換
+    function toggleViewMode(targetMode) {
+      viewMode = targetMode || (viewMode === 'presentation' ? 'grid' : 'presentation');
+      const presView = document.getElementById('presentationView');
+      const gridV = document.getElementById('gridView');
+      const modeText = document.getElementById('viewModeText');
+      const modeIcon = document.getElementById('viewModeIcon');
+
+      if (viewMode === 'presentation') {
+        presView.classList.remove('hidden');
+        gridV.classList.add('hidden');
+        modeText.innerText = '全覽網格';
+        modeIcon.setAttribute('data-lucide', 'grid');
+        renderMainStage();
+      } else {
+        presView.classList.add('hidden');
+        gridV.classList.remove('hidden');
+        modeText.innerText = '簡報模式';
+        modeIcon.setAttribute('data-lucide', 'presentation');
+        renderGridCards();
+      }
+      lucide.createIcons();
+    }
+
+    document.getElementById('btnViewMode').addEventListener('click', () => {
+      playSfx('slide');
+      toggleViewMode();
+    });
+
+    // 鍵盤左右鍵切換簡報
+    window.addEventListener('keydown', (e) => {
+      if (viewMode !== 'presentation') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        toggleSlideFlip();
+      }
+    });
+
+    // 分類篩選
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-amber-600', 'text-white', 'shadow-sm');
+          b.classList.add('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+        });
+        btn.classList.add('active', 'bg-amber-600', 'text-white', 'shadow-sm');
+        btn.classList.remove('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+
+        currentCategory = btn.getAttribute('data-category');
+        filteredItems = currentCategory === 'all' ? [...humanitiesData] : humanitiesData.filter(s => s.category === currentCategory);
+        currentIndex = 0;
+        isFlipped = false;
+        
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+        renderThumbnails();
+        if (viewMode === 'grid') renderGridCards();
+      });
+    });
+
+    // 亮色/暗色主題切換 (預設亮色)
+    const themeBtn = document.getElementById('btnThemeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      playSfx('flip');
+    });
+
+    // 音效開關
+    document.getElementById('btnSoundToggle').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundText').innerText = soundEnabled ? '音效已開' : '音效靜音';
+      const icon = document.getElementById('soundIcon');
+      if (soundEnabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        playSfx('flip');
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+      }
+      lucide.createIcons();
+    });
+
+    // Toast 提示
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      toastMsg.innerText = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-slide');
+      
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2500);
+    }
+
+    // 頁面初次加載
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMainStage();
+      renderThumbnails();
+    });
+  </script>
+</body>
+</html>

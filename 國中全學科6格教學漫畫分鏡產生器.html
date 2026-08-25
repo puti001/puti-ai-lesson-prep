@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO & Google 搜尋優化與品牌識別 -->
+  <title>Puti-AI | 國中全學科 6 格沉浸式教學漫畫分鏡 AI 提示詞產生器</title>
+  <meta name="description" content="Puti-AI 屏東縣後庄國小黃朝榮老師 (Puti老師) 專為國中全科教師打造的 6 格沉浸式大螢幕教學漫畫產生器。涵蓋萬用分鏡產生器、蘇軾貶官美食求生記、珍奶點餐情境漫畫、阿基米德浮力狂奔記、孟德爾八年種豆記、鴻門宴座位心機、網購消費者保護法。">
+  <meta name="keywords" content="Puti-AI, 黃朝榮, 六格漫畫, 教學分鏡, 國中文言文漫畫, 科學史漫畫, 英文情境漫畫, 歷史漫畫, AI提示詞, Gemini Prompt, 國中課堂破冰">
+  <meta name="author" content="屏東縣後庄國小 黃朝榮老師 (Puti-AI)">
+  <meta property="og:title" content="Puti-AI | 國中全學科 6 格沉浸式教學漫畫分鏡 AI 提示詞產生器">
+  <meta property="og:description" content="Puti-AI 專為國中教師設計的大螢幕 16:9 六格教學漫畫分鏡產生器。一鍵生成吸引全班目光的課堂破冰神器！">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            puti: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+              gold: '#f59e0b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 解決 GPU 縮放模糊，確保字體 100% 銳利清晰 */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* 3D 翻牌核心樣式 */
+    .perspective-1500 {
+      perspective: 1500px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .slide-card-inner {
+      transition: transform 0.65s cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+    .slide-card-flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* 自定義縮圖橫向滾動條 */
+    .thumbnail-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    .thumbnail-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 9999px;
+    }
+    .dark .thumbnail-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .thumbnail-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .dark .thumbnail-scroll::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+    .thumbnail-scroll::-webkit-scrollbar-thumb:hover {
+      background: #ec4899;
+    }
+
+    /* 聚光燈舞台光暈 */
+    .stage-glow-light {
+      background: radial-gradient(circle at 50% 35%, rgba(236, 72, 153, 0.09) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 75%);
+    }
+    .stage-glow-dark {
+      background: radial-gradient(circle at 50% 35%, rgba(236, 72, 153, 0.22) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 75%);
+    }
+
+    /* Toast 動畫 */
+    @keyframes toastUp {
+      0% { transform: translate(-50%, 40px); opacity: 0; }
+      100% { transform: translate(-50%, 0); opacity: 1; }
+    }
+    .toast-slide {
+      animation: toastUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- 頂部導航列：Puti-AI 國中 6 格沉浸式教學漫畫分鏡神器 -->
+  <header class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Puti-AI 醒目品牌與標題 -->
+      <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" class="flex items-center gap-3.5 group" onmouseenter="playSfx('hover')">
+        <div class="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 p-0.5 shadow-md shadow-pink-500/25 group-hover:scale-105 transition-transform duration-300 shrink-0">
+          <div class="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <span class="font-black text-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 dark:from-pink-400 dark:to-purple-400 bg-clip-text text-transparent">P</span>
+          </div>
+          <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-pink-500"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="font-black tracking-tight text-xl sm:text-2xl text-slate-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition flex items-center gap-1.5">
+              <span>Puti-AI</span>
+              <span class="text-pink-600 dark:text-pink-400">國中 6 格沉浸式教學漫畫</span>
+              <span class="text-purple-600 dark:text-purple-400">分鏡產生器</span>
+            </h1>
+            <span class="px-2.5 py-0.5 text-xs font-black tracking-wide uppercase rounded-full bg-pink-50 dark:bg-pink-950/60 border border-pink-200 dark:border-pink-800 text-pink-700 dark:text-pink-300">大螢幕破冰版</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bold mt-0.5">
+            全學科通用母卡 ╳ 國文 ╳ 英語 ╳ 理化 ╳ 生物 ╳ 歷史 ╳ 公民 ｜ 屏東縣後庄國小 黃朝榮老師作品
+          </p>
+        </div>
+      </a>
+
+      <!-- 右側控制按鈕（跨專題導流、視圖、音效、明暗切換） -->
+      <div class="flex items-center gap-1.5 sm:gap-2 self-end md:self-center">
+        <!-- 導流按鈕群 -->
+        <a href="國中教師AI解痛錦囊卡牌.html" onmouseenter="playSfx('hover')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 text-xs font-black transition flex items-center gap-1 border border-indigo-200 dark:border-indigo-800">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400"></i>
+          <span>全校錦囊</span>
+        </a>
+        <a href="國中數理13大互動模擬器Prompt庫.html" onmouseenter="playSfx('hover')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/80 text-emerald-700 dark:text-emerald-300 text-xs font-black transition flex items-center gap-1 border border-emerald-200 dark:border-emerald-800">
+          <i data-lucide="flask-conical" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+          <span>數理專區</span>
+        </a>
+        <a href="國中文史與社會12大互動神器Prompt庫.html" onmouseenter="playSfx('hover')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 text-xs font-black transition flex items-center gap-1 border border-amber-200 dark:border-amber-800">
+          <i data-lucide="scroll" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400"></i>
+          <span>文史社會</span>
+        </a>
+
+        <!-- 視圖切換按鈕 -->
+        <button id="btnViewMode" onmouseenter="playSfx('hover')" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+          <i data-lucide="grid" class="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" id="viewModeIcon"></i>
+          <span id="viewModeText" class="hidden sm:inline">全覽網格</span>
+        </button>
+
+        <!-- 音效開關 -->
+        <button id="btnSoundToggle" onmouseenter="playSfx('hover')" class="p-2 sm:px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+          <i data-lucide="volume-2" class="w-4 h-4 text-pink-600 dark:text-pink-400" id="soundIcon"></i>
+        </button>
+
+        <!-- 明暗模式切換 (預設為亮色) -->
+        <button id="btnThemeToggle" onmouseenter="playSfx('hover')" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 transition border border-slate-200 dark:border-slate-700 shadow-sm" title="切換明暗模式">
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-amber-500"></i>
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Canva 簡報模式視圖 (預設焦點舞台) -->
+  <div id="presentationView" class="flex-1 flex flex-col justify-between w-full max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 stage-glow-light dark:stage-glow-dark">
+    
+    <!-- 上方輔助列：目前頁碼、分類篩選標籤、鍵盤導航提示 -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-4">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0" id="filterContainer">
+        <button onmouseenter="playSfx('hover')" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-pink-600 text-white shadow-sm" data-category="all">
+          全部漫畫 (11)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="literacy">
+          🛡️ 科技與媒體素養 (4)
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="master">
+          👑 萬用母卡
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="chinese">
+          📖 國文示範
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="english">
+          🔤 英語示範
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="science">
+          🔬 科學史示範
+        </button>
+        <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="social">
+          🏛️ 社會示範
+        </button>
+      </div>
+
+      <!-- 簡報頁碼與操作提示 -->
+      <div class="flex items-center gap-3 text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400">
+        <span class="hidden md:inline-flex items-center gap-1 bg-slate-200/60 dark:bg-slate-800/60 px-3 py-1 rounded-lg">
+          <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded border text-xs">←</kbd>
+          <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded border text-xs">→</kbd> 切換
+        </span>
+        <span class="px-3.5 py-1 bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800 rounded-xl font-black text-sm sm:text-base">
+          <span id="currentSlideNum">01</span> / <span id="totalSlideNum">11</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- 中央簡報卡片舞台 (Main Stage：大字體 ＋ 漫畫亮點 ＋ 飽滿排版) -->
+    <div class="relative w-full flex items-center justify-center my-auto py-2 sm:py-4">
+      
+      <!-- 左切換箭頭 -->
+      <button id="btnPrevSlide" onmouseenter="playSfx('hover')" onclick="prevSlide()" class="absolute -left-2 sm:-left-6 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white shadow-xl hover:bg-pink-50 hover:border-pink-400 dark:hover:bg-slate-700 flex items-center justify-center transition active:scale-95" title="上一張 (鍵盤 ←)">
+        <i data-lucide="chevron-left" class="w-7 h-7"></i>
+      </button>
+
+      <!-- 3D 簡報主卡片外框 -->
+      <div id="mainStageCard" class="perspective-1500 w-full max-w-4xl h-[520px] sm:h-[550px]">
+        <div id="slideCardInner" class="slide-card-inner relative w-full h-full transform-style-3d cursor-pointer" onclick="toggleSlideFlip(event)">
+          
+          <!-- 卡片正面 (漫畫分鏡核心功能與大螢幕呈現亮點) -->
+          <div id="stageFront" class="card-front absolute inset-0 w-full h-full bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200/90 dark:border-slate-700/80 p-6 sm:p-9 flex flex-col justify-between backface-hidden shadow-2xl transition-all overflow-hidden">
+            <!-- 內容由 JS 動態填入 -->
+          </div>
+
+          <!-- 卡片背面 (完整可執行 Prompt ＋ 一鍵複製 ＋ 直達 Gemini 實測) -->
+          <div id="stageBack" class="card-back absolute inset-0 w-full h-full bg-gradient-to-br from-pink-950 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-9 flex flex-col justify-between backface-hidden rotate-y-180 shadow-2xl border-2 border-pink-500/50 overflow-hidden" onclick="event.stopPropagation()">
+            <!-- 內容由 JS 動態填入 -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 右切換箭頭 -->
+      <button id="btnNextSlide" onmouseenter="playSfx('hover')" onclick="nextSlide()" class="absolute -right-2 sm:-right-6 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white shadow-xl hover:bg-pink-50 hover:border-pink-400 dark:hover:bg-slate-700 flex items-center justify-center transition active:scale-95" title="下一張 (鍵盤 →)">
+        <i data-lucide="chevron-right" class="w-7 h-7"></i>
+      </button>
+    </div>
+
+    <!-- 底部 Canva 風格縮圖滑桿 (Thumbnail Filmstrip Carousel) -->
+    <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs sm:text-sm font-black tracking-wide text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+          <i data-lucide="film" class="w-4 h-4 text-pink-500"></i>
+          <span>7 大漫畫分鏡縮圖快選滑桿（點擊立即跳轉）</span>
+        </span>
+        <button onclick="toggleSlideFlip(event)" class="text-xs sm:text-sm font-bold text-pink-600 dark:text-pink-400 hover:underline flex items-center gap-1">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span>翻轉當前卡片</span>
+        </button>
+      </div>
+
+      <!-- 橫向滾動縮圖列 -->
+      <div id="thumbnailStrip" class="thumbnail-scroll flex items-center gap-3 overflow-x-auto py-2 px-1 scroll-smooth">
+        <!-- 縮圖將由 JS 動態生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 全覽網格模式視圖 (Grid View Mode，預設隱藏) -->
+  <div id="gridView" class="hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="gridCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 網格卡片渲染 -->
+    </div>
+  </div>
+
+  <!-- 底部版權宣告與 Padlet 連結 (固定符合使用者規範) -->
+  <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-850 py-8 mt-10 text-slate-500 dark:text-slate-400 text-xs transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+      <p class="text-slate-600 dark:text-slate-300 font-medium max-w-3xl mx-auto leading-relaxed text-xs sm:text-sm">
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 
+        <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener noreferrer" class="text-pink-600 dark:text-amber-400 hover:underline font-bold transition">
+          點此前往
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- 複製成功的浮動 Toast -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900 text-white dark:bg-pink-600 text-sm font-bold px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 border border-slate-700 dark:border-pink-400">
+    <i data-lucide="check-circle-2" class="w-5 h-5 text-pink-400 dark:text-white"></i>
+    <span id="toastMessage">已成功複製提示詞！可直接至 Gemini 貼上執行</span>
+  </div>
+
+  <!-- JavaScript 核心：7大漫畫分鏡產生器資料庫與互動邏輯 -->
+  <script>
+    // 11 大國中 6 格沉浸式教學漫畫分鏡資料庫 (含 108 課綱科技資訊與媒體素養 4 大專案)
+    const comicData = [
+      {
+        id: 1,
+        category: "literacy",
+        categoryName: "🛡️ 科技素養篇",
+        icon: "cpu",
+        emoji: "🤖",
+        tag: "科技：人機協作 ╳ 精準提問",
+        title: "108課綱科技篇：小明《從死記依賴到 AI 賦能創作者》六格漫畫",
+        desc: "從單純軟體操作進化到『運算思維與人機協作』！小明直接複製貼上作業被退件，學會 PTCF 精準提問與問題拆解，從科技消費者變身為跨領域專題創作者！",
+        features: "⚡ 核心亮點：拒絕盲目死背答案、PTCF 精準提問框架、從科技消費者蛻變創作者",
+        promptText: "請依據 108 課綱「科技資訊與媒體素養」中的【科技維度（Technology：人機協作與運算思維）】，生成一份適合大螢幕投影的「16:9 六格沉浸式教學漫畫分鏡劇本」：\n- 橫幅標題：『別當 AI 的搬運工！小明的人機協作與科技創作者進化史』\n- 格1【偷懶危機】：小明直接對 AI 說「幫我寫自然專題」，AI 產出一篇充斥大專院校術語但缺乏靈魂的報告，小明直接複製交差。\n- 格2【當頭棒喝】：老師退件並指出：「AI 不是幫你寫作業的槍手，而是激發你思考的助理！」小明羞愧低頭。\n- 格3【運算思維提問】：老師傳授 PTCF 提問法，對話框留白搶答：「未來的競爭力不在背答案，而在於學會__________！」\n- 格4【人機協作實作】：小明將大問題拆解為 3 個小任務，引導 AI 一起比對臺灣水資源數據、繪製圖表與設計實驗方案。\n- 格5【跨領域成果】：小明上台發表結合生物與程式模擬的精彩專題，自信滿滿獲得全班熱烈掌聲！\n- 格6【素養金句總結】：總結 108 課綱科技素養核心：「駕馭科技而非依賴科技，成為數位時代的創造者！」"
+      },
+      {
+        id: 2,
+        category: "literacy",
+        categoryName: "🛡️ 資訊素養篇",
+        icon: "search-check",
+        emoji: "🕵️",
+        tag: "資訊：辨識 AI 幻覺 ╳ 偏見",
+        title: "108課綱資訊篇：小明《AI 一本正經胡說八道？》事實查核漫畫",
+        desc: "直擊 AI 幻覺（Hallucination）與訓練數據偏見！小明問 AI 搞笑歷史問題差點信以為真，學會批判性查核（Fact-checking）與多方交叉比對的防禦性素養！",
+        features: "⚡ 核心亮點：破解 AI 幻覺看似合理的陷阱、交叉查證求真、理解數據偏見與刻板印象",
+        promptText: "請依據 108 課綱「科技資訊與媒體素養」中的【資訊維度（Information：辨識 AI 幻覺與偏見）】，生成一份適合大螢幕投影的「16:9 六格沉浸式教學漫畫分鏡劇本」：\n- 橫幅標題：『一本正經講幹話？小明的 AI 幻覺大偵探與事實查核指南』\n- 格1【完美假象】：小明問 AI「臺灣哪位歷史皇帝最愛喝珍奶？」，AI 竟煞有其事編造出「明神宗曾下旨進貢波霸」的文獻與論文引註！\n- 格2【險些翻車】：小明驚呼「太酷了！」正想拿去課堂分享，一旁的圖書館老師提醒：「等等，明朝有臺灣和珍奶嗎？」\n- 格3【查核思維留白】：老師在黑板寫下大字，對話框留白互動：「面對 AI 完美的回答，必須保持__________的查核態度！」\n- 格4【多方交叉求真】：小明查閱中央研究院資料庫與教科書，發現歷史事實，並拆穿 AI 是基於機率拼湊出的「幻覺（Hallucination）」！\n- 格5【數據偏見省思】：小明進一步測試 AI 生成各行各業人物，發現畫面充斥刻板印象，深刻理解「AI 數據可能帶有人類的偏見」。\n- 格6【資訊素養小抄】：總結「防 AI 詐欺三步驟（查來源、交叉比對、邏輯常理檢視）」，打造數位求真防護罩。"
+      },
+      {
+        id: 3,
+        category: "literacy",
+        categoryName: "🛡️ 媒體素養篇",
+        icon: "video",
+        emoji: "🎭",
+        tag: "媒體：Deepfake ╳ 演算法框架",
+        title: "108課綱媒體篇：班長《真假影片與同溫層之謎》數位識讀漫畫",
+        desc: "破解 Deepfake 深度偽造與演算法過濾氣泡（Filter Bubble）！班群瘋傳假影片引發公審危機，師生一同識破深偽破綻、探討數位倫理與肖像權法律！",
+        features: "⚡ 核心亮點：識破 Deepfake 換臉微破綻、破除演算法同溫層操控、建立數位倫理與法治",
+        promptText: "請依據 108 課綱「科技資訊與媒體素養」中的【媒體維度（Media：破解深度偽造與演算法框架）】，生成一份適合大螢幕投影的「16:9 六格沉浸式教學漫畫分鏡劇本」：\n- 橫幅標題：『看見不等於真實！班長遭 Deepfake 換臉與演算法識讀大作戰』\n- 格1【群組瘋傳】：班級群組瘋傳一段「班長在福利社偷藏飲料」的逼真短影音，引發全班熱議與誤會，班長委屈大哭。\n- 格2【深偽破綻偵查】：資訊老師帶著全班放大逐格檢視：眨眼不自然、髮絲邊緣模糊、聲音與唇形有微秒延遲——這是 AI Deepfake 深度偽造！\n- 格3【識讀核心留白】：老師引導全班反思，對話框留白互動：「在數位自媒體時代，看見不等於真實，__________是現代公民必備能力！」\n- 格4【演算法氣泡揭密】：老師展示社群平台的推薦機制：「演算法會根據你的喜好餵養極端內容，讓你被困在『過濾氣泡（Filter Bubble）』裡！」\n- 格5【法律與倫理界線】：公民老師到場提醒：製造與散布 AI 偽造影音已觸犯個人資料保護法與刑法加重誹謗罪，同理心比轉傳更重要。\n- 格6【媒體素養準則】：總結「數位閱聽人自保 3 不政策（不盲信、不轉傳、不侵權）」，守護健康的數位人際關係。"
+      },
+      {
+        id: 4,
+        category: "literacy",
+        categoryName: "🛡️ 素養總結篇",
+        icon: "shield",
+        emoji: "🌟",
+        tag: "總結：問對問題 ╳ 人類核心價值",
+        title: "108課綱總結篇：《AI 會取代我嗎？》人類不可替代的三大超能力",
+        desc: "面對 AI 強大算力的焦慮，用 6 格漫畫向國中生證明：AI 最擅長給出已知答案，而人類無可取代的終極價值在於『問對問題』、『跨領域批判思考』與『同理心』！",
+        features: "⚡ 核心亮點：破除學生被 AI 取代的恐懼、三大人類獨特能力、108 課綱素養防護罩",
+        promptText: "請依據 108 課綱「科技資訊與媒體素養」的總結精神，生成一份給國中全體學生的鼓舞啟發型「16:9 六格沉浸式教學漫畫分鏡劇本」：\n- 橫幅標題：『AI 時代，什麼才是我們無法被取代的超能力？』\n- 格1【未來的焦慮】：小明看著 AI 繪圖、寫代碼、解數學題都在幾秒內完成，沮喪地問：「既然 AI 什麼都會，我們讀書還有什麼意義？」\n- 格2【算力 vs 溫度】：畫面呈現冰冷的伺服器機房與溫暖的校園生活對比，AI 可以計算萬物，卻無法體會一碗熱湯的溫暖或朋友受挫時的心痛。\n- 格3【人類超能力留白】：老師在黑板畫下三大光芒護盾，留白互動：「AI 擅長給答案，而人類最強大的核心價值在於（__________）！」\n- 格4【跨領域批判思考】：當面對複雜的生活與氣候變遷難題，人類能夠打破常規、結合不同學科提出前所未有的原創假設。\n- 格5【同理心與溫度】：在醫療、教育與藝術中，人類發自內心的同理、關懷與倫理底線，是任何機器演算法無法模仿的靈魂。\n- 格6【素養防護罩昇華】：小明眼中重現自信光芒，手握 AI 工具微笑前行：「108 課綱素養就是我的防護罩，善用 AI，成為更好的自己！」"
+      },
+      {
+        id: 5,
+        category: "master",
+        categoryName: "👑 萬用母卡",
+        icon: "sparkles",
+        emoji: "🎨",
+        tag: "全學科 6 格大螢幕漫畫母卡",
+        title: "國中全學科「大螢幕橫幅 ＋ 6 格教學漫畫 ╳ 完型互動」萬用產生器",
+        desc: "只要替換【科目】與【單元/課文名稱】，AI 10 秒產出符合 16:9 大螢幕展示的 6 格分鏡劇本（含角色台詞、視覺畫面描寫、考點留白互動題目與一鍵生圖 Prompt）！",
+        features: "⚡ 核心亮點：大螢幕 16:9 六格分鏡、角色幽助對白、第 3/6 格完型填空課堂互動",
+        promptText: "請幫我將國中【{grade}】【{subject}】的單元/故事『[請輸入課文、作者、科學史、歷史事件或單字文法主題]』設計為一份適合投影大螢幕展示的「16:9 六格沉浸式教學漫畫分鏡劇本」：\n1. 【大標題與破冰引言】：設計一個吸睛幽默的橫幅大標題（如：東坡肉求生記 / 浮力赤裸狂奔記）。\n2. 【六格分鏡腳本】：\n   - 格1【起】：故事起因或主角遭遇的窘境。\n   - 格2【承】：事件發展與衝突升級。\n   - 格3【互動留白】：關鍵轉折點！將主角的關鍵台詞/科學結論設計為（_____）完型填空，留給台下學生搶答！\n   - 格4【轉】：高潮時刻或意外頓悟。\n   - 格5【合】：事件圓滿解決或深刻教訓。\n   - 格6【迷因/考點總結】：現代視角的幽默吐槽或會考核心觀念總整理。\n3. 【每格詳細內容】：包含【視覺畫面描述】、【角色對話框】、【旁白 OS】。\n4. 【AI 繁中生圖 Prompt】：為整套漫畫提供一組畫風統一（日系熱血/美式科普/水墨繪本）的生圖提示詞。"
+      },
+      {
+        id: 6,
+        category: "chinese",
+        categoryName: "📖 國文示範",
+        icon: "scroll",
+        emoji: "🍜",
+        tag: "蘇軾美食與貶官人生",
+        title: "國文示範：蘇軾《東坡肉美食求生記》六格幽默生平漫畫",
+        desc: "以蘇軾被貶黃州、惠州、儋州為背景，將千古文豪被貶官的坎坷命運轉化為「走到哪吃到哪」的樂天美食漫畫，學生在爆笑中秒懂蘇軾的曠達胸襟與《定風波》背景！",
+        features: "⚡ 核心亮點：蘇軾三次被貶時空線、東坡肉與荔枝典故、定風波何妨吟嘯且徐行",
+        promptText: "請依據國中國文課文《定風波》與蘇軾生平，生成一份「蘇軾《東坡肉美食求生記》16:9 六格教學漫畫分鏡劇本」：\n- 橫幅標題：『人生如逆旅，我亦是個大吃貨！蘇東坡的北宋美食求生指南』\n- 格1【烏台詩案】：蘇軾被捕入獄，以為要被砍頭，感嘆仕途險惡。\n- 格2【黃州煮肉】：被貶黃州窮困潦倒，發現當地豬肉賤如泥，研發出小火慢燉的『東坡肉』！\n- 格3【沙湖道中雨】：在黃州遇大雨，同行皆狼狽，蘇軾卻悠然寫下：（_____何妨吟嘯且徐行）。\n- 格4【再貶惠州】：年過半百被貶嶺南荒蠻之地，卻大笑『日啖荔枝三百顆，不辭長作嶺南人』。\n- 格5【絕地儋州】：被發配到連米都沒有的海南島，竟然跟當地原住民一起吃生蠔、教書辦學！\n- 格6【考點昇華】：蘇軾晚年總結『問汝平生功業，黃州惠州儋州』，現代學生吐槽『原來曠達就是吃飽了繼續樂觀！』"
+      },
+      {
+        id: 7,
+        category: "english",
+        categoryName: "🔤 英語示範",
+        icon: "coffee",
+        emoji: "🧋",
+        tag: "點餐出包 ╳ 語法迷思",
+        title: "英語示範：臺灣交換生 Alex《珍奶點餐大冒險》情境漫畫",
+        desc: "Alex 第一次在臺灣手搖店點珍珠奶茶，面對甜度（Sugar level）、冰塊（Ice level）與加料（Toppings）引發的爆笑對話，結合課本核心單字與點餐實用句型！",
+        features: "⚡ 核心亮點：手搖飲甜度冰塊英文、Can I have... 句型、留白單字填空互動",
+        promptText: "請為國中英語課（飲食與日常社交單元）設計一份「Alex《珍奶點餐大冒險》16:9 六格教學漫畫分鏡劇本」：\n- 橫幅標題：『What size? How sweet? Alex's First Boba Adventure!』\n- 格1【走進手搖店】：Alex 興奮地看著密密麻麻的菜單，自信地說：'One milk tea, please!'\n- 格2【店員靈魂拷問】：店員飛速發問：'Sugar level and ice level? Large or medium?' Alex 瞬間滿頭大汗呆住。\n- 格3【單字填空挑戰】：Alex 想要微糖微冰，對話框留白：'Could I have (________) sugar and (________) ice?' 讓全班搶答！\n- 格4【加料危機】：店員問：'Do you want boba, pudding, or grass jelly?' Alex 選擇全加，結果杯子滿到吸不上來！\n- 格5【第一口驚艷】：Alex 猛吸一口大喊：'This is heavenly! It's chewy and delicious!'\n- 格6【實用小抄總結】：右側附上手搖店必備英文對照表（No sugar / Half sugar / Less ice / No ice），附帶 1 道會考生活情境題。"
+      },
+      {
+        id: 8,
+        category: "science",
+        categoryName: "🔬 科學史示範",
+        icon: "droplet",
+        emoji: "🛁",
+        tag: "阿基米德浮力定律",
+        title: "理化示範：阿基米德《洗澡赤裸狂奔記》浮力定律科學史漫畫",
+        desc: "敘利亞國王懷疑皇冠被摻假金，阿基米德苦思多日走進浴缸，看見水溢出來的瞬間頓悟浮力與排開體積原理，大喊『Eureka!』的經典科學史漫畫！",
+        features: "⚡ 核心亮點：排水法測量體積、浮力等於排開液體重 (B=V排×D液)、Eureka 經典名場面",
+        promptText: "請為國中理化『浮力與密度』單元，設計一份「阿基米德《洗澡赤裸狂奔記》16:9 六格教學漫畫分鏡劇本」：\n- 橫幅標題：『Eureka! 一個浴缸引發的科學革命——阿基米德浮力定律』\n- 格1【國王的難題】：敘拉古國王給了一頂王冠，限期查出金匠是否偷偷摻了銀子，但絕對不能破壞王冠。\n- 格2【苦思冥想】：阿基米德在家算到頭髮抓狂，形狀不規則的王冠根本無法算出體積。\n- 格3【浴缸溢水頓悟】：走進注滿水的浴缸，看見水嘩啦啦溢出來，阿基米德頭上亮起燈泡：（物體排開的水量＝__________）！\n- 格4【赤裸狂奔】：阿基米德連衣服都沒穿，光著身子衝上大街高喊：'Eureka! Eureka!（我找到了！）'\n- 格5【天平水桶實驗】：在王宮當眾將等重的純金塊與王冠分別放入水桶，王冠排開的水明顯更多，真相大白！\n- 格6【公式與考點總結】：總結阿基米德浮力公式：浮力 B = V排 × D液，提示會考最常考的沉體與浮體浮力計算口訣。"
+      },
+      {
+        id: 9,
+        category: "science",
+        categoryName: "🔬 科學史示範",
+        icon: "sprout",
+        emoji: "🌱",
+        tag: "孟德爾八年種豆遺傳",
+        title: "生物示範：孟德爾《修道院八年種豆記》遺傳學之父漫畫",
+        desc: "孤獨的修道士孟德爾在後花園默默種植 28,000 株豌豆，手工給每一朵花授粉，用數學統計揭開顯性、隱性與分離律的科學傳奇！",
+        features: "⚡ 核心亮點：豌豆七大性狀、親代P/第一子代F1/第二子代F2分離律、3:1 表現型比例",
+        promptText: "請為國中生物『遺傳法則與孟德爾』單元，設計一份「孟德爾《修道院八年種豆記》16:9 六格教學漫畫分鏡劇本」：\n- 橫幅標題：『種了 28,000 株豌豆的孤獨修道士：孟德爾與遺傳密碼』\n- 格1【修道院的菜園】：孟德爾看著修道院後花園的豌豆，決定解開『為什麼小孩長得像父母』的世紀之謎。\n- 格2【嚴謹手工授粉】：孟德爾拿著小剪刀去雄、毛筆點花粉，套上紙袋防止蜜蜂亂飛，記錄 7 大性狀。\n- 格3【F1 第一子代驚喜】：純種高莖（TT）配純種矮莖（tt），生出的第一代竟然全都是（_________）！矮莖特徵去哪了？\n- 格4【F2 第二子代奇蹟】：讓 F1 自交，矮莖竟然奇蹟般重新出現！孟德爾統計了數千顆種子，比例剛好是 3:1！\n- 格5【發表卻被埋沒】：孟德爾發表論文，台下學者全部聽不懂數學統計，論文被埋沒了 35 年。\n- 格6【科學精神總結】：總結『顯性基因（T）會掩蓋隱性基因（t）』觀念，並讚揚孟德爾堅持 8 年的科學家精神。"
+      },
+      {
+        id: 10,
+        category: "social",
+        categoryName: "🏛️ 社會示範",
+        icon: "swords",
+        emoji: "🍷",
+        tag: "鴻門宴座位與歷史心理",
+        title: "歷史示範：楚漢相爭《鴻門宴的致命飯局》心機座位漫畫",
+        desc: "劉邦赴項羽宴席，從座次尊卑（東向坐、南向坐）、項莊舞劍沛公遇險、樊噲闖帳到劉邦藉故尿遁，生動還原這場改變中國歷史的生死飯局！",
+        features: "⚡ 核心亮點：古代室內座次尊卑方位、項莊舞劍意在沛公、劉邦危機管理與尿遁",
+        promptText: "請為國中歷史與國文跨科『楚漢相爭與鴻門宴』設計一份「《鴻門宴的致命飯局》16:9 六格教學漫畫分鏡劇本」：\n- 橫幅標題：『天下第一危險飯局！鴻門宴上的座次心機與生死逃脫』\n- 格1【大軍壓境】：項羽四十萬大軍駐紮鴻門，劉邦僅十萬人，劉邦帶著張良與禮物硬著頭皮赴宴謝罪。\n- 格2【尊卑座位學】：項羽面東而坐（最尊位），劉邦面北而坐（臣子位），項羽霸氣外露，范增連舉三次玉玦暗示動手。\n- 格3【項莊舞劍】：項莊拔劍起舞，意在沛公！項伯拔劍對舞，張良緊急溜出帳外找（_________）救駕！\n- 格4【樊噲闖帳】：樊噲持盾撞倒衛兵衝入帳內，怒吃生豬腿，義正言辭痛斥項羽不講道義，項羽讚其壯士。\n- 格5【金蟬脫殼】：劉邦藉口上廁所（尿遁），在張良掩護下抄小路狂奔回霸上軍營。\n- 格6【歷史反思總結】：項羽錯失良機，范增氣得砸碎玉斗嘆『奪項王天下者必沛公也』。總結楚漢勝敗關鍵與成語考點。"
+      },
+      {
+        id: 11,
+        category: "social",
+        categoryName: "🏛️ 社會示範",
+        icon: "shopping-bag",
+        emoji: "📱",
+        tag: "消保法 ╳ 網路購物陷阱",
+        title: "公民示範：國中生小明《網購一頁式假貨求生記》消保法漫畫",
+        desc: "小明在社群平台看到超便宜限量球鞋，貨到付款拆開竟是一雙破拖鞋！透過申訴、存證信函到消保官介入，完整演示七天鑑賞期與消費者權利！",
+        features: "⚡ 核心亮點：一頁式廣告詐騙特徵、消保法第 19 條 7 天無條件退貨、消保官申訴專線 1950",
+        promptText: "請為國中公民『經濟生活與消費者權益保護』單元，設計一份「小明《網購一頁式假貨求生記》16:9 六格教學漫畫分鏡劇本」：\n- 橫幅標題：『拆箱變破拖鞋！國中生小明的消保法七天鑑賞期維權大作戰』\n- 格1【心動下單】：小明在 IG 看到『倒閉清倉 1 折限量球鞋』，只要 899 元免運，立刻興奮下單貨到付款。\n- 格2【開箱崩潰】：超商取貨付款後回家開箱，裡面竟然是一雙泛黃的廉價藍白拖，小明當場石化崩潰！\n- 格3【聯絡賣家】：小明傳訊要求退貨，賣家秒讀並直接將他封鎖！對話框提示：（消保法第 19 條規定通訊交易享有______天猶豫期）！\n- 格4【關鍵求助】：小明沒有自認倒楣，撥打全國消費者服務專線『1950』，並聯絡超商物流公司申請『止付退款』。\n- 格5【成功退款】：在消保官與超商爭議處理機制下，物流公司成功扣留貨款，並將 899 元全額退還給小明！\n- 格6【公民防詐小抄】：整理『一頁式詐騙 4 大特徵（無公司地址、超低價、限時倒數、只能貨到付款）』與公民會考必考法條。"
+      }
+    ];
+
+    // 全局狀態
+    let currentIndex = 0;
+    let filteredComics = [...comicData];
+    let currentCategory = 'all';
+    let isFlipped = false;
+    let viewMode = 'presentation';
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    // 健全強大的 Web Audio API 聲音引擎
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    ['click', 'pointerdown', 'keydown', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, initAudio, { once: true });
+    });
+
+    function playSfx(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'hover') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(580, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } 
+        else if (type === 'flip') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(920, now + 0.09);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        }
+        else if (type === 'slide') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        }
+        else if (type === 'copy') {
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(659.25, now);
+          osc2.frequency.setValueAtTime(987.77, now + 0.08);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.08);
+          osc2.start(now + 0.08);
+          osc2.stop(now + 0.3);
+        }
+      } catch (e) {}
+    }
+
+    function triggerHaptic(type = 'light') {
+      if ('vibrate' in navigator) {
+        try {
+          if (type === 'light') navigator.vibrate(20);
+          else if (type === 'success') navigator.vibrate([25, 45, 25]);
+        } catch (e) {}
+      }
+    }
+
+    // 渲染中央 Canva 主舞台卡片
+    function renderMainStage() {
+      if (filteredComics.length === 0) return;
+      const comic = filteredComics[currentIndex];
+      if (!comic) return;
+
+      document.getElementById('currentSlideNum').innerText = comic.id < 10 ? '0' + comic.id : comic.id;
+      document.getElementById('totalSlideNum').innerText = comicData.length < 10 ? '0' + comicData.length : comicData.length;
+
+      // 正面內容渲染
+      const frontEl = document.getElementById('stageFront');
+      frontEl.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <!-- 頂部區 -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500/10 to-purple-500/20 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-slate-100 shadow-md border border-slate-200 dark:border-slate-700 text-2xl">
+                  ${comic.emoji}
+                </div>
+                <div>
+                  <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg border bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300 border-pink-200 dark:border-pink-800">
+                    ${comic.categoryName} #${comic.id < 10 ? '0' + comic.id : comic.id}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold ml-2 hidden sm:inline">情境：${comic.tag}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-pink-50 dark:bg-slate-800 text-pink-700 dark:text-pink-300 text-xs sm:text-sm font-black border border-pink-200 dark:border-slate-700 shadow-sm">
+                <i data-lucide="rotate-cw" class="w-4 h-4 text-pink-600"></i>
+                <span>點擊翻轉看 Prompt</span>
+              </div>
+            </div>
+
+            <!-- 超大標題與動態呈現說明 -->
+            <div class="space-y-4 pt-2">
+              <div class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-pink-700 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/70 px-3 py-1 rounded-lg border border-pink-200 dark:border-pink-800/50">
+                <i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i>
+                <span>大螢幕 16:9 六格漫畫分鏡神器</span>
+              </div>
+
+              <!-- 超大標題 (2xl ~ 4xl) -->
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight tracking-tight">
+                ${comic.title}
+              </h2>
+
+              <!-- 詳述 (text-base ~ text-lg 大字) -->
+              <p class="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal pt-2">
+                ${comic.desc}
+              </p>
+            </div>
+          </div>
+
+          <!-- 底部功能亮點與引導 -->
+          <div class="pt-4 mt-3 border-t border-slate-200/90 dark:border-slate-800 space-y-3">
+            <div class="text-xs sm:text-sm lg:text-base font-bold text-pink-900 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/60 px-4 py-3 rounded-2xl border border-pink-200 dark:border-pink-800/60 flex items-center gap-2.5">
+              <span class="text-xl">💡</span>
+              <span class="truncate font-black">${comic.features}</span>
+            </div>
+
+            <div class="flex items-center justify-between text-xs sm:text-sm lg:text-base pt-1">
+              <span class="text-slate-500 dark:text-slate-400 font-bold">適用：課堂破冰 / 大螢幕投影 / 完型互動搶答</span>
+              <span class="font-black text-pink-600 dark:text-pink-400 flex items-center gap-1.5 group-hover:translate-x-1 transition text-sm sm:text-base">
+                點擊翻轉查看完整 Prompt 指令 ➔
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 背面內容渲染：Prompt 框 ＋ 一鍵複製 ＋ 直達 Gemini
+      const backEl = document.getElementById('stageBack');
+      backEl.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <div>
+            <!-- 背面頂部 -->
+            <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-800">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">${comic.emoji}</span>
+                <span class="px-3 py-1 text-xs sm:text-sm font-black rounded-lg bg-pink-500/20 text-pink-300 border border-pink-400/40 uppercase tracking-wider">
+                  ${comic.categoryName} ｜ ${comic.tag}
+                </span>
+              </div>
+              <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <!-- 提示說明 -->
+            <div class="py-2">
+              <p class="text-xs sm:text-sm text-pink-200 leading-relaxed font-semibold bg-pink-950/80 p-3 rounded-2xl border border-pink-800/60 shadow-inner">
+                ✨ 將以下提示詞複製貼給 Google Gemini，即可 10 秒產出 16:9 六格分鏡對白、互動完型填空與畫風統一的生圖提示詞！
+              </p>
+            </div>
+          </div>
+
+          <!-- Prompt 框 (大字體、高對比) -->
+          <div class="relative flex-1 my-1.5 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 overflow-y-auto max-h-[220px] text-xs sm:text-sm font-mono text-slate-200 leading-relaxed selection:bg-pink-600 shadow-inner">
+            <pre id="stage_prompt_text" class="whitespace-pre-wrap">${comic.promptText}</pre>
+          </div>
+
+          <!-- 底部按鈕群：複製 ＋ 直達 Gemini -->
+          <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs text-slate-400 font-medium hidden sm:inline">複製後至 Gemini 貼上即自動生成</span>
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+              <button onclick="copyStagePrompt()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow transition active:scale-95">
+                <i data-lucide="copy" class="w-4 h-4 text-pink-400"></i>
+                <span>一鍵複製 Prompt</span>
+              </button>
+              <button onclick="openInGemini()" onmouseenter="playSfx('hover')" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-600/40 active:scale-95 transition">
+                <i data-lucide="external-link" class="w-4 h-4 text-amber-300"></i>
+                <span>🚀 直達 Gemini 實測生成</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+      updateThumbnailSelection();
+    }
+
+    // 複製主舞台 Prompt
+    function copyStagePrompt() {
+      const text = document.getElementById('stage_prompt_text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        playSfx('copy');
+        triggerHaptic('success');
+        showToast('已複製漫畫分鏡提示詞！可直接至 Gemini 貼上執行');
+      });
+    }
+
+    // 自動複製並在新分頁打開 Gemini
+    function openInGemini() {
+      const text = document.getElementById('stage_prompt_text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        playSfx('copy');
+        triggerHaptic('success');
+        showToast('已複製提示詞！正在為您開啟 Gemini...');
+        setTimeout(() => {
+          window.open('https://gemini.google.com/', '_blank');
+        }, 300);
+      });
+    }
+
+    // 主舞台卡片翻轉
+    function toggleSlideFlip(event) {
+      if (event) event.stopPropagation();
+      const innerCard = document.getElementById('slideCardInner');
+      isFlipped = !isFlipped;
+      if (isFlipped) {
+        innerCard.classList.add('slide-card-flipped');
+      } else {
+        innerCard.classList.remove('slide-card-flipped');
+      }
+      playSfx('flip');
+      triggerHaptic('light');
+    }
+
+    // 下一張簡報
+    function nextSlide() {
+      if (currentIndex < filteredComics.length - 1) {
+        currentIndex++;
+        isFlipped = false;
+        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+      }
+    }
+
+    // 上一張簡報
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        isFlipped = false;
+        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+      }
+    }
+
+    // 渲染底部 Canva 風格縮圖列
+    function renderThumbnails() {
+      const strip = document.getElementById('thumbnailStrip');
+      strip.innerHTML = '';
+
+      filteredComics.forEach((comic, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = `thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${idx === currentIndex ? 'border-pink-600 bg-pink-50/90 dark:bg-pink-950/60 shadow-md scale-[1.02]' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300'}`;
+        thumb.setAttribute('data-idx', idx);
+        thumb.onmouseenter = () => playSfx('hover');
+        thumb.onclick = () => {
+          currentIndex = idx;
+          isFlipped = false;
+          document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
+          playSfx('slide');
+          triggerHaptic('light');
+          renderMainStage();
+        };
+
+        thumb.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] font-black mb-1">
+            <span class="flex items-center gap-1">
+              <span>${comic.emoji}</span>
+              <span class="px-1.5 py-0.5 rounded bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300 border border-pink-200 dark:border-pink-800">#${comic.id < 10 ? '0' + comic.id : comic.id}</span>
+            </span>
+            <span class="text-slate-400 font-bold truncate max-w-[90px]">${comic.categoryName}</span>
+          </div>
+          <p class="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-2 leading-snug">
+            ${comic.title}
+          </p>
+        `;
+
+        strip.appendChild(thumb);
+      });
+    }
+
+    // 更新縮圖當前選取高亮並滾動置中
+    function updateThumbnailSelection() {
+      document.querySelectorAll('.thumbnail-item').forEach((el, idx) => {
+        if (idx === currentIndex) {
+          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-pink-600 bg-pink-50/90 dark:bg-pink-950/60 shadow-md scale-[1.02] opacity-100';
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300';
+        }
+      });
+    }
+
+    // 渲染網格模式
+    function renderGridCards() {
+      const container = document.getElementById('gridCardsContainer');
+      container.innerHTML = '';
+
+      filteredComics.forEach((comic) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex flex-col justify-between space-y-4 hover:border-pink-400 transition';
+        cardEl.onmouseenter = () => playSfx('hover');
+
+        cardEl.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="flex items-center gap-1.5">
+                <span class="text-lg">${comic.emoji}</span>
+                <span class="px-3 py-1 text-xs font-black rounded-lg border bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300 border-pink-200 dark:border-pink-800">
+                  ${comic.categoryName} #${comic.id < 10 ? '0' + comic.id : comic.id}
+                </span>
+              </span>
+              <span class="text-xs text-slate-400 font-bold">${comic.tag}</span>
+            </div>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white leading-snug mb-2">
+              ${comic.title}
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+              ${comic.desc}
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <button onclick="switchToSlideById(${comic.id})" class="text-sm font-black text-pink-600 dark:text-pink-400 hover:underline flex items-center gap-1">
+              進入簡報舞台 ➔
+            </button>
+          </div>
+        `;
+        container.appendChild(cardEl);
+      });
+    }
+
+    function switchToSlideById(id) {
+      const idx = filteredComics.findIndex(s => s.id === id);
+      if (idx !== -1) {
+        currentIndex = idx;
+        toggleViewMode('presentation');
+        renderMainStage();
+      }
+    }
+
+    // 模式切換
+    function toggleViewMode(targetMode) {
+      viewMode = targetMode || (viewMode === 'presentation' ? 'grid' : 'presentation');
+      const presView = document.getElementById('presentationView');
+      const gridV = document.getElementById('gridView');
+      const modeText = document.getElementById('viewModeText');
+      const modeIcon = document.getElementById('viewModeIcon');
+
+      if (viewMode === 'presentation') {
+        presView.classList.remove('hidden');
+        gridV.classList.add('hidden');
+        modeText.innerText = '全覽網格';
+        modeIcon.setAttribute('data-lucide', 'grid');
+        renderMainStage();
+      } else {
+        presView.classList.add('hidden');
+        gridV.classList.remove('hidden');
+        modeText.innerText = '簡報模式';
+        modeIcon.setAttribute('data-lucide', 'presentation');
+        renderGridCards();
+      }
+      lucide.createIcons();
+    }
+
+    document.getElementById('btnViewMode').addEventListener('click', () => {
+      playSfx('slide');
+      toggleViewMode();
+    });
+
+    // 鍵盤左右鍵切換簡報
+    window.addEventListener('keydown', (e) => {
+      if (viewMode !== 'presentation') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        toggleSlideFlip();
+      }
+    });
+
+    // 分類篩選
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-pink-600', 'text-white', 'shadow-sm');
+          b.classList.add('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+        });
+        btn.classList.add('active', 'bg-pink-600', 'text-white', 'shadow-sm');
+        btn.classList.remove('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+
+        currentCategory = btn.getAttribute('data-category');
+        filteredComics = currentCategory === 'all' ? [...comicData] : comicData.filter(s => s.category === currentCategory);
+        currentIndex = 0;
+        isFlipped = false;
+        
+        playSfx('slide');
+        triggerHaptic('light');
+        renderMainStage();
+        renderThumbnails();
+        if (viewMode === 'grid') renderGridCards();
+      });
+    });
+
+    // 亮色/暗色主題切換 (預設亮色)
+    const themeBtn = document.getElementById('btnThemeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      playSfx('flip');
+    });
+
+    // 音效開關
+    document.getElementById('btnSoundToggle').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      if (soundEnabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        playSfx('flip');
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+      }
+      lucide.createIcons();
+    });
+
+    // Toast 提示
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      toastMsg.innerText = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-slide');
+      
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2500);
+    }
+
+    // 頁面初次加載
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMainStage();
+      renderThumbnails();
+    });
+  </script>
+</body>
+</html>
