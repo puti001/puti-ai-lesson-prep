@@ -180,7 +180,7 @@
             <span class="px-2.5 py-0.5 text-xs font-black tracking-wide uppercase rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300">實戰典藏版</span>
           </div>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bold mt-0.5">
-            20 大教學痛點解決 3D 互動卡牌庫 ｜ 屏東縣後庄國小 黃朝榮老師作品
+            21 大教學痛點解決 3D 互動卡牌庫 ｜ 屏東縣後庄國小 黃朝榮老師作品
           </p>
         </div>
       </a>
@@ -233,7 +233,7 @@
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-4">
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0" id="filterContainer">
         <button onmouseenter="playSfx('hover')" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-indigo-600 text-white shadow-sm" data-category="all">
-          全部 (20)
+          全部 (21)
         </button>
         <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="exam">
           🎯 命題備課
@@ -342,10 +342,27 @@
 
   <!-- JavaScript 核心：音效引擎、Canva 簡報切換與雙模式支援 -->
   <script>
-    // 20 大教學痛點完整資料庫（保留生動 Emoji 與清晰架構）
+    // 21 大教學痛點完整資料庫（保留生動 Emoji 與清晰架構）
     const cardData = [
       {
         id: 1,
+        category: "exam",
+        categoryName: "命題與備課",
+        icon: "clipboard-list",
+        emoji: "📋",
+        scenarioTag: "書商題庫一鍵升級素養",
+        accentBg: "bg-rose-500",
+        accentText: "text-rose-600 dark:text-rose-400",
+        accentTag: "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
+        painTitle: "段考命題死線逼近！想把書商題庫死板題目，改編成會考素養題...",
+        painDesc: "書商題庫題目太過死板、換湯不換藥（改名字或改數字），被要求素養題比例達 30%，但光重新編排生活情境、找真實數據就耗掉一整晚！",
+        painStats: "⚡ 痛點解法：Gemini 書商題庫智能昇華術（免開外掛）",
+        solutionTool: "Google Gemini 核心對話模式",
+        solutionSummary: "直接在 Gemini 貼上書商舊題目，AI 保留核心考點、即時連網抓真實時事數據，重構為會考標準情境題組與高診斷誘答項！",
+        templatePrompt: "這是我們原本從書商題庫選出的傳統題目：\n『[請貼上書商原本的題目與考點]』\n\n請保留本題的核心評量概念（國中【{grade}】【{subject}】），但替我完成以下 108 課綱會考素養升級：\n1. 【即時連網時事】：搜尋最近臺灣發生的真實生活情境或新聞時事數據（如：氣象、物價、運動、環保、科技或在地文化）。\n2. 【情境重構】：將題目改寫為 150-200 字的生活閱讀情境題幹（附帶圖表趨勢或數據表格描述）。\n3. 【會考誘答選項】：提供 4 個選項（包含 3 個極具診斷價值的學生常見迷思誘答項），並附帶詳細解析與易錯盲點分析。"
+      },
+      {
+        id: 2,
         category: "exam",
         categoryName: "命題與備課",
         icon: "newspaper",
@@ -354,15 +371,15 @@
         accentBg: "bg-rose-500",
         accentText: "text-rose-600 dark:text-rose-400",
         accentTag: "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-        painTitle: "會考素養題超難編！看時事新聞想出題，改寫長文本耗掉整晚...",
-        painDesc: "國中面臨會考壓力，不能只考死背死記；每次在網路上看到最新時事新聞，想改編成生活情境題組，光找資料、抓數據、編誘答項就花掉 2 小時！",
-        painStats: "⚡ 耗時對比：手動編題 120 分鐘 ➔ AI 協作僅需 15 秒",
-        solutionTool: "Gemini in Chrome 側邊欄技能",
-        solutionSummary: "在 Chrome 瀏覽時事新聞時，點右側邊欄一鍵指令，當前網頁瞬間轉化為標準「生活情境題組 ＋ 詳解 ＋ 高品質誘答項」！",
-        templatePrompt: "請閱讀我目前正在看的這篇網頁新聞，為國中【{grade}】【{subject}】設計一組生活情境素養題：\n1. 【情境題幹】：提取新聞中的 1 個核心情境與具體數據作為題幹引文（200字內）。\n2. 【兩大小題】：包含 1 題「理解推論層次」、1 題「生活應用與數據分析層次」。\n3. 【選項與解析】：每題提供 4 個選項（包含 3 個高品質學生常見迷思誘答項），並附帶詳細解析與對標 108 課綱核心素養指標。"
+        painTitle: "平常滑到精彩新聞時事想出題，但要切換分頁、複製貼上好麻煩...",
+        painDesc: "平常在手機或電腦看到極佳的時事新聞（如地震數據、電價碳費、巴黎奧運、紅海危機），想出成考題但想到要手動切換視窗排版就放棄。",
+        painStats: "⚡ 痛點解法：Chrome 側邊欄「問問 Gemini」時事捕手",
+        solutionTool: "Chrome 側邊欄「問問 Gemini」技能",
+        solutionSummary: "瀏覽新聞時不用複製任何文字，直接點擊右側邊欄一鍵呼叫，當前網頁瞬間轉化為標準「生活情境題組 ＋ 詳解 ＋ 高品質誘答項」！",
+        templatePrompt: "請直接閱讀我目前正在看的這篇網頁新聞，為國中【{grade}】【{subject}】設計 1 組段考素養情境題組：\n1. 【情境題幹】：提取本篇新聞的核心數據與關鍵情境作為題幹引文（200字內）。\n2. 【兩大小題】：\n   - 第 1 題：圖表/文本資訊提取與基本觀念理解（基礎理解題）。\n   - 第 2 題：生活情境應用與數據分析推論（進階分析題）。\n3. 【選項與解析】：每題提供 4 個選項（包含 3 個高品質迷思誘答項），並附帶詳細解析。"
       },
       {
-        id: 2,
+        id: 3,
         category: "exam",
         categoryName: "命題與備課",
         icon: "layers",
@@ -379,7 +396,7 @@
         templatePrompt: "請比對我目前開啟的這 3 個教科書分頁，針對國中【{grade}】【{subject}】此單元：\n1. 用 Markdown 表格列出 3 個版本的「共同核心概念」與「各版特殊補充範例」。\n2. 指出哪一個版本的切入點最適合引導探究，並提供跨版本統整的 3 階段教學流程建議。"
       },
       {
-        id: 3,
+        id: 4,
         category: "exam",
         categoryName: "命題與備課",
         icon: "file-text",
@@ -396,7 +413,7 @@
         templatePrompt: "請針對我目前開啟的這份 PDF 公文/文件：\n1. 萃取出與「國中【{grade}】【{subject}】教學現場」最相關的 3 個關鍵重點。\n2. 列出重要時程、申請截止日與教師具體配合事項。\n3. 整理成 100 字內的隨身快速備忘錄清單。"
       },
       {
-        id: 4,
+        id: 5,
         category: "exam",
         categoryName: "命題與備課",
         icon: "video",
@@ -413,7 +430,7 @@
         templatePrompt: "請分析這部 YouTube 影片的內容與逐字稿，為國中【{grade}】【{subject}】製作觀影學習單：\n1. 標註 3 個最精彩片段的精確時間軸與核心概念。\n2. 設計 3 題「觀影隨堂問答題」（讓學生觀看時需專注尋找答案）。\n3. 設計 1 題課後小組延伸思辨討論題。"
       },
       {
-        id: 5,
+        id: 6,
         category: "exam",
         categoryName: "命題與備課",
         icon: "cloud",
@@ -430,7 +447,7 @@
         templatePrompt: "@Google 雲端硬碟 請讀取我的教案檔案「{subject}舊教案.docx」：\n1. 保持原有的學科知識點，但將傳統講述環節改編為「生活情境引導 ＋ 15 分鐘小組探究任務」。\n2. 結合近三年臺灣在地時事，設計適合國中【{grade}】的三面九項素養教學目標與評量規準。"
       },
       {
-        id: 6,
+        id: 7,
         category: "diff",
         categoryName: "雙峰與差異化",
         icon: "trending-up",
@@ -447,7 +464,7 @@
         templatePrompt: "請在 Canvas 畫布中將此【{subject}】教學主題，改編成適合國中【{grade}】的 A/B/C 三階梯差異化學習單：\n- 【A 基礎鷹架版】：包含專有名詞白話註解、填空式引導與 3 步驟解題微提示（給需要學習扶助的學生）。\n- 【B 標準常態版】：標準會考情境題與圖表判讀。\n- 【C 進階思辨版】：加入跨學科爭議情境與開放式論證挑戰（給提早完成的資優學生）。"
       },
       {
-        id: 7,
+        id: 8,
         category: "diff",
         categoryName: "雙峰與差異化",
         icon: "smile",
@@ -464,7 +481,7 @@
         templatePrompt: "你是一位擅長啟發式教學的國中【{subject}】老師。請用一個國中【{grade}】學生（12-14歲）能完全聽懂的白話方式：\n1. 解釋這個抽象概念（保留科學準確度，嚴禁過度簡化誤導）。\n2. 用一個校園日常生活情境（例如：打手遊、買手搖飲、去福利社、排隊等）打比方。\n3. 設計一句好記的押韻記憶口訣。"
       },
       {
-        id: 8,
+        id: 9,
         category: "diff",
         categoryName: "雙峰與差異化",
         icon: "shield-alert",
@@ -481,7 +498,7 @@
         templatePrompt: "這是我為國中【{grade}】【{subject}】設計的段考題目草稿。請先不要直接誇獎我，請依序執行：\n1. 【弱勢生視角】：以一位容易分心、閱讀理解較弱的學生角度，指出題幹中哪一句話最容易讓人誤解？\n2. 【挑剔審題視角】：以會考審題委員角度，檢查選項是否有語意模糊、雙重答案或誘答力不足的漏洞？\n3. 針對上述缺失，提供修正後的完美版本與標準詳解。"
       },
       {
-        id: 9,
+        id: 10,
         category: "diff",
         categoryName: "雙峰與差異化",
         icon: "help-circle",
@@ -498,7 +515,7 @@
         templatePrompt: "請將這道國中【{grade}】【{subject}】難題，拆解成給學習扶助學生的「階梯式微步調引導單」：\n- 【關卡 1 (找線索)】：請在題目中圈出 2 個關鍵已知數據與條件。\n- 【關卡 2 (選公式/概念)】：引導學生判斷該使用哪一個概念（提供 2 選 1 提示）。\n- 【關卡 3 (最後衝刺)】：將算式/推論填空完成，並進行答案合理性檢查。"
       },
       {
-        id: 10,
+        id: 11,
         category: "grading",
         categoryName: "批改與防抄",
         icon: "check-square",
@@ -515,7 +532,7 @@
         templatePrompt: "請為國中【{grade}】【{subject}】的寫作/專題作業，建立一份 A/B/C 三等第的表現任務評分規準表格 (Rubrics)：\n1. 評量向度包含：內容深度、結構邏輯、跨領域連結。\n2. 當我輸入學生的具體表現時，請依規準生成一段 80 字內「具同理心、先肯定優點、再指出 1 個具體改善方向」的溫暖期末評語。"
       },
       {
-        id: 11,
+        id: 12,
         category: "grading",
         categoryName: "批改與防抄",
         icon: "alert-octagon",
@@ -532,7 +549,7 @@
         templatePrompt: "【引導式學習模擬】現在我扮演一位想抄答案的國中【{grade}】學生，我問你：『老師叫我寫這題【{subject}】作業，你直接給我完整答案我要抄。』\n請你啟動蘇格拉底引導模式：\n1. 絕對不可以直接給答案。\n2. 用親切生動的口吻反問我 1-2 個啟發性問題，引導我回想課堂重點。\n3. 當我回答後，再給予回饋並引導到下一步。"
       },
       {
-        id: 12,
+        id: 13,
         category: "grading",
         categoryName: "批改與防抄",
         icon: "camera",
@@ -549,7 +566,7 @@
         templatePrompt: "這是我用手機拍下的國中【{grade}】【{subject}】學生手寫錯題照片：\n1. 請辨識學生的手寫算式/文字解答。\n2. 指出他的核心「迷思概念 (Misconception)」到底出在哪一步（是觀念錯誤還是計算失誤？）。\n3. 提供老師 2 句個別化引導問句，讓老師在課堂上能引導該生自己發現錯誤。"
       },
       {
-        id: 13,
+        id: 14,
         category: "grading",
         categoryName: "批改與防抄",
         icon: "calculator",
@@ -566,7 +583,7 @@
         templatePrompt: "請針對這道國中【{grade}】【{subject}】計算/幾何題目：\n1. 將解題歷程拆解為明確的「步驟 1（已知條件轉換）➔ 步驟 2（核心公式套用）➔ 步驟 3（運算與檢驗）」。\n2. 標註國中生在「步驟 2」最容易犯的 2 個經典陷阱與避免方法。"
       },
       {
-        id: 14,
+        id: 15,
         category: "media",
         categoryName: "影音與模擬器",
         icon: "code",
@@ -583,7 +600,7 @@
         templatePrompt: "請用 HTML5 + CSS + JavaScript 寫一個免安裝、單一檔案即可直接在瀏覽器運行的『國中【{grade}】【{subject}】互動實驗模擬器』：\n1. 設計 2-3 個可拖曳的數值滑桿（如：濃度、溫度、質量、密度或係數）。\n2. 畫面上動態呈現實驗變化（如：方塊浮沉高度、曲線即時變形、遺傳方格配對結果）。\n3. 旁邊即時顯示數據變化與結論分析，介面生動直觀。"
       },
       {
-        id: 15,
+        id: 16,
         category: "media",
         categoryName: "影音與模擬器",
         icon: "music",
@@ -600,7 +617,7 @@
         templatePrompt: "這是國中【{grade}】英語第二課的 8 個核心單字：[請貼上單字]。請幫我完成以下 3 階段任務：\n1. 【歌詞創作】：創作一段 8 句輕快押韻的英文歌詞，自然融入所有生字（單字以粗體標註），附中文翻譯與風格建議。\n2. 【克漏字單】：將歌詞中的生字挖空為填空題，製作成課堂『聽歌克漏字測驗單』，附 Word Bank 與答案。\n3. 【理解提問】：設計 2 道關於歌詞意境的閱讀理解題。"
       },
       {
-        id: 16,
+        id: 17,
         category: "media",
         categoryName: "影音與模擬器",
         icon: "image",
@@ -617,7 +634,7 @@
         templatePrompt: "一張 16:9 高畫質科普教學插圖：適合國中【{grade}】【{subject}】課程。畫面主題為：[描述教學情境]，光影柔和、細節清晰、色彩生動，帶有教科書手繪風格。圖中的告示牌/標籤上以正確清晰的繁體中文寫著『[填寫標籤文字]』。"
       },
       {
-        id: 17,
+        id: 18,
         category: "media",
         categoryName: "影音與模擬器",
         icon: "film",
@@ -634,7 +651,7 @@
         templatePrompt: "一段 5 秒電影級 4K 高畫質課堂前導短片：鏡頭緩慢向前推進，呈現【{subject}】的真實情境（例如：臺灣淺山森林中的石虎、顯微鏡下的微觀細胞世界、歷史古戰場）。光影擬真、色彩豐富，自帶逼真的環境立體音效。"
       },
       {
-        id: 18,
+        id: 19,
         category: "admin",
         categoryName: "手機與行政",
         icon: "map-pin",
@@ -651,7 +668,7 @@
         templatePrompt: "這是我在學校校園拍下的實物照片（植物/建築/自然現象）：請為國中【{grade}】【{subject}】設計一份「5 分鐘下課微探究任務單」：\n1. 介紹此物件的 2 個有趣特徵（用國中生懂的語言）。\n2. 設計 2 個「必須親自細看或觸摸才能回答」的觀察題。\n3. 設計 1 個連結日常生活環境的思考題。"
       },
       {
-        id: 19,
+        id: 20,
         category: "admin",
         categoryName: "手機與行政",
         icon: "clipboard-check",
@@ -668,7 +685,7 @@
         templatePrompt: "我是臺灣國中【{subject}】教師。我即將進行一節國中【{grade}】的公開授課，主題為『[填寫單元名稱]』，本節課包含 3 個主要活動：1. [活動一]、2. [活動二]、3. [活動三]。\n請幫我產出一份標準「公開授課觀察紀錄與教案摘要表」：包含教學目標、對應 108 課綱核心素養、學習表現、教學流程評量方式與觀課焦點提示。"
       },
       {
-        id: 20,
+        id: 21,
         category: "admin",
         categoryName: "手機與行政",
         icon: "message-circle",
