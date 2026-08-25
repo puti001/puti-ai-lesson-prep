@@ -180,7 +180,7 @@
             <span class="px-2.5 py-0.5 text-xs font-black tracking-wide uppercase rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300">實戰典藏版</span>
           </div>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bold mt-0.5">
-            23 大教學痛點解決 3D 互動卡牌庫 ｜ 屏東縣後庄國小 黃朝榮老師作品
+            24 大教學痛點解決 3D 互動卡牌庫 ｜ 屏東縣後庄國小 黃朝榮老師作品
           </p>
         </div>
       </a>
@@ -233,7 +233,7 @@
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-4">
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0" id="filterContainer">
         <button onmouseenter="playSfx('hover')" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-indigo-600 text-white shadow-sm" data-category="all">
-          全部 (23)
+          全部 (24)
         </button>
         <button onmouseenter="playSfx('hover')" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition whitespace-nowrap bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300" data-category="exam">
           🎯 命題備課
@@ -382,6 +382,26 @@
             "id": 3,
             "category": "exam",
             "categoryName": "命題與備課",
+            "icon": "image",
+            "emoji": "🎨",
+            "scenarioTag": "考題配圖跟著整型",
+            "accentBg": "bg-rose-500",
+            "accentText": "text-rose-600 dark:text-rose-400",
+            "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
+            "painTitle": "題目醫美整型完，原本的考題配圖跟不上，找不到無版權好圖...",
+            "painDesc": "好不容易把題目改編成生動時事，但書商原本的死板插圖或網路抓圖解析度不足、有版權風險，老師手繪又耗時費神。",
+            "painStats": "⚡ 痛點解法：Puti-AI 命題生圖器（Gem 助手 ＋ 獨立 Web App 雙版本）",
+            "solutionTool": "Puti-AI 命題生圖器 (Gem / Web)",
+            "solutionSummary": "黃老師親自調校的教學配圖神器！提供「Gem 專屬助手」與「獨立 Web App」雙版本，貼上考題秒生高畫質教學插圖！",
+            "isToolCard": true,
+            "gemUrl": "https://gemini.google.com/gem/3340f73abf6a?usp=sharing",
+            "webUrl": "https://share.gemini.google/SqMCUhioEx92",
+            "templatePrompt": "請直接點擊卡片背面按鈕開啟 Puti-AI 命題生圖器（Gem / Web App）"
+      },
+      {
+            "id": 4,
+            "category": "exam",
+            "categoryName": "命題與備課",
             "icon": "newspaper",
             "emoji": "📰",
             "scenarioTag": "即時時事轉素養題",
@@ -396,7 +416,7 @@
             "templatePrompt": "請直接閱讀我目前正在看的這篇網頁新聞，為國中【{grade}】【{subject}】設計 1 組段考素養情境題組：\n1. 【情境題幹】：提取本篇新聞的核心數據與關鍵情境作為題幹引文（200字內）。\n2. 【兩大小題】：\n   - 第 1 題：圖表/文本資訊提取與基本觀念理解（基礎理解題）。\n   - 第 2 題：生活情境應用與數據分析推論（進階分析題）。\n3. 【選項與解析】：每題提供 4 個選項（包含 3 個高品質迷思誘答項），並附帶詳細解析。"
       },
       {
-            "id": 4,
+            "id": 5,
             "category": "exam",
             "categoryName": "命題與備課",
             "icon": "globe",
@@ -413,7 +433,7 @@
             "templatePrompt": "這是從「全台中小學題庫網（tcool.cc / studyark.org）」下載的各校段考真題：\n『[請貼上真題文字或上傳考卷照片]』\n\n請為國中【{grade}】【{subject}】將這道真題進行「校本在地化 ╳ 108 會考素養升級」：\n1. 【核心概念保留】：精準保留原題評量的核心學科觀念與難度層次。\n2. 【在地情境重構】：將背景改寫為貼近臺中市在地（如：高美濕地、臺中捷運、大甲溪、科博館或四張犁周邊生活圈）的 150 字情境題幹與圖表。\n3. 【會考題組設計】：設計 2 道階梯式小題（基礎判讀 ＋ 進階推論），並附帶 4 個診斷型誘答選項與詳細解析。"
       },
       {
-            "id": 5,
+            "id": 6,
             "category": "exam",
             "categoryName": "命題與備課",
             "icon": "layers",
@@ -430,7 +450,7 @@
             "templatePrompt": "請比對我目前開啟的這 3 個教科書分頁，針對國中【{grade}】【{subject}】此單元：\n1. 用 Markdown 表格列出 3 個版本的「共同核心概念」與「各版特殊補充範例」。\n2. 指出哪一個版本的切入點最適合引導探究，並提供跨版本統整的 3 階段教學流程建議。"
       },
       {
-            "id": 6,
+            "id": 7,
             "category": "exam",
             "categoryName": "命題與備課",
             "icon": "file-text",
@@ -447,7 +467,7 @@
             "templatePrompt": "請針對我目前開啟的這份 PDF 公文/文件：\n1. 萃取出與「國中【{grade}】【{subject}】教學現場」最相關的 3 個關鍵重點。\n2. 列出重要時程、申請截止日與教師具體配合事項。\n3. 整理成 100 字內的隨身快速備忘錄清單。"
       },
       {
-            "id": 7,
+            "id": 8,
             "category": "exam",
             "categoryName": "命題與備課",
             "icon": "video",
@@ -464,7 +484,7 @@
             "templatePrompt": "請分析這部 YouTube 影片的內容與逐字稿，為國中【{grade}】【{subject}】製作觀影學習單：\n1. 標註 3 個最精彩片段的精確時間軸與核心概念。\n2. 設計 3 題「觀影隨堂問答題」（讓學生觀看時需專注尋找答案）。\n3. 設計 1 題課後小組延伸思辨討論題。"
       },
       {
-            "id": 8,
+            "id": 9,
             "category": "exam",
             "categoryName": "命題與備課",
             "icon": "cloud",
@@ -481,7 +501,7 @@
             "templatePrompt": "@Google 雲端硬碟 請讀取我的教案檔案「{subject}舊教案.docx」：\n1. 保持原有的學科知識點，但將傳統講述環節改編為「生活情境引導 ＋ 15 分鐘小組探究任務」。\n2. 結合近三年臺灣在地時事，設計適合國中【{grade}】的三面九項素養教學目標與評量規準。"
       },
       {
-            "id": 9,
+            "id": 10,
             "category": "diff",
             "categoryName": "雙峰與差異化",
             "icon": "trending-up",
@@ -498,7 +518,7 @@
             "templatePrompt": "請在 Canvas 畫布中將此【{subject}】教學主題，改編成適合國中【{grade}】的 A/B/C 三階梯差異化學習單：\n- 【A 基礎鷹架版】：包含專有名詞白話註解、填空式引導與 3 步驟解題微提示（給需要學習扶助的學生）。\n- 【B 標準常態版】：標準會考情境題與圖表判讀。\n- 【C 進階思辨版】：加入跨學科爭議情境與開放式論證挑戰（給提早完成的資優學生）。"
       },
       {
-            "id": 10,
+            "id": 11,
             "category": "diff",
             "categoryName": "雙峰與差異化",
             "icon": "smile",
@@ -515,7 +535,7 @@
             "templatePrompt": "你是一位擅長啟發式教學的國中【{subject}】老師。請用一個國中【{grade}】學生（12-14歲）能完全聽懂的白話方式：\n1. 解釋這個抽象概念（保留科學準確度，嚴禁過度簡化誤導）。\n2. 用一個校園日常生活情境（例如：打手遊、買手搖飲、去福利社、排隊等）打比方。\n3. 設計一句好記的押韻記憶口訣。"
       },
       {
-            "id": 11,
+            "id": 12,
             "category": "diff",
             "categoryName": "雙峰與差異化",
             "icon": "shield-alert",
@@ -532,7 +552,7 @@
             "templatePrompt": "這是我為國中【{grade}】【{subject}】設計的段考題目草稿。請先不要直接誇獎我，請依序執行：\n1. 【弱勢生視角】：以一位容易分心、閱讀理解較弱的學生角度，指出題幹中哪一句話最容易讓人誤解？\n2. 【挑剔審題視角】：以會考審題委員角度，檢查選項是否有語意模糊、雙重答案或誘答力不足的漏洞？\n3. 針對上述缺失，提供修正後的完美版本與標準詳解。"
       },
       {
-            "id": 12,
+            "id": 13,
             "category": "diff",
             "categoryName": "雙峰與差異化",
             "icon": "help-circle",
@@ -549,7 +569,7 @@
             "templatePrompt": "請將這道國中【{grade}】【{subject}】難題，拆解成給學習扶助學生的「階梯式微步調引導單」：\n- 【關卡 1 (找線索)】：請在題目中圈出 2 個關鍵已知數據與條件。\n- 【關卡 2 (選公式/概念)】：引導學生判斷該使用哪一個概念（提供 2 選 1 提示）。\n- 【關卡 3 (最後衝刺)】：將算式/推論填空完成，並進行答案合理性檢查。"
       },
       {
-            "id": 13,
+            "id": 14,
             "category": "grading",
             "categoryName": "批改與防抄",
             "icon": "check-square",
@@ -566,7 +586,7 @@
             "templatePrompt": "請為國中【{grade}】【{subject}】的寫作/專題作業，建立一份 A/B/C 三等第的表現任務評分規準表格 (Rubrics)：\n1. 評量向度包含：內容深度、結構邏輯、跨領域連結。\n2. 當我輸入學生的具體表現時，請依規準生成一段 80 字內「具同理心、先肯定優點、再指出 1 個具體改善方向」的溫暖期末評語。"
       },
       {
-            "id": 14,
+            "id": 15,
             "category": "grading",
             "categoryName": "批改與防抄",
             "icon": "alert-octagon",
@@ -583,7 +603,7 @@
             "templatePrompt": "【引導式學習模擬】現在我扮演一位想抄答案的國中【{grade}】學生，我問你：『老師叫我寫這題【{subject}】作業，你直接給我完整答案我要抄。』\n請你啟動蘇格拉底引導模式：\n1. 絕對不可以直接給答案。\n2. 用親切生動的口吻反問我 1-2 個啟發性問題，引導我回想課堂重點。\n3. 當我回答後，再給予回饋並引導到下一步。"
       },
       {
-            "id": 15,
+            "id": 16,
             "category": "grading",
             "categoryName": "批改與防抄",
             "icon": "camera",
@@ -600,7 +620,7 @@
             "templatePrompt": "這是我用手機拍下的國中【{grade}】【{subject}】學生手寫錯題照片：\n1. 請辨識學生的手寫算式/文字解答。\n2. 指出他的核心「迷思概念 (Misconception)」到底出在哪一步（是觀念錯誤還是計算失誤？）。\n3. 提供老師 2 句個別化引導問句，讓老師在課堂上能引導該生自己發現錯誤。"
       },
       {
-            "id": 16,
+            "id": 17,
             "category": "grading",
             "categoryName": "批改與防抄",
             "icon": "calculator",
@@ -617,7 +637,7 @@
             "templatePrompt": "請針對這道國中【{grade}】【{subject}】計算/幾何題目：\n1. 將解題歷程拆解為明確的「步驟 1（已知條件轉換）➔ 步驟 2（核心公式套用）➔ 步驟 3（運算與檢驗）」。\n2. 標註國中生在「步驟 2」最容易犯的 2 個經典陷阱與避免方法。"
       },
       {
-            "id": 17,
+            "id": 18,
             "category": "media",
             "categoryName": "影音與模擬器",
             "icon": "code",
@@ -634,7 +654,7 @@
             "templatePrompt": "請用 HTML5 + CSS + JavaScript 寫一個免安裝、單一檔案即可直接在瀏覽器運行的『國中【{grade}】【{subject}】互動實驗模擬器』：\n1. 設計 2-3 個可拖曳的數值滑桿（如：濃度、溫度、質量、密度或係數）。\n2. 畫面上動態呈現實驗變化（如：方塊浮沉高度、曲線即時變形、遺傳方格配對結果）。\n3. 旁邊即時顯示數據變化與結論分析，介面生動直觀。"
       },
       {
-            "id": 18,
+            "id": 19,
             "category": "media",
             "categoryName": "影音與模擬器",
             "icon": "music",
@@ -651,7 +671,7 @@
             "templatePrompt": "這是國中【{grade}】英語第二課的 8 個核心單字：[請貼上單字]。請幫我完成以下 3 階段任務：\n1. 【歌詞創作】：創作一段 8 句輕快押韻的英文歌詞，自然融入所有生字（單字以粗體標註），附中文翻譯與風格建議。\n2. 【克漏字單】：將歌詞中的生字挖空為填空題，製作成課堂『聽歌克漏字測驗單』，附 Word Bank 與答案。\n3. 【理解提問】：設計 2 道關於歌詞意境的閱讀理解題。"
       },
       {
-            "id": 19,
+            "id": 20,
             "category": "media",
             "categoryName": "影音與模擬器",
             "icon": "image",
@@ -659,7 +679,7 @@
             "scenarioTag": "精準中文教科書插圖",
             "accentBg": "bg-purple-500",
             "accentText": "text-purple-600 dark:text-purple-400",
-            "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
+            "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
             "painTitle": "學習單與考卷找不到合適插圖，網路圖片到處有浮水印或侵權疑慮...",
             "painDesc": "做教材需要高品質圖解，但網路搜尋的圖片不是解析度太低，就是帶有版權風險不能公開印發。",
             "painStats": "⚡ 痛點解法：Imagen 3 繁中精準渲染 ＋ 零版權風險",
@@ -668,7 +688,7 @@
             "templatePrompt": "一張 16:9 高畫質科普教學插圖：適合國中【{grade}】【{subject}】課程。畫面主題為：[描述教學情境]，光影柔和、細節清晰、色彩生動，帶有教科書手繪風格。圖中的告示牌/標籤上以正確清晰的繁體中文寫著『[填寫標籤文字]』。"
       },
       {
-            "id": 20,
+            "id": 21,
             "category": "media",
             "categoryName": "影音與模擬器",
             "icon": "film",
@@ -685,7 +705,7 @@
             "templatePrompt": "一段 5 秒電影級 4K 高畫質課堂前導短片：鏡頭緩慢向前推進，呈現【{subject}】的真實情境（例如：臺灣淺山森林中的石虎、顯微鏡下的微觀細胞世界、歷史古戰場）。光影擬真、色彩豐富，自帶逼真的環境立體音效。"
       },
       {
-            "id": 21,
+            "id": 22,
             "category": "admin",
             "categoryName": "手機與行政",
             "icon": "map-pin",
@@ -702,7 +722,7 @@
             "templatePrompt": "這是我在學校校園拍下的實物照片（植物/建築/自然現象）：請為國中【{grade}】【{subject}】設計一份「5 分鐘下課微探究任務單」：\n1. 介紹此物件的 2 個有趣特徵（用國中生懂的語言）。\n2. 設計 2 個「必須親自細看或觸摸才能回答」的觀察題。\n3. 設計 1 個連結日常生活環境的思考題。"
       },
       {
-            "id": 22,
+            "id": 23,
             "category": "admin",
             "categoryName": "手機與行政",
             "icon": "clipboard-check",
@@ -719,7 +739,7 @@
             "templatePrompt": "我是臺灣國中【{subject}】教師。我即將進行一節國中【{grade}】的公開授課，主題為『[填寫單元名稱]』，本節課包含 3 個主要活動：1. [活動一]、2. [活動二]、3. [活動三]。\n請幫我產出一份標準「公開授課觀察紀錄與教案摘要表」：包含教學目標、對應 108 課綱核心素養、學習表現、教學流程評量方式與觀課焦點提示。"
       },
       {
-            "id": 23,
+            "id": 24,
             "category": "admin",
             "categoryName": "手機與行政",
             "icon": "message-circle",
@@ -914,9 +934,84 @@
         </div>
       `;
 
-      // 背面內容渲染：解法、動態選單、Prompt、一鍵複製
+            // 背面內容渲染：支援一般 Prompt 卡片與專屬雙工具卡片 (如 Puti-AI 命題生圖器)
       const backEl = document.getElementById('stageBack');
-      backEl.innerHTML = `
+      if (card.isToolCard) {
+        backEl.innerHTML = `
+          <div class="h-full flex flex-col justify-between">
+            <div>
+              <!-- 背面頂部 -->
+              <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="text-xl">${card.emoji}</span>
+                  <span class="px-3 py-1 text-xs sm:text-sm font-black rounded-lg bg-pink-500/20 text-pink-300 border border-pink-400/40 uppercase tracking-wider">
+                    💡 ${card.solutionTool}
+                  </span>
+                </div>
+                <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                  <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <!-- 解法說明 -->
+              <div class="py-2.5">
+                <p class="text-xs sm:text-base text-pink-200 leading-relaxed font-semibold bg-pink-950/80 p-3.5 rounded-2xl border border-pink-800/60 shadow-inner">
+                  ✨ ${card.solutionSummary}
+                </p>
+              </div>
+
+              <!-- 兩大專屬工具按鈕卡片 (直達 Gem 與 Web App) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <!-- Gem 專屬助手按鈕 -->
+                <a href="${card.gemUrl}" target="_blank" rel="noopener noreferrer" onmouseenter="playSfx('hover')" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 hover:from-indigo-900 hover:to-indigo-800 border-2 border-indigo-500/60 hover:border-indigo-400 shadow-xl transition-all duration-300 flex flex-col justify-between text-left">
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <span class="px-2.5 py-0.5 rounded-md bg-indigo-500/30 text-indigo-300 font-mono text-[11px] font-black border border-indigo-400/30">Gemini Gem 助手</span>
+                      <i data-lucide="sparkles" class="w-4 h-4 text-amber-300 group-hover:scale-110 transition"></i>
+                    </div>
+                    <h4 class="text-base font-black text-white group-hover:text-amber-300 transition flex items-center gap-1.5">
+                      💎 Puti-AI 命題生圖 Gem
+                    </h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                      直達官方自訂 Gem 專屬助手，直接在對話中貼上考題或概念，自動產出考卷與學習單配圖！
+                    </p>
+                  </div>
+                  <div class="mt-3 pt-2.5 border-t border-indigo-800/80 flex items-center justify-between text-xs font-black text-amber-300 group-hover:translate-x-0.5 transition">
+                    <span>🚀 開啟 Gem 生圖助手</span>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  </div>
+                </a>
+
+                <!-- 網頁版獨立工具按鈕 -->
+                <a href="${card.webUrl}" target="_blank" rel="noopener noreferrer" onmouseenter="playSfx('hover')" class="group p-4 rounded-2xl bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 hover:from-emerald-900 hover:to-teal-900 border-2 border-emerald-500/60 hover:border-emerald-400 shadow-xl transition-all duration-300 flex flex-col justify-between text-left">
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/30 text-emerald-300 font-mono text-[11px] font-black border border-emerald-400/30">獨立 Web App</span>
+                      <i data-lucide="globe" class="w-4 h-4 text-emerald-300 group-hover:scale-110 transition"></i>
+                    </div>
+                    <h4 class="text-base font-black text-white group-hover:text-emerald-300 transition flex items-center gap-1.5">
+                      🌐 Puti-AI 網頁版生圖器
+                    </h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                      免設定、點開即用的獨立 Web 介面，視覺化參數調校，快速生成無版權疑慮的段考配圖！
+                    </p>
+                  </div>
+                  <div class="mt-3 pt-2.5 border-t border-emerald-800/80 flex items-center justify-between text-xs font-black text-emerald-300 group-hover:translate-x-0.5 transition">
+                    <span>✨ 開啟網頁版工具</span>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- 底部提示 -->
+            <div class="pt-2 text-center text-xs text-slate-400 font-medium border-t border-slate-800">
+              💡 點擊上方任一工具按鈕即可在新分頁開啟黃老師專屬打造的生圖利器
+            </div>
+          </div>
+        `;
+      } else {
+        backEl.innerHTML = `
         <div class="h-full flex flex-col justify-between">
           <div>
             <!-- 背面頂部 -->
@@ -984,7 +1079,8 @@
             </div>
           </div>
         </div>
-      `;
+        `;
+      }
 
       lucide.createIcons();
       updateThumbnailSelection();
@@ -1026,17 +1122,20 @@
     }
 
     // 更新主舞台動態 Prompt
-    function updateStagePrompt() {
+        function updateStagePrompt() {
       const card = filteredCards[currentIndex];
-      if (!card) return;
-      const sub = document.getElementById('stage_sub').value;
-      const grd = document.getElementById('stage_grd').value;
-      document.getElementById('stage_prompt_text').innerText = formatPrompt(card.templatePrompt, sub, grd);
+      if (!card || card.isToolCard) return;
+      const subEl = document.getElementById('stage_sub');
+      const grdEl = document.getElementById('stage_grd');
+      const promptEl = document.getElementById('stage_prompt_text');
+      if (!subEl || !grdEl || !promptEl) return;
+      const sub = subEl.value;
+      const grd = grdEl.value;
+      promptEl.innerText = formatPrompt(card.templatePrompt, sub, grd);
       playSfx('flip');
       triggerHaptic('light');
     }
 
-    // 複製主舞台 Prompt
     function copyStagePrompt() {
       const text = document.getElementById('stage_prompt_text').innerText;
       navigator.clipboard.writeText(text).then(() => {
