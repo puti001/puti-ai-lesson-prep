@@ -130,18 +130,18 @@
         </div>
         <h2 class="text-2xl font-black text-white tracking-tight">Puti-AI 講師私密專區</h2>
         <p class="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed">
-          本平台為臺中市四張犁國中研習講師專案。<br>請輸入 <span class="text-amber-400 font-bold">4 位數講師 PIN 碼</span> 解鎖進入。
+          本平台為臺中市四張犁國中研習講師專案。<br>請輸入 <span class="text-amber-400 font-bold">講師專屬 PIN 碼</span> 解鎖進入。
         </p>
       </div>
 
       <!-- 密碼輸入框 -->
       <div class="relative z-10 space-y-4">
         <div class="flex justify-center gap-3">
-          <input type="password" maxlength="4" id="pinInput" placeholder="••••" autofocus
-            class="w-48 text-center text-3xl font-mono tracking-[0.5em] py-3 rounded-2xl bg-slate-950 border-2 border-slate-700 text-amber-400 focus:border-indigo-500 focus:outline-none transition shadow-inner">
+          <input type="password" maxlength="6" id="pinInput" placeholder="••••••" autofocus
+            class="w-56 text-center text-2xl font-mono tracking-[0.4em] py-3 rounded-2xl bg-slate-950 border-2 border-slate-700 text-amber-400 focus:border-indigo-500 focus:outline-none transition shadow-inner">
         </div>
         <p id="pinError" class="text-xs text-rose-400 font-bold hidden flex items-center justify-center gap-1">
-          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> PIN 碼錯誤，請重新輸入（預設：8888）
+          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> PIN 碼錯誤，請重新輸入
         </p>
 
         <button onclick="checkPin()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 hover:from-indigo-500 hover:to-indigo-400 text-white font-black text-sm sm:text-base shadow-lg shadow-indigo-600/40 active:scale-95 transition flex items-center justify-center gap-2">
@@ -1207,8 +1207,8 @@
       }, 2500);
     }
 
-    // 講師 PIN 碼驗證邏輯 (預設 PIN: 8888)
-    const LECTURER_PIN = '8888';
+    // 講師 PIN 碼驗證邏輯 (PIN: 777999)
+    const LECTURER_PIN = '777999';
 
     function checkPin() {
       const input = document.getElementById('pinInput');
