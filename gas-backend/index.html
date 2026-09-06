@@ -128,19 +128,20 @@
       <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold backdrop-blur-sm mb-3">
-            <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-300"></i>
-            傾聽第一線教育心聲・了解現場真實樣貌
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold backdrop-blur-sm mb-3 border border-amber-400/30">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+            填完立即解鎖・查看全台教師大數據分析成果
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3">
             老師您好！想了解您在教學現場所感受到的負擔與挑戰
           </h2>
           <p class="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-            本問卷約需 <strong class="text-amber-300">2 分鐘</strong>，全程匿名免登入。我們沒有任何預設立場，純粹是有心想了解第一線現場的 AI 教學現況與真實負擔，也希望能將彙整後的現況數據整理出來，讓同樣關心教育現場的老師們共同看見真實樣貌！
+            本問卷約需 <strong class="text-amber-300">2 分鐘</strong>，全程匿名免登入。我們拒絕單向索取資料——<strong class="text-amber-300 underline underline-offset-4">只要送出問卷，您就能立刻解鎖瀏覽「全國教師痛點透視儀表板」</strong>，即時看到全台老師票選出的現場挑戰排行、學制分佈與真實心聲牆！
           </p>
           <div class="mt-4 flex flex-wrap items-center gap-4 text-xs text-indigo-200/90 pt-2 border-t border-white/10">
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> 全程匿名免登入</span>
-            <span class="flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-4 h-4 text-amber-300"></i> 呈現真實教學現場數據</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="unlock" class="w-4 h-4 text-amber-300"></i> 填答後即時解鎖看結果</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-4 h-4 text-sky-300"></i> 呈現真實教學現場數據</span>
           </div>
         </div>
       </div>
@@ -330,44 +331,16 @@
               </label>
             </div>
 
-            <!-- 挑戰 8：高中職與專題歷程 (高中職/大專適用) -->
+            <!-- 挑戰 8：AI 工具回覆品質不佳 -->
             <div class="relative">
-              <input type="checkbox" id="pp-8" name="painpoints" value="探究實作與專題指導繁重：高中學習歷程、高職專題製作與科展指導耗時" class="hidden tag-checkbox">
+              <input type="checkbox" id="pp-8" name="painpoints" value="AI 提示詞總是答非所問：生成的內容空洞抽象、缺乏教學專業實務深度" class="hidden tag-checkbox">
               <label for="pp-8" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
                 <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
                   <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-slate-800">🔬 專題製作／學習歷程／科展指導負擔</div>
-                  <div class="text-xs text-slate-500 mt-0.5">高中探究實作、自主學習計畫、技職專題與檢定指導，需個別批閱引導極度耗時。</div>
-                </div>
-              </label>
-            </div>
-
-            <!-- 挑戰 9：實務操作與安全檢定 (技職/實驗課/幼教適用) -->
-            <div class="relative">
-              <input type="checkbox" id="pp-9" name="painpoints" value="技能實習與實驗操作：需手繪示範步驟、工安法規檢定、觀察紀錄繁瑣" class="hidden tag-checkbox">
-              <label for="pp-9" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
-                <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
-                  <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
-                </div>
-                <div>
-                  <div class="text-sm font-bold text-slate-800">🛠️ 技能檢定／實習步驟圖／日常觀察紀錄</div>
-                  <div class="text-xs text-slate-500 mt-0.5">專業科目實習步驟拆解、幼兒生活常規觀察、特教IEP目標設定，缺乏對應輔助。</div>
-                </div>
-              </label>
-            </div>
-
-            <!-- 挑戰 10：AI 工具回覆品質不佳 -->
-            <div class="relative">
-              <input type="checkbox" id="pp-10" name="painpoints" value="AI 提示詞總是答非所問：生成的內容空洞抽象、缺乏教學專業實務深度" class="hidden tag-checkbox">
-              <label for="pp-10" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
-                <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
-                  <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
-                </div>
-                <div>
                   <div class="text-sm font-bold text-slate-800">🤖 AI 回答空泛抽象、無法直接落地</div>
-                  <div class="text-xs text-slate-500 mt-0.5">問 AI 總是給大原則大道理，缺乏符合台灣特定學段課綱與檢定標準的實質內容。</div>
+                  <div class="text-xs text-slate-500 mt-0.5">問 AI 總是給大原則大道理，缺乏符合台灣特定學段課綱與教學現場的實質內容。</div>
                 </div>
               </label>
             </div>
