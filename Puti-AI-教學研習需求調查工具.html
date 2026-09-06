@@ -158,8 +158,8 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- 服務學校 -->
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">服務學校名稱 <span class="text-red-500">*</span></label>
-              <input type="text" id="field-school" required placeholder="例如：屏東縣後庄國小、OO高中（可填校名）" 
+              <label class="block text-xs font-bold text-slate-600 mb-1.5">服務學校名稱 <span class="text-slate-400 font-normal">（選填，可匿名）</span></label>
+              <input type="text" id="field-school" placeholder="例如：屏東縣後庄國小、OO高中（選填，亦可留空）" 
                      class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm transition">
             </div>
 
@@ -188,14 +188,17 @@
               <select id="field-subject" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm bg-white transition">
                 <option value="">請選擇學科領域...</option>
                 <option value="國語文/閱讀">國語文 / 閱讀理解 / 寫作</option>
-                <option value="英語文/雙語">英語文 / 雙語教學</option>
+                <option value="英語文/雙語">英語文 / 雙語教學 / 第二外語</option>
                 <option value="數學領域">數學領域</option>
-                <option value="自然科學 (理化/生物/地科)">自然科學 (理化 / 生物 / 地科 / 國小自然)</option>
+                <option value="自然科學 (理化/生物/地科)">自然科學 (物理 / 化學 / 生物 / 地科 / 國小自然)</option>
                 <option value="社會領域 (歷史/地理/公民)">社會領域 (歷史 / 地理 / 公民 / 國小社會)</option>
                 <option value="科技領域 (資科/生活科技)">科技領域 (資訊科技 / 生活科技)</option>
                 <option value="藝術領域 (音樂/視覺/表藝)">藝術領域 (音樂 / 視覺藝術 / 表演藝術)</option>
                 <option value="健康與體育">健康與體育領域</option>
-                <option value="綜合活動/童軍/家政">綜合活動 / 童軍 / 家政 / 輔導</option>
+                <option value="綜合活動/童軍/家政">綜合活動 / 童軍 / 家政 / 輔導諮商</option>
+                <option value="技職專業群科 (工/商/農/家/海/護/餐/藝)">技職專業群科 (機械/電機/商管/設計/餐旅/家政/農業/水產/護理等)</option>
+                <option value="幼兒教保/幼兒發展">幼兒教保活動 / 幼兒發展與學習</option>
+                <option value="特殊教育/個別化學習">特殊教育 (身障/資優/個別化教育計劃)</option>
                 <option value="包班導師 (全科)">國小包班導師 (全科綜合)</option>
                 <option value="其他專長領域">其他專長領域</option>
               </select>
@@ -313,32 +316,79 @@
               </label>
             </div>
 
-            <!-- 痛點 7 -->
+            <!-- 挑戰 7：備課資料整理 -->
             <div class="relative">
-              <input type="checkbox" id="pp-7" name="painpoints" value="備課資料零散：校本課程、歷屆試題與研習講義難以智慧化整理" class="hidden tag-checkbox">
+              <input type="checkbox" id="pp-7" name="painpoints" value="備課資料零散：歷屆考題、各版本教科書與自編講義難以系統化整理" class="hidden tag-checkbox">
               <label for="pp-7" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
                 <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
                   <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-slate-800">📁 備課資料堆積成山、找不出來</div>
-                  <div class="text-xs text-slate-500 mt-0.5">多年累積的 PDF、PPT 與教案太龐大，無法建立學科專屬 AI 腦。</div>
+                  <div class="text-sm font-bold text-slate-800">📁 備課教材堆積成山、檢索費時</div>
+                  <div class="text-xs text-slate-500 mt-0.5">多年累積的 PDF、試題與教案太龐雜，缺乏快速檢索與萃取核心重點的工具。</div>
                 </div>
               </label>
             </div>
 
-            <!-- 痛點 8 -->
+            <!-- 挑戰 8：高中職與專題歷程 (高中職/大專適用) -->
             <div class="relative">
-              <input type="checkbox" id="pp-8" name="painpoints" value="AI 提示詞總是答非所問：生成的內容空洞、缺少教學專業深度" class="hidden tag-checkbox">
+              <input type="checkbox" id="pp-8" name="painpoints" value="探究實作與專題指導繁重：高中學習歷程、高職專題製作與科展指導耗時" class="hidden tag-checkbox">
               <label for="pp-8" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
                 <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
                   <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-slate-800">🤖 AI 常常給廢話、對話停在表面</div>
-                  <div class="text-xs text-slate-500 mt-0.5">問 AI 總是給大泛泛的教條，缺乏可以直接影印發下去的精準教案。</div>
+                  <div class="text-sm font-bold text-slate-800">🔬 專題製作／學習歷程／科展指導負擔</div>
+                  <div class="text-xs text-slate-500 mt-0.5">高中探究實作、自主學習計畫、技職專題與檢定指導，需個別批閱引導極度耗時。</div>
                 </div>
               </label>
+            </div>
+
+            <!-- 挑戰 9：實務操作與安全檢定 (技職/實驗課/幼教適用) -->
+            <div class="relative">
+              <input type="checkbox" id="pp-9" name="painpoints" value="技能實習與實驗操作：需手繪示範步驟、工安法規檢定、觀察紀錄繁瑣" class="hidden tag-checkbox">
+              <label for="pp-9" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
+                <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-slate-800">🛠️ 技能檢定／實習步驟圖／日常觀察紀錄</div>
+                  <div class="text-xs text-slate-500 mt-0.5">專業科目實習步驟拆解、幼兒生活常規觀察、特教IEP目標設定，缺乏對應輔助。</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- 挑戰 10：AI 工具回覆品質不佳 -->
+            <div class="relative">
+              <input type="checkbox" id="pp-10" name="painpoints" value="AI 提示詞總是答非所問：生成的內容空洞抽象、缺乏教學專業實務深度" class="hidden tag-checkbox">
+              <label for="pp-10" class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/80 cursor-pointer transition select-none">
+                <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-slate-800">🤖 AI 回答空泛抽象、無法直接落地</div>
+                  <div class="text-xs text-slate-500 mt-0.5">問 AI 總是給大原則大道理，缺乏符合台灣特定學段課綱與檢定標準的實質內容。</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- 挑戰 11：自訂其他挑戰 (開放自填，避免窮舉遺漏) -->
+            <div class="relative md:col-span-2">
+              <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition">
+                <div class="flex items-start gap-3">
+                  <input type="checkbox" id="pp-custom-check" class="hidden tag-checkbox" onchange="toggleCustomPainInput(this)">
+                  <label for="pp-custom-check" class="flex items-center gap-2 cursor-pointer select-none">
+                    <div class="w-5 h-5 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                      <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i>
+                    </div>
+                    <span class="text-sm font-bold text-slate-800">✏️ 其他現場挑戰（上述未涵蓋，自行補充）：</span>
+                  </label>
+                </div>
+                <div id="custom-pain-input-wrapper" class="mt-2.5 hidden">
+                  <input type="text" id="field-custom-pain" placeholder="請簡要敘述您在教學現場遇到的其他挑戰或負擔..." 
+                         class="w-full px-3.5 py-2 rounded-lg border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-xs transition">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -826,19 +876,44 @@
       lucide.createIcons();
     }
 
+    // 自訂其他挑戰輸入框切換
+    function toggleCustomPainInput(checkbox) {
+      const wrapper = document.getElementById('custom-pain-input-wrapper');
+      const input = document.getElementById('field-custom-pain');
+      if (checkbox.checked) {
+        wrapper.classList.remove('hidden');
+        input.focus();
+      } else {
+        wrapper.classList.add('hidden');
+      }
+    }
+
     // 處理問卷送出
     async function handleFormSubmit(event) {
       event.preventDefault();
 
-      const school = document.getElementById('field-school').value.trim();
+      const school = document.getElementById('field-school').value.trim() || '未填寫/匿名';
       const stage = document.getElementById('field-stage').value;
       const subject = document.getElementById('field-subject').value;
       const aiLevel = document.getElementById('field-ai-level').value;
 
       // 取得選取的痛點
       const checkedPains = Array.from(document.querySelectorAll('input[name="painpoints"]:checked')).map(el => el.value);
+      
+      // 處理自訂其他挑戰
+      const customCheck = document.getElementById('pp-custom-check');
+      const customPainInput = document.getElementById('field-custom-pain');
+      if (customCheck && customCheck.checked) {
+        const customText = customPainInput ? customPainInput.value.trim() : '';
+        if (customText) {
+          checkedPains.push(`自訂補充：${customText}`);
+        } else {
+          checkedPains.push('其他現場挑戰（未詳述）');
+        }
+      }
+
       if (checkedPains.length === 0) {
-        alert('請至少勾選 1 項您在教學現場常遇到的痛點喔！');
+        alert('請至少勾選 1 項您在教學現場常遇到的挑戰或自填補充喔！');
         return;
       }
 
@@ -897,6 +972,8 @@
 
       // 顯示感謝卡片並清空表單
       document.getElementById('teacher-survey-form').reset();
+      const customWrapper = document.getElementById('custom-pain-input-wrapper');
+      if (customWrapper) customWrapper.classList.add('hidden');
       document.getElementById('success-banner').classList.remove('hidden');
       document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
 
@@ -907,11 +984,23 @@
 
     // 複製表單內容為文字（便於備份存查）
     function copyFormContentToClipboard() {
-      const school = document.getElementById('field-school').value.trim() || '未填';
+      const school = document.getElementById('field-school').value.trim() || '未填寫/匿名';
       const stage = document.getElementById('field-stage').value || '未填';
       const subject = document.getElementById('field-subject').value || '未填';
       const aiLevel = document.getElementById('field-ai-level').value || '未填';
       const checkedPains = Array.from(document.querySelectorAll('input[name="painpoints"]:checked')).map(el => el.value);
+      
+      const customCheck = document.getElementById('pp-custom-check');
+      const customPainInput = document.getElementById('field-custom-pain');
+      if (customCheck && customCheck.checked) {
+        const customText = customPainInput ? customPainInput.value.trim() : '';
+        if (customText) {
+          checkedPains.push(`自訂補充：${customText}`);
+        } else {
+          checkedPains.push('其他現場挑戰');
+        }
+      }
+
       const urgentNeed = document.getElementById('field-urgent-need').value.trim() || '無';
       const worry = document.getElementById('field-worry').value.trim() || '無';
 
