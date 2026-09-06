@@ -420,31 +420,50 @@
         </div>
 
         <!-- 提交按鈕區 -->
-        <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
-          <button type="submit" id="btn-submit" class="w-full sm:flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold text-base shadow-lg shadow-indigo-600/25 transition transform active:scale-98 flex items-center justify-center gap-2">
+        <div class="pt-2">
+          <button type="submit" id="btn-submit" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-extrabold text-base shadow-lg shadow-indigo-600/30 transition transform active:scale-98 flex items-center justify-center gap-2.5">
             <i data-lucide="send" class="w-5 h-5"></i>
-            <span>送出調查資料，加入全國教師大數據！</span>
-          </button>
-          <button type="button" onclick="copyFormContentToClipboard()" class="w-full sm:w-auto py-3.5 px-4 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition flex items-center justify-center gap-2" title="若網路連線受限，可一鍵複製文字內容備份">
-            <i data-lucide="copy" class="w-4 h-4 text-slate-500"></i>
-            <span>複製文字備份</span>
+            <span>送出調查資料，即時解鎖全國教師大數據！</span>
           </button>
         </div>
       </form>
 
-      <!-- 提交成功彈出卡片 -->
-      <div id="success-banner" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl p-6 shadow-card space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
-            <i data-lucide="check-circle" class="w-6 h-6"></i>
+      <!-- 提交成功彈出卡片 (送出後即時解鎖看結果) -->
+      <div id="success-banner" class="hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-indigo-50 border-2 border-emerald-300 text-emerald-950 rounded-3xl p-6 sm:p-8 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-300">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/30">
+            <i data-lucide="check-circle-2" class="w-7 h-7"></i>
           </div>
           <div>
-            <h4 class="text-base font-bold text-emerald-900">感謝老師！您的真實回饋已順利送達！</h4>
-            <p class="text-xs text-emerald-700">您的意見已加入全國教師回饋資料庫。我們將持續整理統計數據，呈現教學現場的最真實樣貌，讓更多關心教育的老師共同看見現況！</p>
+            <span class="inline-block px-2.5 py-0.5 rounded-full bg-emerald-200/80 text-emerald-800 text-[11px] font-bold mb-1">
+              🎉 填答完成・已加入全國資料庫
+            </span>
+            <h4 class="text-xl font-black text-slate-900">感謝老師！您的真實心聲已順利送達！</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              拒絕單向索取！您的回饋已經即時匯入全國大數據。現在，您可以直接查看所有教育夥伴票選出的現場挑戰與真實樣貌！
+            </p>
           </div>
         </div>
-        <div class="bg-white/80 p-3.5 rounded-xl border border-emerald-100 text-xs text-slate-700 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>🎁 教學交流：歡迎逛逛 Puti-AI 現有已整理之教學資源與教材庫</span>
+
+        <!-- 🚀 核心吸引力：立即查看統計結果大按鈕 -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center sm:text-left">
+            <div class="text-sm font-bold text-slate-800 flex items-center justify-center sm:justify-start gap-1.5">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-indigo-600"></i>
+              即時解鎖：全國教師現場痛點透視儀表板
+            </div>
+            <div class="text-xs text-slate-500">
+              免密碼開放！即刻瀏覽各學段排行榜、學科佔比圓餅圖與老師們的真實心聲。
+            </div>
+          </div>
+          <button type="button" onclick="enterPublicDashboard()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-sm font-black shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 shrink-0 transform active:scale-95">
+            <span>立即查看全國統計結果</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="pt-2 border-t border-emerald-200/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
+          <span>🎁 教學交流：歡迎逛逛 Puti-AI 現有自製免費教學工具庫與教材</span>
           <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
             前往 Padlet 資源庫 <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           </a>
@@ -472,22 +491,29 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="exitDashboard()" class="px-3 py-2 bg-indigo-900/80 hover:bg-indigo-800 border border-indigo-700 text-indigo-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
+          <button onclick="exitDashboard()" class="px-3.5 py-2 bg-indigo-900/80 hover:bg-indigo-800 border border-indigo-700 text-indigo-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
             <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-            返回問卷模式
+            <span>返回問卷模式</span>
           </button>
-          <button onclick="loadDemoData()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
-            <i data-lucide="database" class="w-3.5 h-3.5 text-amber-400"></i>
-            載入示範數據 (25位全國各級教師樣本)
+          <button onclick="fetchCloudData()" id="btn-refresh-cloud" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5" title="即時同步雲端試算表最新填答">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>同步最新數據</span>
           </button>
           <button onclick="exportDataCSV()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            匯出 Excel/CSV
+            <span>匯出 CSV</span>
           </button>
-          <button onclick="clearAllData()" class="px-3 py-2 bg-rose-900/60 hover:bg-rose-800 border border-rose-700/50 text-rose-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            清空重測
-          </button>
+          <!-- 管理員專用按鈕 (僅在驗證通過時顯示) -->
+          <div id="admin-tools-header" class="hidden flex items-center gap-2">
+            <button onclick="loadDemoData()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+              <i data-lucide="database" class="w-3.5 h-3.5"></i>
+              <span>載入示範數據 (25位)</span>
+            </button>
+            <button onclick="clearAllData()" class="px-3 py-2 bg-rose-900/60 hover:bg-rose-800 border border-rose-700/50 text-rose-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>清空重測</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -580,8 +606,8 @@
         </div>
       </div>
 
-      <!-- 💡 講師必備神功能：一鍵根據受邀學校痛點「自動生成客製化研習課綱與教案策略」 -->
-      <div class="bg-gradient-to-r from-indigo-900 to-indigo-950 text-white rounded-2xl p-6 shadow-xl space-y-4">
+      <!-- 💡 管理員進階分析功能：根據痛點數據生成專題解痛策略 (管理員模式顯示) -->
+      <div id="admin-syllabus-section" class="hidden bg-gradient-to-r from-indigo-900 to-indigo-950 text-white rounded-2xl p-6 shadow-xl space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-md mb-1.5">
@@ -848,11 +874,40 @@
       }
     }
 
-    // 進入講師後台
+    // 進入公開大數據檢視模式 (免密碼，所有填答老師皆可看)
+    function enterPublicDashboard() {
+      currentMode = 'dashboard';
+      document.getElementById('survey-section').classList.add('hidden');
+      document.getElementById('dashboard-section').classList.remove('hidden');
+
+      // 隱藏管理員高階區塊
+      const adminHeader = document.getElementById('admin-tools-header');
+      if (adminHeader) adminHeader.classList.add('hidden');
+      const adminSyllabus = document.getElementById('admin-syllabus-section');
+      if (adminSyllabus) adminSyllabus.classList.add('hidden');
+
+      const btn = document.getElementById('btn-mode-toggle');
+      btn.classList.remove('hidden');
+      btn.title = '返回問卷模式';
+      btn.className = 'px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-amber-300 hover:bg-slate-700 flex items-center gap-1.5 text-xs font-bold transition shadow-sm';
+      btn.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span>返回問卷</span>';
+
+      // 先嘗試從雲端同步最新資料，若離線則使用本地紀錄
+      fetchCloudData(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 進入講師管理後台 (需驗證密碼 puti8888)
     function enterDashboard() {
       currentMode = 'dashboard';
       document.getElementById('survey-section').classList.add('hidden');
       document.getElementById('dashboard-section').classList.remove('hidden');
+
+      // 顯示管理員高階區塊
+      const adminHeader = document.getElementById('admin-tools-header');
+      if (adminHeader) adminHeader.classList.remove('hidden');
+      const adminSyllabus = document.getElementById('admin-syllabus-section');
+      if (adminSyllabus) adminSyllabus.classList.remove('hidden');
 
       const btn = document.getElementById('btn-mode-toggle');
       btn.classList.remove('hidden');
@@ -862,6 +917,53 @@
 
       renderDashboard();
       lucide.createIcons();
+    }
+
+    // 即時向雲端試算表拉取最新填答數據
+    function fetchCloudData(silent = false) {
+      const refreshBtn = document.getElementById('btn-refresh-cloud');
+      if (refreshBtn) {
+        refreshBtn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-indigo-400"></i><span>同步中...</span>';
+      }
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (refreshBtn) {
+              refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
+            }
+            if (res && res.result === 'success' && res.records && res.records.length > 0) {
+              // 與本地資料合併去重
+              const existingIds = new Set(surveyRecords.map(r => r.timestamp + r.school));
+              res.records.forEach(cloudRec => {
+                const key = cloudRec.timestamp + cloudRec.school;
+                if (!existingIds.has(key)) {
+                  surveyRecords.push(cloudRec);
+                  existingIds.add(key);
+                }
+              });
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
+            }
+            renderDashboard();
+            if (!silent) alert(`同步完成！目前共載入 ${surveyRecords.length} 筆回饋數據。`);
+            lucide.createIcons();
+          })
+          .withFailureHandler(function(err) {
+            if (refreshBtn) {
+              refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
+            }
+            console.warn('雲端數據同步失敗，維持本機資料:', err);
+            renderDashboard();
+            lucide.createIcons();
+          })
+          .getSurveyRecords();
+      } else {
+        if (refreshBtn) {
+          refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
+        }
+        renderDashboard();
+        lucide.createIcons();
+      }
     }
 
     // 返回問卷模式

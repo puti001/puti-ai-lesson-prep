@@ -79,7 +79,51 @@ function saveSurveyRecord(data) {
   }
 }
 
-// 3. 備用 HTTP POST 端點
+// 3. 前端透過 google.script.run 即時獲取雲端試算表真實填答數據
+function getSurveyRecords() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var TARGET_SHEET_NAME = "全國現役教師大調查";
+    var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
+
+    if (!sheet || sheet.getLastRow() <= 1) {
+      return { result: "success", records: [] };
+    }
+
+    var data = sheet.getDataRange().getValues();
+    var records = [];
+
+    // 從第 2 列開始讀取（跳過表頭）
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!row[0] && !row[1]) continue;
+
+      var rawPain = String(row[5] || "");
+      var painpointsList = rawPain.split("\n• ").map(function(s) {
+        return s.replace(/^•\s*/, "").trim();
+      }).filter(function(s) { return s.length > 0; });
+
+      records.push({
+        id: "sheet_" + i,
+        timestamp: String(row[0] || ""),
+        school: String(row[1] || "未填寫/匿名"),
+        stage: String(row[2] || ""),
+        subject: String(row[3] || ""),
+        aiLevel: String(row[4] || ""),
+        painpoints: painpointsList,
+        urgentNeed: String(row[6] || ""),
+        worry: String(row[7] || ""),
+        notes: String(row[8] || "")
+      });
+    }
+
+    return { result: "success", records: records };
+  } catch (err) {
+    return { result: "error", error: err.toString(), records: [] };
+  }
+}
+
+// 4. 備用 HTTP POST 端點
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
