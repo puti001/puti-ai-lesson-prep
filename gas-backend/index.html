@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Puti-AI | 教師AI研習需求調查表</title>
-  <meta name="description" content="Puti-AI 屏東縣後庄國小黃朝榮老師專為學校 AI 研習前置調研設計的精準痛點診斷工具。支援學員手機填答、Google 試算表自動同步、講師數據視覺化儀表板與客製化課綱自動生成。">
+  <title>Puti-AI | 全國現役教師教學痛點與AI需求大調查</title>
+  <meta name="description" content="Puti-AI 屏東縣後庄國小黃朝榮老師發起之「全國現役教師教學痛點與 AI 需求大調查」。深入傾聽第一線教學現場的真實耗時地獄與教育心聲，去識別化彙整大數據分析，並將實戰解痛工具與教案策略免費開源分享回饋給全體教育夥伴。">
   <meta name="author" content="屏東縣後庄國小 黃朝榮老師 (Puti-AI)">
 
   <!-- Tailwind CSS CDN -->
@@ -96,14 +96,14 @@
   <!-- 頂部導覽列 -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <!-- 品牌 Logo 與標題 (暗門：連點 3 次觸發講師後台驗證) -->
-      <div class="flex items-center gap-3 cursor-pointer select-none" onclick="handleTitleClick()" title="Puti-AI 教師AI研習需求調查表">
+      <!-- 品牌 Logo 與標題 (暗門：連點 3 次觸發大數據後台驗證) -->
+      <div class="flex items-center gap-3 cursor-pointer select-none" onclick="handleTitleClick()" title="Puti-AI 全國現役教師教學痛點與AI需求大調查">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
           <i data-lucide="sparkles" class="w-5 h-5"></i>
         </div>
         <div>
           <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
-            Puti-AI 教師AI研習需求調查表
+            Puti-AI 全國現役教師教學痛點與AI需求大調查
           </h1>
         </div>
       </div>
@@ -121,7 +121,7 @@
   <!-- 主內容容器 -->
   <main class="flex-grow max-w-4xl mx-auto w-full px-4 sm:px-6 py-8">
     
-    <!-- ==================== 模式一：學員問卷填寫區 (Teacher Survey Mode) ==================== -->
+    <!-- ==================== 模式一：全國教師問卷填寫區 (Teacher Survey Mode) ==================== -->
     <div id="survey-section" class="space-y-8 transition-opacity duration-300">
       
       <!-- 頂部引言卡片 -->
@@ -130,16 +130,17 @@
         <div class="relative z-10">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold backdrop-blur-sm mb-3">
             <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-300"></i>
-            量身打造有感的 AI 研習
+            傾聽第一線教育心聲・彙整全國痛點大數據
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3">
-            老師您好！請告訴我您最想解決的教學痛點
+            老師您好！請告訴我們您在教學現場最真實的耗時痛點
           </h2>
           <p class="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-            「拒絕講理論！只講立刻用得上的備課實戰。」本問卷約需 <strong class="text-amber-300">2 分鐘</strong>。您的每一個真實反饋，都將直接決定本次研習現場的實作範例與解痛策略！
+            「拒絕無效理論！直面教學現場的真實耗時地獄。」本問卷約需 <strong class="text-amber-300">2 分鐘</strong>，全程匿名免登入。您的每一個真實回饋，都將彙整為全國教師痛點分析報告，並轉化為免費開源的 AI 解痛教案與自製教學工具，公開分享回饋給全體教育夥伴！
           </p>
           <div class="mt-4 flex flex-wrap items-center gap-4 text-xs text-indigo-200/90 pt-2 border-t border-white/10">
-            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> 匿名填答免登入</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> 全程匿名免登入</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="share-2" class="w-4 h-4 text-amber-300"></i> 大數據成果與工具免費開源共享</span>
           </div>
         </div>
       </div>
@@ -158,7 +159,7 @@
             <!-- 服務學校 -->
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-1.5">服務學校名稱 <span class="text-red-500">*</span></label>
-              <input type="text" id="field-school" required placeholder="例如：後庄國小 / 四張犁國中" 
+              <input type="text" id="field-school" required placeholder="例如：屏東縣後庄國小、OO高中（可填校名）" 
                      class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm transition">
             </div>
 
@@ -167,15 +168,17 @@
               <label class="block text-xs font-bold text-slate-600 mb-1.5">主要任教階段 <span class="text-red-500">*</span></label>
               <select id="field-stage" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm bg-white transition">
                 <option value="">請選擇教育階段...</option>
+                <option value="幼兒園">幼兒園階段</option>
                 <option value="國小低年段 (1-2年級)">國小低年段 (1-2年級)</option>
                 <option value="國小中年段 (3-4年級)">國小中年段 (3-4年級)</option>
                 <option value="國小高年段 (5-6年級)">國小高年段 (5-6年級)</option>
-                <option value="國中七年級">國中七年級</option>
-                <option value="國中八年級">國中八年級</option>
-                <option value="國中九年級 (會考衝刺)">國中九年級 (會考衝刺)</option>
-                <option value="高中職">高中職</option>
-                <option value="幼兒園/特教/資源班">幼兒園 / 特教 / 資源班</option>
+                <option value="國中階段 (7-9年級)">國中階段 (7-9年級)</option>
+                <option value="普通型高級中等學校 (普通高中)">普通型高級中等學校（普通高中）</option>
+                <option value="技術型高級中等學校 (高職/專業群科)">技術型高級中等學校（技術型高中／高職）</option>
+                <option value="綜合型高級中等學校 (綜高)">綜合型高級中等學校（綜高）</option>
+                <option value="特殊教育學校/資源班">特殊教育學校／資源班</option>
                 <option value="專任行政人員">專任行政人員</option>
+                <option value="大專院校/其他">大專院校／其他</option>
               </select>
             </div>
 
@@ -350,25 +353,25 @@
           <div class="space-y-4">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                1. 研習當天，您最希望講師當場幫您解決的「一個具體痛點」是什麼？
+                1. 在您目前教學或備課中，最希望有 AI 工具能幫您「一鍵省時」的具體任務是什麼？
               </label>
-              <input type="text" id="field-urgent-need" placeholder="例如：我想知道怎麼用 AI 5分鐘內生出一篇國中八年級理化的情境閱讀素養題..." 
+              <input type="text" id="field-urgent-need" placeholder="例如：我想知道怎麼用 AI 3分鐘內生出符合課綱的情境閱讀題組與評分規準、或是自動生成實作範例..." 
                      class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm transition">
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                2. 您對這次 AI 研習有什麼擔憂或顧慮嗎？（選填）
+                2. 面對生成式 AI 進入教育現場，您個人最擔憂、疑慮或感到困擾的是什麼？（選填）
               </label>
-              <input type="text" id="field-worry" placeholder="例如：擔心電腦太慢、怕自己年紀大學得慢、或是帳號權限問題..." 
+              <input type="text" id="field-worry" placeholder="例如：擔心學生過度依賴抄襲失去思考力、AI 幻覺校對耗時、或是擔心自己 3C 操作門檻..." 
                      class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm transition">
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                3. 給講師黃朝榮老師 (Puti老師) 的話或想敲碗的工具：
+                3. 給調查發起人黃朝榮老師 (Puti老師) 的話、教學心聲，或想敲碗的自製教學工具：
               </label>
-              <textarea id="field-notes" rows="2" placeholder="歡迎隨意留言交流～" 
+              <textarea id="field-notes" rows="2" placeholder="歡迎隨意留言交流～您的反饋將成為後續開發免費開源教學工具的重要方向！" 
                         class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm transition resize-none"></textarea>
             </div>
           </div>
@@ -378,9 +381,9 @@
         <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
           <button type="submit" id="btn-submit" class="w-full sm:flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold text-base shadow-lg shadow-indigo-600/25 transition transform active:scale-98 flex items-center justify-center gap-2">
             <i data-lucide="send" class="w-5 h-5"></i>
-            <span>送出調查資料，客製我們的研習！</span>
+            <span>送出調查資料，加入全國教師大數據！</span>
           </button>
-          <button type="button" onclick="copyFormContentToClipboard()" class="w-full sm:w-auto py-3.5 px-4 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition flex items-center justify-center gap-2" title="若網路連線受限，可一鍵複製文字內容貼到 LINE">
+          <button type="button" onclick="copyFormContentToClipboard()" class="w-full sm:w-auto py-3.5 px-4 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition flex items-center justify-center gap-2" title="若網路連線受限，可一鍵複製文字內容備份">
             <i data-lucide="copy" class="w-4 h-4 text-slate-500"></i>
             <span>複製文字備份</span>
           </button>
@@ -394,12 +397,12 @@
             <i data-lucide="check-circle" class="w-6 h-6"></i>
           </div>
           <div>
-            <h4 class="text-base font-bold text-emerald-900">感謝老師！您的調查回饋已順利送達！</h4>
-            <p class="text-xs text-emerald-700">黃朝榮老師已收到您的寶貴意見，將會全力針對您的痛點調整實作教案！</p>
+            <h4 class="text-base font-bold text-emerald-900">感謝老師！您的真實回饋已順利送達！</h4>
+            <p class="text-xs text-emerald-700">您的意見已加入全國教師痛點資料庫，我們將持續去識別化彙整大數據，並開發更多實用的免費教學工具回饋教育現場！</p>
           </div>
         </div>
         <div class="bg-white/80 p-3.5 rounded-xl border border-emerald-100 text-xs text-slate-700 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>🎁 研習好禮：您可以在研習前先逛逛 Puti-AI 工具庫與教學資源</span>
+          <span>🎁 資源回饋：歡迎逛逛黃朝榮老師的 Puti-AI 免費教學工具庫與自製教材</span>
           <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
             前往 Padlet 資源庫 <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           </a>
@@ -416,13 +419,13 @@
         <div>
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold mb-2">
             <i data-lucide="shield" class="w-3.5 h-3.5"></i>
-            黃朝榮老師專屬備課分析控制台
+            黃朝榮老師・全國教師痛點大數據研究中心
           </div>
           <h2 class="text-xl sm:text-2xl font-black tracking-tight">
-            受邀學校教師痛點大數據儀表板
+            全國現役教師教學痛點與 AI 需求大數據儀表板
           </h2>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            當前有效樣本數：<span id="stat-total-count" class="text-amber-400 font-bold text-base">0</span> 份 | 智慧生成研習課綱
+            當前有效樣本數：<span id="stat-total-count" class="text-amber-400 font-bold text-base">0</span> 份 | 洞察第一線教育真實痛點與解方
           </p>
         </div>
 
@@ -433,7 +436,7 @@
           </button>
           <button onclick="loadDemoData()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
             <i data-lucide="database" class="w-3.5 h-3.5 text-amber-400"></i>
-            載入示範數據 (25位國中老師)
+            載入示範數據 (25位全國各級教師樣本)
           </button>
           <button onclick="exportDataCSV()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
@@ -541,11 +544,11 @@
           <div>
             <div class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-md mb-1.5">
               <i data-lucide="wand-2" class="w-3.5 h-3.5"></i>
-              雙軌智能課綱生成系統（AI 自適應 ＋ 離線備用）
+              雙軌智能解痛模組（AI 自適應 ＋ 離線備用）
             </div>
-            <h3 class="text-lg font-bold">根據此校調研數據，生成客製化研習課綱建議</h3>
+            <h3 class="text-lg font-bold">根據調研數據，生成【全國教師痛點分析與實戰解痛策略】</h3>
             <p class="text-xs text-indigo-200">
-              支援「最新 Gemini AI 深度量身打造」與「本地離線演算法秒出」雙重保險，模型汰換自動升級、永不失效。
+              支援「最新 Gemini AI 深度洞察」與「本地離線演算法秒出」雙重保險，剖析全國痛點並規劃直擊現場的實戰增能架構。
             </p>
           </div>
 
@@ -553,7 +556,7 @@
             <!-- 模式一：AI 深度智能生成 -->
             <button onclick="generateAISyllabus()" id="btn-ai-gen" class="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-1.5">
               <i data-lucide="sparkles" class="w-4 h-4 text-indigo-950"></i>
-              <span>✨ AI 深度智能生成</span>
+              <span>✨ AI 深度智能分析</span>
             </button>
 
             <!-- 模式二：本地規則即時生成 (備用/離線) -->
@@ -580,10 +583,10 @@
           <div class="flex items-center justify-between border-b border-slate-700 pb-2">
             <span class="text-indigo-400 font-bold flex items-center gap-1.5">
               <i data-lucide="file-text" class="w-4 h-4"></i>
-              <span id="syllabus-source-title">📋 Puti-AI 客製化課綱草案</span>
+              <span id="syllabus-source-title">📋 Puti-AI 解痛策略報告草案</span>
             </span>
             <button onclick="copySyllabus()" class="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-sans font-bold">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製課綱文字
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製報告文字
             </button>
           </div>
           <div id="syllabus-text" class="whitespace-pre-wrap font-sans text-slate-200 leading-relaxed"></div>
@@ -596,9 +599,9 @@
           <div>
             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
               <i data-lucide="message-square-quote" class="w-5 h-5 text-indigo-600"></i>
-              受邀學校老師寫下的「第一線真實心聲與擔憂」
+              第一線老師寫下的「真實心聲、困境與擔憂」
             </h3>
-            <p class="text-xs text-slate-500">上台開場前快速掃過，立刻講出他們心裡的苦，破冰效果 100%！</p>
+            <p class="text-xs text-slate-500">傾聽全國現場教師的真實呼吸，讓科技真正服務於教學本質！</p>
           </div>
           <span id="voice-count-badge" class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-bold">0 則紀錄</span>
         </div>
@@ -615,7 +618,7 @@
 
   </main>
 
-  <!-- ==================== 講師密碼驗證 Modal ==================== -->
+  <!-- ==================== 大數據管理後台驗證 Modal ==================== -->
   <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 space-y-4">
       <div class="flex items-center justify-between pb-2 border-b border-slate-100">
@@ -623,7 +626,7 @@
           <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <i data-lucide="lock" class="w-4 h-4"></i>
           </div>
-          <span>講師後台權限驗證</span>
+          <span>大數據管理後台驗證</span>
         </div>
         <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600 p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -1335,29 +1338,32 @@
         ).join('\n');
 
         // 3. 組合深度提示詞 Prompt
-        const prompt = `你是一位享譽台灣教育界的頂尖 AI 備課專家「黃朝榮老師 (Puti老師)」。
-受邀學校即將舉辦 3 小時教師 AI 研習，該校教師已完成前置需求問卷，請根據以下第一線真實調研數據，為該校量身打造一份「直擊痛點、接地氣、零廢話、現場即產出」的專屬研習課綱與講師應對策略。
+        const prompt = `你是一位享譽台灣教育界的頂尖數位教學與 AI 備課推手「屏東縣後庄國小 黃朝榮老師 (Puti老師)」。
+你發起推動「全國現役教師教學現場痛點與 AI 需求大調查」，旨在廣泛了解第一線教師在備課、命題、班級經營與教學上的真實耗時地獄與心聲，並將大數據分析與實戰解痛策略免費開源分享回饋給全體教育夥伴。
 
-【調研真實數據】
-- 學校名稱：${schoolName}
-- 填答教師人數：${total} 位
+請根據以下第一線真實調研大數據，產出一份結構嚴謹、富有教學同理心且具高度落地價值的【全國教師教學現場痛點分析與實戰解痛專題白皮書／增能策略報告】：
+
+【調研大數據摘要】
+- 填答教師總數：${total} 位
+- 涵蓋學校樣本：${schoolName} 等全國各級學校
 - 學科領域分佈：${topSubjects.map(s => `${s[0]}: ${s[1]}人`).join(', ')}
 - 核心痛點票選排序：${topPains.map(p => `${p[0]} (${p[1]}票)`).join(', ')}
-- 教師第一線真實心聲與特殊擔憂：
+- 第一線教師文字心聲、困境與擔憂：
 ${quotesText || '（無特殊文字備註）'}
 
 【輸出規範】
-請以繁體中文撰寫，語氣熱情、同理、具體落地，格式包含：
-1. 研習主題企劃名稱（具吸引力且直擊最高痛點）
-2. 研習目標定位（針對該校教師組成之戰略目標）
-3. 3 小時精準時間軸規劃：
-   - 【第一階段：破冰共鳴與思維定錨 (20-30分鐘)】：請直接引用該校老師在問卷中的擔憂/心聲來破冰，化解 3C 焦慮。
-   - 【第二階段：現場最高痛點實戰演練 (70-80分鐘)】：針對本校前兩大最高痛點，列出精準實作範例與 Prompt 架構（必須結合該校佔比最多的學科）。
-   - 【第三階段：手把手現場出產 (40-50分鐘)】：指導老師當場做出一份下週可用的教材/教案/學習單。
-   - 【第四階段：AI 思辨、防弊與資源賦能 (15-20分鐘)】：分享面對學生抄襲的解方與後續自學資源。
-4. 【💡 講師備課錦囊秘笈（僅供黃老師現場參考）】：
-   - 本校老師最可能的心理抗拒點與化解金句
-   - 適合現場一鳴驚人的實戰展示範例建議`;
+請以繁體中文撰寫，語氣熱情同理、務實接地氣，格式包含：
+1. 【專題分析主題】：為本次調研數據訂定一個直擊現場核心痛點的專題名稱。
+2. 【大數據關鍵洞察】：深入剖析當前全國教師最耗時的 2 大核心痛點（兼顧普通高中、技術型高中高職與國中小多元學制）。
+3. 【第一線心聲共鳴與疑慮破解】：針對老師們提出的真實擔憂（如：AI 幻覺、學生抄襲、3C 焦慮），提出正面且具操作性的化解心法。
+4. 【3 小時精準解痛增能課程架構】：
+   - 【第一階段：破冰共鳴與思維定錨 (30分鐘)】：直接回應用卷中最深層的心聲，建立「AI 不是科技競賽，而是奪回陪伴學生時間」的共識。
+   - 【第二階段：直擊最高痛點實戰演練 (75分鐘)】：針對本校/本調查前兩大最高痛點，列出精準實作範例與 Prompt 架構（兼顧高中學術深化、高職技職實務與國中小素養導向）。
+   - 【第三階段：手把手現場出產 (45分鐘)】：指導老師當場做出一份下週可用的教材/教案/學習單。
+   - 【第四階段：AI 思辨、防弊與資源賦能 (30分鐘)】：分享教學倫理、防抄襲策略與 Puti-AI 免費開源工具庫。
+5. 【💡 Puti 老師備課錦囊與開源分享指南】：
+   - 適合推廣至校園的免付費、低門檻工具清單
+   - 獻給全體現場教師的溫暖備課金句`;
 
         // 4. 調用 API
         let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${chosenModel}:generateContent?key=${apiKey}`, {
@@ -1404,17 +1410,17 @@ ${quotesText || '（無特殊文字備註）'}
         }
 
         // 成功渲染
-        document.getElementById('syllabus-source-title').innerHTML = `✨ Puti-AI 客製化課綱（由 <span class="text-amber-300 font-mono">${chosenModel}</span> 深度生成）`;
+        document.getElementById('syllabus-source-title').innerHTML = `✨ Puti-AI 全國教師痛點分析與實戰解痛報告（由 <span class="text-amber-300 font-mono">${chosenModel}</span> 深度生成）`;
         document.getElementById('syllabus-text').innerText = candidateText;
         document.getElementById('syllabus-output-container').classList.remove('hidden');
         document.getElementById('syllabus-output-container').scrollIntoView({ behavior: 'smooth' });
 
         statusBadge.innerText = `✓ ${chosenModel}`;
-        statusText.innerText = `成功生成！已深度融合 ${total} 位教師的心聲與數據。`;
+        statusText.innerText = `成功生成！已深度融合 ${total} 位現場教師心聲與數據。`;
 
       } catch (err) {
         console.error('AI 生成異常，自動降級為本地備用規則模式:', err);
-        alert(`⚠️ AI 模型調用受限（原因：${err.message}）\n\n系統已為您自動啟動【本地備用模式】，立刻產出課綱！`);
+        alert(`⚠️ AI 模型調用受限（原因：${err.message}）\n\n系統已為您自動啟動【本地備用模式】，立刻產出解痛報告！`);
         
         // 自動無縫切換到本地備用生成！
         generateCustomSyllabus(true, `AI 連線受限 (${err.message})，自動啟動離線保底演算法`);
@@ -1432,7 +1438,7 @@ ${quotesText || '（無特殊文字備註）'}
         return;
       }
 
-      const schoolName = surveyRecords[0].school || '貴校';
+      const schoolName = surveyRecords[0].school || '全國各級學校';
       const total = surveyRecords.length;
 
       // 提取核心數據
@@ -1445,43 +1451,43 @@ ${quotesText || '（無特殊文字備註）'}
       const statusText = document.getElementById('syllabus-status-text');
       statusBar.classList.remove('hidden');
       statusBadge.innerText = '⚡ 本地演算法';
-      statusText.innerText = isFallback ? (fallbackReason || '已啟動離線保底演算法秒出課綱') : '純本地運算，免消耗 API，極速生成。';
+      statusText.innerText = isFallback ? (fallbackReason || '已啟動離線保底演算法秒出報告') : '純本地運算，免消耗 API，極速生成。';
 
       document.getElementById('syllabus-source-title').innerHTML = isFallback
-        ? `⚡ Puti-AI 本地備用課綱（離線保底模式已啟動）`
-        : `⚡ Puti-AI 本地課綱（離線演算法秒速對焦）`;
+        ? `⚡ Puti-AI 本地備用解痛報告（離線保底模式已啟動）`
+        : `⚡ Puti-AI 本地解痛報告（離線演算法秒速對焦）`;
 
-      const syllabusText = `【Puti-AI 研習客製化課綱草案（本地即時分析版）】
-學校名稱：${schoolName}
-參與教師樣本：${total} 位
-主講講師：屏東縣後庄國小 黃朝榮老師 (Puti老師)
-研習定位：針對本校「${topPains.map(p => p[0]).join('、')}」之精準解痛實戰工作坊
+      const syllabusText = `【Puti-AI 全國教師教學現場痛點分析與實戰解痛報告（本地即時版）】
+調研樣本：共 ${total} 位全國各級現役教師
+主責分析：屏東縣後庄國小 黃朝榮老師 (Puti老師)
+核心痛點榜首：${topPains.map(p => p[0]).join('、')}
+定位：純粹了解第一線現役老師真實痛點，開源共享實戰解痛工具與教案策略！
 運行機制：${isFallback ? '【離線備援保底模式】' : '【本地演算法極速生成】'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-【一、前言破冰與心聲共鳴 (20分鐘)】
-- 直接回應用卷中老師最在意的核心痛點：
+【一、第一線痛點總體檢與心聲共鳴 (30分鐘)】
+- 直面全國教師票選最高票耗時地獄：
   1. ${topPains[0] ? topPains[0][0] + ` (${topPains[0][1]}位老師最感耗時)` : ''}
   2. ${topPains[1] ? topPains[1][0] + ` (${topPains[1][1]}位老師最感耗時)` : ''}
-- 建立認知：AI 不是取代老師備課，而是消滅 80% 的機械性繁瑣文字勞動。
-- 示範 Puti 萬用結構化 Prompt 框架（角色定義 + 情境約束 + 輸出格式）。
+- 建立正向心態：AI 不是科技競賽，而是幫第一線老師消滅 80% 的機械性重複勞動。
+- 傳授 Puti 萬用結構化 Prompt 提詞框架（角色 ＋ 情境 ＋ 約束 ＋ 範例）。
 
-【二、現場高票痛點深度解法與實作演練 (70分鐘)】
-★ 實作焦點 1：直擊痛點【${topPains[0] ? topPains[0][0] : '素養命題與評量設計'}】
-  - 帶領老師輸入現有課本教材文本，3 分鐘生成情境化長文題組與雙向細目表。
-  - 設計差異化 A/B/C 三層次評量，照顧不同程度學生。
+【二、聚焦解痛：各學科與學制差異化實戰 (75分鐘)】
+★ 解痛焦點 1：針對【${topPains[0] ? topPains[0][0] : '素養命題與評量設計'}】
+  - 不管國中小、普通高中或技術型高中（高職），示範 3 分鐘將現有教材轉化為情境題組與非選評分規準。
+  - 兼顧學術升學與技職實務專業科目的命題需求。
 
-★ 實作焦點 2：直擊痛點【${topPains[1] ? topPains[1][0] : '教材視覺化與課堂互動'}】
-  - 傳授精準 Prompt 模組與工具應用（教學漫畫分鏡、概念視覺化、知識庫問答）。
-  - 現場帶領老師實操演練，解除 3C 焦慮。
+★ 解痛焦點 2：針對【${topPains[1] ? topPains[1][0] : '教材視覺化與課堂互動'}】
+  - 零代碼、免付費工具應用（概念圖解、分鏡圖卡、即時互動測驗）。
+  - 降低 3C 使用門檻，讓資深與新手老師都能輕鬆上手。
 
-【三、現場出產！帶著走的專屬教案 (30分鐘)】
-- 老師現場挑選下週要教的一課，實作產出一份完整素養教案/學習單。
-- 講師巡堂一對一針對個別學科疑難雜症即時指導。
+【三、產出帶著走！專屬素養教材與教案 (45分鐘)】
+- 老師挑選下週真實課堂進度，當場產出一份立即可用的素養教案/學習單。
+- 跨校跨學科交流回饋，激盪教學火花。
 
-【四、綜合座談與防抄襲思辨指導 (10分鐘)】
-- 面對學生使用 AI 的防弊與思辨引導策略。
-- 免費提供 Puti-AI 全套 Prompt 錦囊卡牌與 Padlet 資源庫。
+【四、AI 教學倫理、防抄襲與開源資源分享 (30分鐘)】
+- 引導學生正向使用 AI 的教學契約與批判思辨設計。
+- 免費提供 Puti-AI 全套 Prompt 錦囊與 Padlet 教學工具庫，完全開源分享！
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
       document.getElementById('syllabus-text').innerText = syllabusText;
@@ -1493,7 +1499,7 @@ ${quotesText || '（無特殊文字備註）'}
     function copySyllabus() {
       const text = document.getElementById('syllabus-text').innerText;
       navigator.clipboard.writeText(text).then(() => {
-        alert('課綱文字已複製！可直接貼在公文簽呈、研習計畫書或傳給輔導室/教務處！');
+        alert('報告文字已複製！可直接貼在計畫書、社群分享或傳給教育夥伴！');
       });
     }
 
@@ -1522,18 +1528,18 @@ ${quotesText || '（無特殊文字備註）'}
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `Puti-AI_研習需求調查數據_${new Date().toISOString().slice(0,10)}.csv`;
+      link.download = `Puti-AI_全國教師痛點調查數據_${new Date().toISOString().slice(0,10)}.csv`;
       link.click();
     }
 
-    // 載入示範數據（模擬 25 位國中各學科教師真實問卷）
+    // 載入示範數據（模擬 25 位全國各級學制教師真實調查）
     function loadDemoData() {
-      if (confirm('是否載入模擬受邀學校（四張犁國中 25位老師）的實戰痛點數據？這將協助您預覽儀表板所有圖表與課綱生成！')) {
+      if (confirm('是否載入模擬全國各級學校（涵蓋國小、國中、普通高中、技術型高中高職 25 位教師）的真實痛點數據？這將協助您預覽大數據儀表板與分析報告！')) {
         const demoData = generateMockData();
         surveyRecords = demoData;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
         renderDashboard();
-        alert('已載入 25 筆國中跨學科教師實戰模擬調查數據！');
+        alert('已成功載入 25 筆全國跨學制與跨領域教師實戰模擬調查數據！');
       }
     }
 
@@ -1564,215 +1570,201 @@ ${quotesText || '（無特殊文字備註）'}
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // 產生模擬數據（25 位國中教師）
+    // 產生模擬數據（25 位涵蓋國小、國中、高中、高職各領域教師）
     function generateMockData() {
       return [
         {
-          id: 'mock_1', timestamp: '2026/09/01 10:12:30', school: '四張犁國中', stage: '國中八年級', subject: '數學領域',
+          id: 'mock_1', timestamp: '2026/09/01 10:12:30', school: '屏東縣後庄國小', stage: '國小高年段 (5-6年級)', subject: '數學領域',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '班級雙峰差異大：無法同時照顧落後補救與超前資優延伸'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', '零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗'],
-          urgentNeed: '八年級幾何證明與二元一次聯立方程，想出生活情境題卻很耗時，希望能有現成模組。',
-          worry: '自己不是資訊專長，怕操作太複雜跟不上。',
-          notes: '久仰黃老師大名，很期待這次研習！'
+          urgentNeed: '五六年級幾何與分數小數，想出生活情境題卻很耗時，希望能有現成模組。',
+          worry: '擔心 AI 算數學容易算錯（幻覺），改題目反而要花更多時間校對。',
+          notes: '感謝黃老師熱心推廣，很期待能學到好用的免付費工具！'
         },
         {
-          id: 'mock_2', timestamp: '2026/09/01 10:45:11', school: '四張犁國中', stage: '國中九年級 (會考衝刺)', subject: '國語文/閱讀',
+          id: 'mock_2', timestamp: '2026/09/01 10:45:11', school: '臺中第一高級中等學校', stage: '普通型高級中等學校 (普通高中)', subject: '國語文/閱讀',
           aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', 'AI 提示詞總是答非所問：生成的內容空洞、缺少教學專業深度'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', 'Google Gemini 2.5 結構化 Prompt 提詞框架與心法'],
-          urgentNeed: '九年級會考複習，需要大量長篇文言文轉情境素養題組與非選評分標準。',
-          worry: '怕 AI 常常胡說八道（幻覺），改題目反而要花更多時間校對。',
-          notes: '希望黃老師多傳授防止 AI 幻覺的 Prompt 技巧！'
+          urgentNeed: '高中分科測驗與學測長篇文言文轉探究素養題組與非選評分標準。',
+          worry: '學生都用 AI 寫國文學習歷程自述，教師很難辨識真偽。',
+          notes: '希望多交流能防止學生濫用抄襲、引導思辨的教學契約設計！'
         },
         {
-          id: 'mock_3', timestamp: '2026/09/01 11:20:05', school: '四張犁國中', stage: '國中七年級', subject: '自然科學 (理化/生物/地科)',
-          aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
+          id: 'mock_3', timestamp: '2026/09/01 11:20:05', school: '臺北市立大安高工', stage: '技術型高級中等學校 (高職/專業群科)', subject: '科技領域 (資科/生活科技)',
+          aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量', '教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力'],
-          topics: ['零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗', '教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '生物細胞分裂與顯微鏡構造，學生聽課常恍神，想做互動遊戲讓他們操作。',
-          worry: '完全不會寫程式，真的能做出網頁小遊戲嗎？',
-          notes: ''
+          urgentNeed: '電機電子與資訊科實習課程，需要快速生成結構化步驟圖解與檢定練習題。',
+          worry: '專業科目的專有名詞 AI 容易混淆或給出非台灣用語。',
+          notes: '高職專業科目的 AI 應用資源太少了，敲碗希望能多看到技職的應用分享！'
         },
         {
-          id: 'mock_4', timestamp: '2026/09/01 13:10:40', school: '四張犁國中', stage: '國中八年級', subject: '英語文/雙語',
+          id: 'mock_4', timestamp: '2026/09/01 13:10:40', school: '高雄市立中正國中', stage: '國中階段 (7-9年級)', subject: '英語文/雙語',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['班級雙峰差異大：無法同時照顧落後補救與超前資優延伸', '教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力'],
-          topics: ['教學漫畫與視覺圖解：免付費生成高質感課堂配圖', 'Google NotebookLM 私有知識庫：打造不胡說八道的專屬學科助教'],
-          urgentNeed: '雙語課堂需要很多情境對話短劇與漫畫插圖，但自己畫不出來。',
-          worry: '學校筆電連外網有時候會卡頓。',
-          notes: '想學怎麼做英文對話漫畫！'
+          urgentNeed: '雙語課堂需要大量情境對話短劇與生活漫畫插圖，但自己美工不擅長。',
+          worry: '怕很多工具都需要收高額月費，公立學校經費無法支援。',
+          notes: '想學用 AI 快速做四格英文對話漫畫！'
         },
         {
-          id: 'mock_5', timestamp: '2026/09/01 14:02:18', school: '四張犁國中', stage: '國中七年級', subject: '社會領域 (歷史/地理/公民)',
+          id: 'mock_5', timestamp: '2026/09/01 14:02:18', school: '新北市立板橋高中', stage: '普通型高級中等學校 (普通高中)', subject: '社會領域 (歷史/地理/公民)',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '備課資料零散：校本課程、歷屆試題與研習講義難以智慧化整理'],
-          topics: ['Google NotebookLM 私有知識庫：打造不胡說八道的專屬學科助教', '10分鐘素養出題術：課文秒變高階評量與生活情境考卷'],
-          urgentNeed: '臺灣史與地理圖表結合的素養探究題，希望能有結構化步驟快速出題。',
-          worry: '研習時間只有2小時，怕時間不夠練完整流程。',
+          urgentNeed: '臺灣史與地理圖資結合的跨領域素養探究題，希望能快速對標 108 課綱指標。',
+          worry: '怕 AI 整理歷史脈絡時顛倒史實。',
+          notes: '感謝發起調查，希望能看到全台老師的數據統整！'
+        },
+        {
+          id: 'mock_6', timestamp: '2026/09/01 15:30:22', school: '臺南市立後甲國中', stage: '國中階段 (7-9年級)', subject: '健康與體育',
+          aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
+          painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
+          urgentNeed: '當導師每天寫聯絡簿跟親師溝通很耗心力，想學用 AI 快速潤飾有溫度的文字。',
+          worry: '完全是 3C 苦手，希望工具越無腦、越直覺越好。',
           notes: ''
         },
         {
-          id: 'mock_6', timestamp: '2026/09/01 15:30:22', school: '四張犁國中', stage: '國中八年級', subject: '健康與體育',
-          aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
-          painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
-          topics: ['班級導師神救援：期末暖心評語、差異化輔導與親師信'],
-          urgentNeed: '當導師每天寫聯絡簿跟親師溝通，很耗心力，想學用 AI 快速潤飾有溫度的文字。',
-          worry: '平常用手機居多，想知道手機版能不能操作。',
-          notes: '謝謝老師特地來台中分享！'
-        },
-        {
-          id: 'mock_7', timestamp: '2026/09/01 16:15:00', school: '四張犁國中', stage: '國中九年級 (會考衝刺)', subject: '數學領域',
+          id: 'mock_7', timestamp: '2026/09/01 16:15:00', school: '彰化縣立彰化高商', stage: '技術型高級中等學校 (高職/專業群科)', subject: '數學領域',
           aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '班級雙峰差異大：無法同時照顧落後補救與超前資優延伸'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', '零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗'],
-          urgentNeed: '會考非選題的評分標準量表（Rubric）很難生，希望能自動對應 0~3 分規準。',
-          worry: '', notes: ''
+          urgentNeed: '商管群統測商業數學題目，希望能結合生活理財、股票投資情境出題。',
+          worry: '希望題目難度能精準切齊統測標準。',
+          notes: '技職老師非常需要跨領域的備課工具支援！'
         },
         {
-          id: 'mock_8', timestamp: '2026/09/01 16:40:10', school: '四張犁國中', stage: '國中八年級', subject: '科技領域 (資科/生活科技)',
+          id: 'mock_8', timestamp: '2026/09/01 16:40:10', school: '高雄市立高雄女中', stage: '普通型高級中等學校 (普通高中)', subject: '科技領域 (資科/生活科技)',
           aiLevel: 'Level 4: 進階高手（熟練客製提詞、工作流、多模態工具）',
           painpoints: ['AI 幻覺與防抄襲焦慮：不知道如何引導學生正確運用 AI 而非直接抄'],
-          topics: ['零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗', 'Google Gemini 2.5 結構化 Prompt 提詞框架與心法'],
-          urgentNeed: '希望學到結合 AI API 與自動化批改的工作流。',
-          worry: '', notes: '想跟黃老師交流 GAS 與 AI 整合經驗！'
+          urgentNeed: '希望建立一個能自動偵測、批改學生自主學習計畫與 Python 作業的輔助流程。',
+          worry: '學生 AI 能力有時比資深老師還強，現場教學模式面臨挑戰。',
+          notes: '讚嘆黃老師的開源精神，台灣教育有您真好！'
         },
         {
-          id: 'mock_9', timestamp: '2026/09/01 17:05:32', school: '四張犁國中', stage: '國中七年級', subject: '藝術領域 (音樂/視覺/表藝)',
+          id: 'mock_9', timestamp: '2026/09/01 17:05:32', school: '桃園市立武陵高中', stage: '普通型高級中等學校 (普通高中)', subject: '藝術領域 (音樂/視覺/表藝)',
           aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
           painpoints: ['教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力', '學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量'],
-          topics: ['教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '想要幫藝文活動海報生成風格一致的插畫與視覺。',
-          worry: '怕 AI 軟體要付很多月費。',
+          urgentNeed: '想要幫校園藝術節海報生成風格一致、無版權疑慮的高質感插畫。',
+          worry: '怕 AI 軟體生成圖片涉及著作權爭議。',
           notes: ''
         },
         {
-          id: 'mock_10', timestamp: '2026/09/01 17:30:19', school: '四張犁國中', stage: '國中九年級 (會考衝刺)', subject: '自然科學 (理化/生物/地科)',
+          id: 'mock_10', timestamp: '2026/09/01 17:30:19', school: '花蓮縣立花蓮女中', stage: '普通型高級中等學校 (普通高中)', subject: '自然科學 (理化/生物/地科)',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '備課資料零散：校本課程、歷屆試題與研習講義難以智慧化整理'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', 'Google NotebookLM 私有知識庫：打造不胡說八道的專屬學科助教'],
-          urgentNeed: '會考理化浮力與運動學題目，想要生出台灣在地化時事情境題。',
-          worry: '', notes: ''
+          urgentNeed: '學測地科與生物的跨科探究情境題，想找台灣東部在地地質時事結合出題。',
+          worry: '偏鄉與東部學校常常缺乏充沛的研習資源。',
+          notes: '感謝提供線上調查與免費工具！'
         },
         {
-          id: 'mock_11', timestamp: '2026/09/01 18:02:11', school: '四張犁國中', stage: '國中八年級', subject: '綜合活動/童軍/家政',
+          id: 'mock_11', timestamp: '2026/09/01 18:02:11', school: '新竹市立新竹高中', stage: '普通型高級中等學校 (普通高中)', subject: '綜合活動/童軍/家政',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書', '學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量'],
-          topics: ['班級導師神救援：期末暖心評語、差異化輔導與親師信', '零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗'],
-          urgentNeed: '童軍露營計畫書與輔導個案紀錄撰寫太花時間。',
-          worry: '對新軟體比較不熟悉。', notes: ''
+          urgentNeed: '多元選修課程計畫書與學習歷程檔案輔導紀錄撰寫太花時間。',
+          worry: '老師平時課務繁重，很難有完整大塊時間學習複雜新科技。',
+          notes: ''
         },
         {
-          id: 'mock_12', timestamp: '2026/09/01 18:25:40', school: '四張犁國中', stage: '國中七年級', subject: '國語文/閱讀',
+          id: 'mock_12', timestamp: '2026/09/01 18:25:40', school: '宜蘭縣立羅東國中', stage: '國中階段 (7-9年級)', subject: '國語文/閱讀',
           aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '班級雙峰差異大：無法同時照顧落後補救與超前資優延伸'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', '教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '文言文轉白話故事閱讀測驗，班上後段學生讀不懂。',
-          worry: '怕自己學不會。', notes: ''
+          urgentNeed: '將長篇閱讀轉化為生動故事與分級閱讀測驗，班上後段學生才讀得懂。',
+          worry: '怕自己年紀大學新科技太吃力。',
+          notes: '希望能有簡單的傻瓜工具一鍵產出！'
         },
         {
-          id: 'mock_13', timestamp: '2026/09/01 18:50:02', school: '四張犁國中', stage: '國中八年級', subject: '英語文/雙語',
+          id: 'mock_13', timestamp: '2026/09/01 18:50:02', school: '苗栗縣立苗栗農工', stage: '技術型高級中等學校 (高職/專業群科)', subject: '英語文/雙語',
           aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力', 'AI 提示詞總是答非所問：生成的內容空洞、缺少教學專業深度'],
-          topics: ['教學漫畫與視覺圖解：免付費生成高質感課堂配圖', 'Google Gemini 2.5 結構化 Prompt 提詞框架與心法'],
-          urgentNeed: '希望能讓 AI 產出符合台灣國中英語課綱常用 1200 單字規範的對話。',
-          worry: '', notes: ''
+          urgentNeed: '希望能讓 AI 產出符合技職專業群科（農經、機械）專用職場英語對話教材。',
+          worry: '一般市面上的提示詞大多偏普通高中學術導向，技職常常格格不入。',
+          notes: '敲碗技職職場專業英文的專屬提示詞！'
         },
         {
-          id: 'mock_14', timestamp: '2026/09/01 19:15:30', school: '四張犁國中', stage: '國中九年級 (會考衝刺)', subject: '社會領域 (歷史/地理/公民)',
+          id: 'mock_14', timestamp: '2026/09/01 19:15:30', school: '基隆市立基隆商工', stage: '技術型高級中等學校 (高職/專業群科)', subject: '社會領域 (歷史/地理/公民)',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', '零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗'],
-          urgentNeed: '公民經濟學供需曲線與市場機制的互動模擬情境題。',
+          urgentNeed: '商業法規與消費者保護法的情境生活案例與闖關測驗。',
           worry: '', notes: ''
         },
         {
-          id: 'mock_15', timestamp: '2026/09/01 19:40:50', school: '四張犁國中', stage: '專任行政人員', subject: '其他專長領域',
+          id: 'mock_15', timestamp: '2026/09/01 19:40:50', school: '南投縣立南投高中', stage: '普通型高級中等學校 (普通高中)', subject: '專任行政人員',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
-          topics: ['班級導師神救援：期末暖心評語、差異化輔導與親師信', 'Google Gemini 2.5 結構化 Prompt 提詞框架與心法'],
-          urgentNeed: '公文撰寫、教育局計畫書成果報告書產出太繁雜。',
-          worry: '', notes: '希望能學到行政減負的方法。'
+          urgentNeed: '公文撰寫、教育部競爭型計畫書與成果報告書編撰。',
+          worry: '行政公文涉及個人資料保護與校園機密，如何兼顧資安。',
+          notes: '行政人員也是教育前線，非常需要減負！'
         },
         {
-          id: 'mock_16', timestamp: '2026/09/01 20:00:10', school: '四張犁國中', stage: '國中七年級', subject: '數學領域',
+          id: 'mock_16', timestamp: '2026/09/01 20:00:10', school: '屏東市立中正國中', stage: '國中階段 (7-9年級)', subject: '數學領域',
           aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
           painpoints: ['班級雙峰差異大：無法同時照顧落後補救與超前資優延伸', '學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量'],
-          topics: ['零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗', '10分鐘素養出題術：課文秒變高階評量與生活情境考卷'],
-          urgentNeed: '負數四則運算與代數符號，後段學生卡關很久。',
-          worry: '怕打字太慢跟不上研習進度。', notes: ''
+          urgentNeed: '負數與代數幾何運算，後段學生常卡關，希望能自動產出 A/B/C 三層次學習單。',
+          worry: '學校硬體設備較舊，怕跑不動太重的大模型。',
+          notes: ''
         },
         {
-          id: 'mock_17', timestamp: '2026/09/01 20:25:33', school: '四張犁國中', stage: '國中八年級', subject: '自然科學 (理化/生物/地科)',
+          id: 'mock_17', timestamp: '2026/09/01 20:25:33', school: '臺南第一高級中等學校', stage: '普通型高級中等學校 (普通高中)', subject: '自然科學 (理化/生物/地科)',
           aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', 'AI 幻覺與防抄襲焦慮：不知道如何引導學生正確運用 AI 而非直接抄'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', 'Google NotebookLM 私有知識庫：打造不胡說八道的專屬學科助教'],
-          urgentNeed: '理化段考題目怎麼用 AI 生成有版權安全的圖表與真實實驗數據。',
+          urgentNeed: '物理探究與實作課程，如何用 AI 快速分析實驗數據並繪製圖表。',
           worry: '', notes: ''
         },
         {
-          id: 'mock_18', timestamp: '2026/09/01 20:50:18', school: '四張犁國中', stage: '國中九年級 (會考衝刺)', subject: '國語文/閱讀',
+          id: 'mock_18', timestamp: '2026/09/01 20:50:18', school: '嘉義市立嘉義家職', stage: '技術型高級中等學校 (高職/專業群科)', subject: '國語文/閱讀',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', '教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '現代詩與散文跨領域圖表閱讀題組。',
+          urgentNeed: '家政幼保科系的專業情境閱讀與繪本故事創作教案。',
           worry: '', notes: ''
         },
         {
-          id: 'mock_19', timestamp: '2026/09/01 21:10:00', school: '四張犁國中', stage: '國中八年級', subject: '英語文/雙語',
+          id: 'mock_19', timestamp: '2026/09/01 21:10:00', school: '臺北市立松山工農', stage: '技術型高級中等學校 (高職/專業群科)', subject: '英語文/雙語',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['班級雙峰差異大：無法同時照顧落後補救與超前資優延伸', '行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
-          topics: ['班級導師神救援：期末暖心評語、差異化輔導與親師信', '教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '英文聽力測驗生成語音與對話情境。',
+          urgentNeed: '食品加工與機械群科的英文專業詞彙與外籍移工溝通教學情境。',
           worry: '', notes: ''
         },
         {
-          id: 'mock_20', timestamp: '2026/09/01 21:35:12', school: '四張犁國中', stage: '國中七年級', subject: '社會領域 (歷史/地理/公民)',
+          id: 'mock_20', timestamp: '2026/09/01 21:35:12', school: '雲林縣立斗六高中', stage: '普通型高級中等學校 (普通高中)', subject: '社會領域 (歷史/地理/公民)',
           aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
           painpoints: ['教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力', '備課資料零散：校本課程、歷屆試題與研習講義難以智慧化整理'],
-          topics: ['Google NotebookLM 私有知識庫：打造不胡說八道的專屬學科助教', '教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '歷史年代地圖與人物關係圖整理。',
-          worry: '完全是 3C 苦手，希望講師講慢一點。', notes: ''
+          urgentNeed: '地理跨科地圖與人物關係圖整理。',
+          worry: '怕自己不會操作電腦。',
+          notes: ''
         },
         {
-          id: 'mock_21', timestamp: '2026/09/01 21:55:40', school: '四張犁國中', stage: '國中八年級', subject: '數學領域',
+          id: 'mock_21', timestamp: '2026/09/01 21:55:40', school: '澎湖縣立馬公國中', stage: '國中階段 (7-9年級)', subject: '數學領域',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '班級雙峰差異大：無法同時照顧落後補救與超前資優延伸'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', '零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗'],
-          urgentNeed: '畢氏定理與乘法公式的生活情境應用題。',
-          worry: '', notes: ''
+          urgentNeed: '離島學校學生文化刺激較少，希望能多運用 AI 設計海洋生態生活化數學題。',
+          worry: '', notes: '離島教師非常需要數位資源連結！'
         },
         {
-          id: 'mock_22', timestamp: '2026/09/01 22:15:05', school: '四張犁國中', stage: '幼兒園/特教/資源班', subject: '其他專長領域',
+          id: 'mock_22', timestamp: '2026/09/01 22:15:05', school: '國立彰化特殊教育學校', stage: '特殊教育學校/資源班', subject: '其他專長領域',
           aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
           painpoints: ['班級雙峰差異大：無法同時照顧落後補救與超前資優延伸', '行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
-          topics: ['班級導師神救援：期末暖心評語、差異化輔導與親師信', '教學漫畫與視覺圖解：免付費生成高質感課堂配圖'],
-          urgentNeed: '特教生個別化教育計畫 (IEP) 目標撰寫與視覺圖卡。',
-          worry: '', notes: '很需要差異化教材的支援！'
+          urgentNeed: '特教學生的個別化教育計畫 (IEP) 目標撰寫與視覺溝通輔助圖卡。',
+          worry: '希望能多推廣特教領域的適用工具。',
+          notes: '謝謝黃老師看見特教學生的需求！'
         },
         {
-          id: 'mock_23', timestamp: '2026/09/01 22:30:11', school: '四張犁國中', stage: '國中九年級 (會考衝刺)', subject: '自然科學 (理化/生物/地科)',
+          id: 'mock_23', timestamp: '2026/09/01 22:30:11', school: '屏東市立屏東高中', stage: '普通型高級中等學校 (普通高中)', subject: '自然科學 (理化/生物/地科)',
           aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', 'AI 提示詞總是答非所問：生成的內容空洞、缺少教學專業深度'],
-          topics: ['10分鐘素養出題術：課文秒變高階評量與生活情境考卷', 'Google Gemini 2.5 結構化 Prompt 提詞框架與心法'],
-          urgentNeed: '會考等級的地科板塊與天文圖表素養題。',
+          urgentNeed: '高中分科測驗物理與化學跨科情境題，想加入最新科研期刊論文摘錄。',
           worry: '', notes: ''
         },
         {
-          id: 'mock_24', timestamp: '2026/09/01 22:45:00', school: '四張犁國中', stage: '國中七年級', subject: '健康與體育',
+          id: 'mock_24', timestamp: '2026/09/01 22:45:00', school: '新北市立淡水商工', stage: '技術型高級中等學校 (高職/專業群科)', subject: '健康與體育',
           aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
           painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
-          topics: ['班級導師神救援：期末暖心評語、差異化輔導與親師信'],
-          urgentNeed: '班級經營通知單與家長溝通回覆範本。',
-          worry: '希望能教免費不需要付費的工具。', notes: ''
+          urgentNeed: '導師班級經營通知單與親師溝通話術回覆範本。',
+          worry: '希望都是免費可長久使用的工具。',
+          notes: ''
         },
         {
-          id: 'mock_25', timestamp: '2026/09/01 23:00:28', school: '四張犁國中', stage: '國中八年級', subject: '科技領域 (資科/生活科技)',
+          id: 'mock_25', timestamp: '2026/09/01 23:00:28', school: '臺中市立臺中二中', stage: '普通型高級中等學校 (普通高中)', subject: '科技領域 (資科/生活科技)',
           aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
           painpoints: ['AI 幻覺與防抄襲焦慮：不知道如何引導學生正確運用 AI 而非直接抄', '學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量'],
-          topics: ['零代碼做網頁互動教材：一鍵生成 HTML 模擬器與闖關測驗', 'Google Gemini 2.5 結構化 Prompt 提詞框架與心法'],
-          urgentNeed: '如何設計課堂中的 AI 倫理與批判思考作業。',
-          worry: '', notes: '期待黃老師的實戰經驗！'
+          urgentNeed: '如何在高中微課程中指導學生正確建立 AI 使用素養與防弊倫理。',
+          worry: '', notes: '支持 Puti-AI 的全台公益開源理念！'
         }
       ];
     }

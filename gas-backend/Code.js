@@ -7,7 +7,7 @@
 // 1. 提供前端 HTML 頁面
 function doGet(e) {
   return HtmlService.createHtmlOutputFromFile("index")
-    .setTitle("Puti-AI | 教師AI研習需求調查表")
+    .setTitle("Puti-AI | 全國現役教師教學痛點與AI需求大調查")
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag("viewport", "width=device-width, initial-scale=1.0");
 }
@@ -31,8 +31,8 @@ function saveSurveyRecord(data) {
         "AI熟悉程度",
         "教學現場痛點 (複選)",
         "最急迫想解決的痛點",
-        "對研習的擔憂或顧慮",
-        "給講師的留言或備註"
+        "面對AI融入教學的擔憂或阻礙",
+        "想給教育社群的建言或敲碗工具"
       ]);
       
       // 美化表頭格式（紫底白字、置中、凍結首列）
