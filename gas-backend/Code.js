@@ -19,10 +19,12 @@ function saveSurveyRecord(data) {
 
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getActiveSheet();
+    var TARGET_SHEET_NAME = "全國現役教師大調查";
+    var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
 
-    // 檢查是否有表頭，沒有則自動初始化標題列
-    if (sheet.getLastRow() === 0) {
+    // 若專屬工作表分頁尚不存在，則自動新建分頁並初始化專屬表頭
+    if (!sheet) {
+      sheet = ss.insertSheet(TARGET_SHEET_NAME);
       sheet.appendRow([
         "填答時間",
         "服務學校",
@@ -32,10 +34,10 @@ function saveSurveyRecord(data) {
         "教學現場挑戰 (複選)",
         "最希望減輕負擔的教學任務",
         "面對AI融入教育的擔憂或疑慮",
-        "其他意見或備註"
+        "備註"
       ]);
       
-      // 美化表頭格式（紫底白字、置中、凍結首列）
+      // 美化表頭格式（藍靛底白字、置中、凍結首列）
       var headerRange = sheet.getRange(1, 1, 1, 9);
       headerRange.setBackground("#4338ca");
       headerRange.setFontColor("#ffffff");
