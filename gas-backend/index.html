@@ -147,13 +147,13 @@
       </div>
 
       <!-- 頂部引言卡片 -->
-      <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="relative z-10">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <div class="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-indigo-500/20">
+        <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold backdrop-blur-sm border border-amber-400/30">
               <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
-              填完立即解鎖・查看全台教師大數據分析成果
+              政策在推 AI・但現場老師的真實困難誰來聽？
             </div>
             <!-- 引言區快速跳轉按鈕 -->
             <button type="button" onclick="enterPublicDashboard()" class="text-xs text-indigo-200 hover:text-amber-300 underline underline-offset-4 flex items-center gap-1 transition">
@@ -161,17 +161,26 @@
               <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
             </button>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3">
-            老師您好！想了解您在教學現場所感受到的負擔與挑戰
+
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-snug">
+            從「AI 人才培育方舟計畫」到班級課堂：<br class="hidden sm:inline">
+            <span class="text-amber-300">面對 AI 浪潮，您在教學現場感受到的真正負擔是什麼？</span>
           </h2>
-          <p class="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-            本問卷約需 <strong class="text-amber-300">2 分鐘</strong>，全程匿名免登入。我們拒絕單向索取資料——<strong class="text-amber-300 underline underline-offset-4">只要送出問卷，您就能立刻解鎖瀏覽「全國教師痛點透視儀表板」</strong>，即時看到全台老師票選出的現場挑戰排行、學制分佈與真實心聲牆！
-          </p>
-          <div class="mt-4 flex flex-wrap items-center gap-4 text-xs text-indigo-200/90 pt-2 border-t border-white/10">
+
+          <div class="space-y-2 text-slate-200 text-sm sm:text-base leading-relaxed max-w-3xl">
+            <p>
+              當官方與社會鋪天蓋地都在推動 AI 融入教學，大家都在談未來科技，卻<strong>鮮少有人停下腳步傾聽——第一線教師在備課、班級經營與數位工具切換間，正面臨著多巨大的時間赤字與無力感</strong>。
+            </p>
+            <p class="text-xs sm:text-sm text-slate-300 bg-white/5 p-3.5 rounded-2xl border border-white/10">
+              💡 本調查約需 <strong class="text-amber-300">2 分鐘</strong>，全程匿名免登入。我們<strong class="text-amber-300">拒絕單向索取資料</strong>——只要送出問卷，您就能<strong class="text-amber-300 underline underline-offset-4">立刻解鎖瀏覽「全國教師現場痛點透視儀表板」</strong>，即時看見全台老師票選出的現場挑戰排行、學科分佈與最真實的心聲牆，一起把現場的真實困境轉化為改變的力量！
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 text-xs text-indigo-200/90 pt-3 border-t border-white/10">
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> 全程匿名免登入</span>
-            <span class="flex items-center gap-1.5"><i data-lucide="unlock" class="w-4 h-4 text-amber-300"></i> 填答後即時解鎖看結果</span>
-            <span class="flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-4 h-4 text-sky-300"></i> 呈現真實教學現場數據</span>
-            <span class="flex items-center gap-1.5 cursor-pointer hover:text-amber-300" onclick="enterPublicDashboard()"><i data-lucide="history" class="w-4 h-4 text-amber-300"></i> 日後可隨時回訪追蹤大數據</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="unlock" class="w-4 h-4 text-amber-300"></i> 填完即時解鎖全台大數據</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="heart-handshake" class="w-4 h-4 text-rose-300"></i> 為現場發聲・不當數位孤島</span>
+            <span class="flex items-center gap-1.5 cursor-pointer hover:text-amber-300" onclick="enterPublicDashboard()"><i data-lucide="history" class="w-4 h-4 text-sky-300"></i> 隨時回訪追蹤累積數據</span>
           </div>
         </div>
       </div>
