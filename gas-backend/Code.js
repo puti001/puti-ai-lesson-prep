@@ -5,7 +5,16 @@
  */
 
 // 1. 提供前端 HTML 頁面
+// 1. 提供前端 HTML 頁面與備用 JSON API
 function doGet(e) {
+  // 支援透過 GET 參數直接獲取數據（例如本地預覽或第三方取用）
+  if (e && e.parameter && e.parameter.action === "getRecords") {
+    var recordsData = getSurveyRecords();
+    return ContentService
+      .createTextOutput(JSON.stringify(recordsData))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   return HtmlService.createHtmlOutputFromFile("index")
     .setTitle("Puti-AI | 全國現役教師教學痛點與AI需求大調查")
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
@@ -22,28 +31,38 @@ function saveSurveyRecord(data) {
     var TARGET_SHEET_NAME = "全國現役教師大調查";
     var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
 
-    // 若專屬工作表分頁尚不存在，則自動新建分頁並初始化專屬表頭
+    // 若專屬工作表分頁尚不存在，優先尋找目前第一張工作表，或新建分頁
     if (!sheet) {
-      sheet = ss.insertSheet(TARGET_SHEET_NAME);
-      sheet.appendRow([
-        "填答時間",
-        "服務學校",
-        "任教階段",
-        "任教學科領域",
-        "AI熟悉程度",
-        "教學現場挑戰 (複選)",
-        "最希望減輕負擔的教學任務",
-        "面對AI融入教育的擔憂或疑慮",
-        "備註"
-      ]);
-      
-      // 美化表頭格式（藍靛底白字、置中、凍結首列）
-      var headerRange = sheet.getRange(1, 1, 1, 9);
-      headerRange.setBackground("#4338ca");
-      headerRange.setFontColor("#ffffff");
-      headerRange.setFontWeight("bold");
-      headerRange.setHorizontalAlignment("center");
-      sheet.setFrozenRows(1);
+      // 若只有預設工作表1且只有表頭或空白，可直接更名；否則建立新分頁
+      var firstSheet = ss.getSheets()[0];
+      if (firstSheet && (firstSheet.getName() === "工作表1" || firstSheet.getName() === "Sheet1") && firstSheet.getLastRow() <= 1) {
+        firstSheet.setName(TARGET_SHEET_NAME);
+        sheet = firstSheet;
+      } else {
+        sheet = ss.insertSheet(TARGET_SHEET_NAME);
+      }
+
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow([
+          "填答時間",
+          "服務學校",
+          "任教階段",
+          "任教學科領域",
+          "AI熟悉程度",
+          "教學現場挑戰 (複選)",
+          "最希望減輕負擔的教學任務",
+          "面對AI融入教育的擔憂或疑慮",
+          "備註"
+        ]);
+        
+        // 美化表頭格式（藍靛底白字、置中、凍結首列）
+        var headerRange = sheet.getRange(1, 1, 1, 9);
+        headerRange.setBackground("#4338ca");
+        headerRange.setFontColor("#ffffff");
+        headerRange.setFontWeight("bold");
+        headerRange.setHorizontalAlignment("center");
+        sheet.setFrozenRows(1);
+      }
     }
 
     var timestamp = data.timestamp || new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
@@ -79,45 +98,70 @@ function saveSurveyRecord(data) {
   }
 }
 
-// 3. 前端透過 google.script.run 即時獲取雲端試算表真實填答數據
+// 3. 前端透過 google.script.run 即時獲取雲端試算表真實填答數據（跨工作表全自動掃描＋去重相容）
 function getSurveyRecords() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var TARGET_SHEET_NAME = "全國現役教師大調查";
-    var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
-
-    if (!sheet || sheet.getLastRow() <= 1) {
-      return { result: "success", records: [] };
-    }
-
-    var data = sheet.getDataRange().getValues();
+    var sheets = ss.getSheets();
     var records = [];
+    var seenKeys = {};
 
-    // 從第 2 列開始讀取（跳過表頭）
-    for (var i = 1; i < data.length; i++) {
-      var row = data[i];
-      if (!row[0] && !row[1]) continue;
+    // 優先讀取名為「全國現役教師大調查」的工作表，再檢查其他工作表（如舊版的「工作表1」）
+    sheets.sort(function(a, b) {
+      if (a.getName() === "全國現役教師大調查") return -1;
+      if (b.getName() === "全國現役教師大調查") return 1;
+      return 0;
+    });
 
-      var rawPain = String(row[5] || "");
-      var painpointsList = rawPain.split("\n• ").map(function(s) {
-        return s.replace(/^•\s*/, "").trim();
-      }).filter(function(s) { return s.length > 0; });
+    for (var s = 0; s < sheets.length; s++) {
+      var sheet = sheets[s];
+      if (sheet.getLastRow() <= 1) continue;
 
-      records.push({
-        id: "sheet_" + i,
-        timestamp: String(row[0] || ""),
-        school: String(row[1] || "未填寫/匿名"),
-        stage: String(row[2] || ""),
-        subject: String(row[3] || ""),
-        aiLevel: String(row[4] || ""),
-        painpoints: painpointsList,
-        urgentNeed: String(row[6] || ""),
-        worry: String(row[7] || ""),
-        notes: String(row[8] || "")
-      });
+      var data = sheet.getDataRange().getValues();
+
+      // 從第 2 列開始讀取（跳過表頭）
+      for (var i = 1; i < data.length; i++) {
+        var row = data[i];
+        // 寬鬆驗證：只要有時間戳記或任教階段或學科領域，即為有效填答列
+        if (!row[0] && !row[2] && !row[3]) continue;
+
+        var timestamp = String(row[0] || "");
+        var school = String(row[1] || "未填寫/匿名");
+        var stage = String(row[2] || "");
+        var subject = String(row[3] || "");
+        var aiLevel = String(row[4] || "");
+        var rawPain = String(row[5] || "");
+        var urgentNeed = String(row[6] || "");
+        var worry = String(row[7] || "");
+        var notes = String(row[8] || "");
+
+        // 唯一鍵防止不同工作表重複計算
+        var uniqueKey = (timestamp + "||" + school + "||" + stage + "||" + subject).trim();
+        if (uniqueKey.length > 5 && seenKeys[uniqueKey]) {
+          continue;
+        }
+        seenKeys[uniqueKey] = true;
+
+        var painpointsList = rawPain.split("\n• ").map(function(item) {
+          return item.replace(/^•\s*/, "").trim();
+        }).filter(function(item) { return item.length > 0; });
+
+        records.push({
+          id: "sheet_" + sheet.getName() + "_" + i,
+          timestamp: timestamp,
+          school: school,
+          stage: stage,
+          subject: subject,
+          aiLevel: aiLevel,
+          painpoints: painpointsList,
+          urgentNeed: urgentNeed,
+          worry: worry,
+          notes: notes
+        });
+      }
     }
 
-    return { result: "success", records: records };
+    return { result: "success", records: records, count: records.length };
   } catch (err) {
     return { result: "error", error: err.toString(), records: [] };
   }

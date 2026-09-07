@@ -888,8 +888,9 @@
       btn.className = 'px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-amber-300 hover:bg-slate-700 flex items-center gap-1.5 text-xs font-bold transition shadow-sm';
       btn.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span>返回問卷</span>';
 
-      renderDashboard();
-      lucide.createIcons();
+      // 進入後台時立即從雲端同步最新試算表真實資料
+      fetchCloudData(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // 即時向雲端試算表拉取最新填答數據
@@ -907,9 +908,9 @@
             }
             if (res && res.result === 'success' && res.records && res.records.length > 0) {
               // 與本地資料合併去重
-              const existingIds = new Set(surveyRecords.map(r => r.timestamp + r.school));
+              const existingIds = new Set(surveyRecords.map(r => r.timestamp + '_' + r.school + '_' + (r.stage || '')));
               res.records.forEach(cloudRec => {
-                const key = cloudRec.timestamp + cloudRec.school;
+                const key = cloudRec.timestamp + '_' + cloudRec.school + '_' + (cloudRec.stage || '');
                 if (!existingIds.has(key)) {
                   surveyRecords.push(cloudRec);
                   existingIds.add(key);
@@ -931,6 +932,39 @@
           })
           .getSurveyRecords();
       } else {
+        const gasUrl = localStorage.getItem(GAS_URL_KEY) || "https://script.google.com/macros/s/AKfycbxHkZVd3ETQm4_JZHK4ax5hrbcHfs6nKB4CgSxPfMauakzWiQ2qaB_FmHbFdTOXQIPq/exec";
+        if (gasUrl) {
+          fetch(gasUrl + (gasUrl.includes('?') ? '&' : '?') + 'action=getRecords')
+            .then(res => res.json())
+            .then(res => {
+              if (refreshBtn) {
+                refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
+              }
+              if (res && res.result === 'success' && res.records && res.records.length > 0) {
+                const existingIds = new Set(surveyRecords.map(r => r.timestamp + '_' + r.school + '_' + (r.stage || '')));
+                res.records.forEach(cloudRec => {
+                  const key = cloudRec.timestamp + '_' + cloudRec.school + '_' + (cloudRec.stage || '');
+                  if (!existingIds.has(key)) {
+                    surveyRecords.push(cloudRec);
+                    existingIds.add(key);
+                  }
+                });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
+              }
+              renderDashboard();
+              if (!silent) alert(`同步完成！目前共載入 ${surveyRecords.length} 筆雲端回饋數據。`);
+              lucide.createIcons();
+            })
+            .catch(err => {
+              if (refreshBtn) {
+                refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
+              }
+              renderDashboard();
+              lucide.createIcons();
+            });
+          return;
+        }
+
         if (refreshBtn) {
           refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
         }
