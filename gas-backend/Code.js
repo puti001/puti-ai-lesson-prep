@@ -21,7 +21,7 @@ function doGet(e) {
     .addMetaTag("viewport", "width=device-width, initial-scale=1.0");
 }
 
-// 2. 前端透過 google.script.run 直連寫入試算表（極速、免 CORS、免 URL）
+/// 2. 前端透過 google.script.run 直連寫入試算表（極速、免 CORS、免 URL）
 function saveSurveyRecord(data) {
   var lock = LockService.getScriptLock();
   lock.tryLock(10000); // 鎖定防多人併發衝突
@@ -31,23 +31,37 @@ function saveSurveyRecord(data) {
     var TARGET_SHEET_NAME = "全國現役教師大調查";
     var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
 
-    // 若專屬工作表分頁尚不存在，則新建獨立分頁，嚴禁寫入工作表1
+    var NEW_HEADERS = [
+      "填答時間",
+      "生理性別",
+      "年齡區間",
+      "教學年資",
+      "主要任教階段",
+      "任教學科領域 (複選)",
+      "AI熟悉程度",
+      "教學現場挑戰 (複選)",
+      "最希望減輕負擔的教學任務",
+      "面對AI融入教育的擔憂或疑慮",
+      "備註"
+    ];
+
+    // 若專屬工作表分頁尚不存在，則新建獨立分頁
     if (!sheet) {
       sheet = ss.insertSheet(TARGET_SHEET_NAME);
-      sheet.appendRow([
-        "填答時間",
-        "服務學校",
-        "任教階段",
-        "任教學科領域",
-        "AI熟悉程度",
-        "教學現場挑戰 (複選)",
-        "最希望減輕負擔的教學任務",
-        "面對AI融入教育的擔憂或疑慮",
-        "備註"
-      ]);
+      sheet.appendRow(NEW_HEADERS);
       
       // 美化表頭格式（藍靛底白字、置中、凍結首列）
-      var headerRange = sheet.getRange(1, 1, 1, 9);
+      var headerRange = sheet.getRange(1, 1, 1, NEW_HEADERS.length);
+      headerRange.setBackground("#4338ca");
+      headerRange.setFontColor("#ffffff");
+      headerRange.setFontWeight("bold");
+      headerRange.setHorizontalAlignment("center");
+      sheet.setFrozenRows(1);
+    } else if (sheet.getLastRow() <= 1) {
+      // 若已有空分頁，直接更新為最新標準表頭
+      sheet.clear();
+      sheet.appendRow(NEW_HEADERS);
+      var headerRange = sheet.getRange(1, 1, 1, NEW_HEADERS.length);
       headerRange.setBackground("#4338ca");
       headerRange.setFontColor("#ffffff");
       headerRange.setFontWeight("bold");
@@ -56,11 +70,23 @@ function saveSurveyRecord(data) {
     }
 
     var timestamp = data.timestamp || new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
-    var school = data.school || "";
+    var gender = data.gender || "未填";
+    var ageGroup = data.ageGroup || "未填";
+    var experience = data.experience || "未填";
     var stage = data.stage || "";
-    var subject = data.subject || "";
+    
+    // 學科領域支援陣列複選
+    var subjectsStr = "";
+    if (Array.isArray(data.subjects)) {
+      subjectsStr = data.subjects.join(", ");
+    } else if (data.subjects) {
+      subjectsStr = String(data.subjects);
+    } else if (data.subject) {
+      subjectsStr = String(data.subject);
+    }
+
     var aiLevel = data.aiLevel || "";
-    var painpoints = Array.isArray(data.painpoints) ? data.painpoints.join("\n• ") : (data.painpoints || "");
+    var painpoints = Array.isArray(data.painpoints) ? ("• " + data.painpoints.join("\n• ")) : (data.painpoints || "");
     var urgentNeed = data.urgentNeed || "";
     var worry = data.worry || "";
     var notes = data.notes || "";
@@ -68,11 +94,13 @@ function saveSurveyRecord(data) {
     // 寫入新資料行至專屬分頁
     sheet.appendRow([
       timestamp,
-      school,
+      gender,
+      ageGroup,
+      experience,
       stage,
-      subject,
+      subjectsStr,
       aiLevel,
-      (painpoints ? "• " + painpoints : ""),
+      painpoints,
       urgentNeed,
       worry,
       notes
@@ -102,21 +130,30 @@ function getSurveyRecords() {
 
     var data = sheet.getDataRange().getValues();
     var records = [];
+    var headerRow = data[0];
+    var isNewSchema = (headerRow && String(headerRow[1]).indexOf("性別") !== -1);
 
     // 從第 2 列開始讀取（跳過表頭）
     for (var i = 1; i < data.length; i++) {
       var row = data[i];
-      if (!row[0] && !row[2] && !row[3]) continue;
+      if (!row[0] && !row[2] && !row[4]) continue;
 
       var timestamp = String(row[0] || "");
-      var school = String(row[1] || "未填寫/匿名");
-      var stage = String(row[2] || "");
-      var subject = String(row[3] || "");
-      var aiLevel = String(row[4] || "");
-      var rawPain = String(row[5] || "");
-      var urgentNeed = String(row[6] || "");
-      var worry = String(row[7] || "");
-      var notes = String(row[8] || "");
+      var gender = isNewSchema ? String(row[1] || "未填") : "未填";
+      var ageGroup = isNewSchema ? String(row[2] || "未填") : "未填";
+      var experience = isNewSchema ? String(row[3] || "未填") : "未填";
+      var stage = isNewSchema ? String(row[4] || "") : String(row[2] || "");
+      var rawSubjects = isNewSchema ? String(row[5] || "") : String(row[3] || "");
+      var aiLevel = isNewSchema ? String(row[6] || "") : String(row[4] || "");
+      var rawPain = isNewSchema ? String(row[7] || "") : String(row[5] || "");
+      var urgentNeed = isNewSchema ? String(row[8] || "") : String(row[6] || "");
+      var worry = isNewSchema ? String(row[9] || "") : String(row[7] || "");
+      var notes = isNewSchema ? String(row[10] || "") : String(row[8] || "");
+
+      // 解析學科領域清單（逗號分隔或陣列）
+      var subjectsList = rawSubjects.split(/[,，、]/).map(function(item) {
+        return item.trim();
+      }).filter(function(item) { return item.length > 0; });
 
       var painpointsList = rawPain.split("\n• ").map(function(item) {
         return item.replace(/^•\s*/, "").trim();
@@ -125,9 +162,12 @@ function getSurveyRecords() {
       records.push({
         id: "survey_" + i,
         timestamp: timestamp,
-        school: school,
+        gender: gender,
+        ageGroup: ageGroup,
+        experience: experience,
         stage: stage,
-        subject: subject,
+        subjects: subjectsList,
+        subject: subjectsList.join(", "),
         aiLevel: aiLevel,
         painpoints: painpointsList,
         urgentNeed: urgentNeed,

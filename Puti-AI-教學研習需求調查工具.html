@@ -149,72 +149,255 @@
       <!-- 表單本體 -->
       <form id="teacher-survey-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
 
-        <!-- 第 1 區塊：基本背景 -->
+        <!-- 第 1 區塊：基本教學背景（免填校名・全程匿名） -->
         <div class="glass-card border border-slate-200 rounded-2xl p-6 shadow-card transition hover:border-indigo-200">
-          <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
-            <span class="flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-sm">1</span>
-            <h3 class="text-lg font-bold text-slate-800">基本教學背景</h3>
+          <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <span class="flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-sm">1</span>
+              <div>
+                <h3 class="text-lg font-bold text-slate-800">基本教學背景</h3>
+                <p class="text-xs text-slate-500">免填校名、全程匿名，僅供全國教師大數據分群分析</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">免填校名・完全匿名</span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- 服務學校 -->
+          <!-- 4 欄格線：性別、年齡、年資、階段 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <!-- 生理性別 -->
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">服務學校名稱 <span class="text-slate-400 font-normal">（選填，可匿名）</span></label>
-              <input type="text" id="field-school" placeholder="例如：屏東縣後庄國小、OO高中（選填，亦可留空）" 
-                     class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm transition">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">生理性別 <span class="text-red-500">*</span></label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <div>
+                  <input type="radio" id="gender-female" name="gender" value="女性" class="hidden peer" required>
+                  <label for="gender-female" class="flex items-center justify-center py-2 px-1 text-xs font-bold rounded-xl border border-slate-200 bg-white text-slate-600 peer-checked:bg-rose-50 peer-checked:border-rose-400 peer-checked:text-rose-700 cursor-pointer transition select-none shadow-sm text-center">
+                    👩 女性
+                  </label>
+                </div>
+                <div>
+                  <input type="radio" id="gender-male" name="gender" value="男性" class="hidden peer">
+                  <label for="gender-male" class="flex items-center justify-center py-2 px-1 text-xs font-bold rounded-xl border border-slate-200 bg-white text-slate-600 peer-checked:bg-blue-50 peer-checked:border-blue-400 peer-checked:text-blue-700 cursor-pointer transition select-none shadow-sm text-center">
+                    👨 男性
+                  </label>
+                </div>
+                <div>
+                  <input type="radio" id="gender-other" name="gender" value="不便透露" class="hidden peer">
+                  <label for="gender-other" class="flex items-center justify-center py-2 px-1 text-xs font-bold rounded-xl border border-slate-200 bg-white text-slate-600 peer-checked:bg-slate-100 peer-checked:border-slate-400 peer-checked:text-slate-800 cursor-pointer transition select-none shadow-sm text-center">
+                    不便透露
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 年齡區間 -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">年齡區間 <span class="text-red-500">*</span></label>
+              <select id="field-age" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-xs sm:text-sm bg-white transition font-medium">
+                <option value="">請選擇年齡層...</option>
+                <option value="21-30 歲 (青年新秀)">21-30 歲 (青年新秀)</option>
+                <option value="31-40 歲 (中堅骨幹)">31-40 歲 (中堅骨幹)</option>
+                <option value="41-50 歲 (資深穩健)">41-50 歲 (資深穩健)</option>
+                <option value="51 歲以上 (資深典範)">51 歲以上 (資深典範)</option>
+              </select>
+            </div>
+
+            <!-- 教學年資 -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">教學年資 <span class="text-red-500">*</span></label>
+              <select id="field-experience" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-xs sm:text-sm bg-white transition font-medium">
+                <option value="">請選擇教學年資...</option>
+                <option value="1-3 年 (初任/代理新手)">1-3 年 (初任 / 代理新手)</option>
+                <option value="4-10 年 (穩健中生代)">4-10 年 (穩健中生代)</option>
+                <option value="11-20 年 (資深骨幹教師)">11-20 年 (資深骨幹教師)</option>
+                <option value="21 年以上 (資深前輩/名師)">21 年以上 (資深前輩 / 名師)</option>
+              </select>
             </div>
 
             <!-- 任教教育階段 -->
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">主要任教階段 <span class="text-red-500">*</span></label>
-              <select id="field-stage" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm bg-white transition">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">主要任教階段 <span class="text-red-500">*</span></label>
+              <select id="field-stage" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-xs sm:text-sm bg-white transition font-medium">
                 <option value="">請選擇教育階段...</option>
-                <option value="幼兒園">幼兒園階段</option>
+                <option value="幼兒園階段">幼兒園階段</option>
                 <option value="國小低年段 (1-2年級)">國小低年段 (1-2年級)</option>
                 <option value="國小中年段 (3-4年級)">國小中年段 (3-4年級)</option>
                 <option value="國小高年段 (5-6年級)">國小高年段 (5-6年級)</option>
                 <option value="國中階段 (7-9年級)">國中階段 (7-9年級)</option>
-                <option value="普通型高級中等學校 (普通高中)">普通型高級中等學校（普通高中）</option>
-                <option value="技術型高級中等學校 (高職/專業群科)">技術型高級中等學校（技術型高中／高職）</option>
-                <option value="綜合型高級中等學校 (綜高)">綜合型高級中等學校（綜高）</option>
-                <option value="特殊教育學校/資源班">特殊教育學校／資源班</option>
+                <option value="普通型高級中等學校 (普通高中)">普通型高中 (普通高中)</option>
+                <option value="技術型高級中等學校 (高職/專業群科)">技術型高中 (高職 / 專業群科)</option>
+                <option value="綜合型高級中等學校 (綜高)">綜合型高級中等學校 (綜高)</option>
+                <option value="特殊教育學校/資源班">特殊教育學校 / 資源班</option>
                 <option value="專任行政人員">專任行政人員</option>
-                <option value="大專院校/其他">大專院校／其他</option>
+                <option value="大專院校/其他">大專院校 / 其他</option>
               </select>
             </div>
+          </div>
 
-            <!-- 任教學科領域 -->
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">任教領域／科目 <span class="text-red-500">*</span></label>
-              <select id="field-subject" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm bg-white transition">
-                <option value="">請選擇學科領域...</option>
-                <option value="國語文/閱讀">國語文 / 閱讀理解 / 寫作</option>
-                <option value="英語文/雙語">英語文 / 雙語教學 / 第二外語</option>
-                <option value="數學領域">數學領域</option>
-                <option value="自然科學 (理化/生物/地科)">自然科學 (物理 / 化學 / 生物 / 地科 / 國小自然)</option>
-                <option value="社會領域 (歷史/地理/公民)">社會領域 (歷史 / 地理 / 公民 / 國小社會)</option>
-                <option value="科技領域 (資科/生活科技)">科技領域 (資訊科技 / 生活科技)</option>
-                <option value="藝術領域 (音樂/視覺/表藝)">藝術領域 (音樂 / 視覺藝術 / 表演藝術)</option>
-                <option value="健康與體育">健康與體育領域</option>
-                <option value="綜合活動/童軍/家政">綜合活動 / 童軍 / 家政 / 輔導諮商</option>
-                <option value="技職專業群科 (工/商/農/家/海/護/餐/藝)">技職專業群科 (機械/電機/商管/設計/餐旅/家政/農業/水產/護理等)</option>
-                <option value="幼兒教保/幼兒發展">幼兒教保活動 / 幼兒發展與學習</option>
-                <option value="特殊教育/個別化學習">特殊教育 (身障/資優/個別化教育計劃)</option>
-                <option value="包班導師 (全科)">國小包班導師 (全科綜合)</option>
-                <option value="其他專長領域">其他專長領域</option>
-              </select>
+          <!-- AI 使用現況 -->
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">目前 AI 使用現況 <span class="text-red-500">*</span></label>
+            <select id="field-ai-level" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-xs sm:text-sm bg-white transition font-medium">
+              <option value="">請評估您的熟練度...</option>
+              <option value="Level 1: 完全新手（還沒用過或不知如何下手）">Level 1: 完全新手（還沒用過或不知如何下手）</option>
+              <option value="Level 2: 初步體驗（偶爾問生活或聊天，少用在備課）">Level 2: 初步體驗（偶爾問生活或聊天，少用在備課）</option>
+              <option value="Level 3: 實戰應用（會用 AI 產題目、改編文章或草擬公文）">Level 3: 實戰應用（會用 AI 產題目、改編文章或草擬公文）</option>
+              <option value="Level 4: 進階高手（熟練客製 Prompt、生圖、多工具整合）">Level 4: 進階高手（熟練客製 Prompt、生圖、多工具整合）</option>
+            </select>
+          </div>
+
+          <!-- 任教學科領域 (可複選，去掉包班制) -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2.5">
+              <label class="block text-xs font-bold text-slate-800">
+                任教學科領域 <span class="text-red-500">*</span>
+                <span class="text-indigo-600 font-bold ml-1">（可複選・至少選 1 項・支援第二專長與跨科）</span>
+              </label>
+              <span class="text-[11px] text-slate-400">國中可選多領域；國小老師請同時勾選實際任教科（如國語、數學）</span>
             </div>
 
-            <!-- AI 熟悉程度 -->
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">目前 AI 使用現況 <span class="text-red-500">*</span></label>
-              <select id="field-ai-level" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none text-sm bg-white transition">
-                <option value="">請評估您的熟練度...</option>
-                <option value="Level 1: 完全新手（還沒用過或很少開）">Level 1: 完全新手（還沒用過或不知如何下手）</option>
-                <option value="Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）">Level 2: 初步體驗（偶爾問生活或聊天，少用在備課）</option>
-                <option value="Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）">Level 3: 實戰應用（會用 AI 產題目、改編文章或草擬公文）</option>
-                <option value="Level 4: 進階高手（熟練客製提詞、工作流、多模態工具）">Level 4: 進階高手（熟練客製 Prompt、生圖、多工具整合）</option>
-              </select>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2" id="subjects-container">
+              <!-- 學科 1 -->
+              <div>
+                <input type="checkbox" id="sub-chinese" name="subjects" value="國語文/閱讀" class="hidden tag-checkbox">
+                <label for="sub-chinese" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>📖 國語文/閱讀</span>
+                </label>
+              </div>
+
+              <!-- 學科 2 -->
+              <div>
+                <input type="checkbox" id="sub-math" name="subjects" value="數學領域" class="hidden tag-checkbox">
+                <label for="sub-math" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🔢 數學領域</span>
+                </label>
+              </div>
+
+              <!-- 學科 3 -->
+              <div>
+                <input type="checkbox" id="sub-english" name="subjects" value="英語文/雙語" class="hidden tag-checkbox">
+                <label for="sub-english" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🌐 英語文/雙語</span>
+                </label>
+              </div>
+
+              <!-- 學科 4 -->
+              <div>
+                <input type="checkbox" id="sub-science" name="subjects" value="自然科學" class="hidden tag-checkbox">
+                <label for="sub-science" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🔬 自然科學</span>
+                </label>
+              </div>
+
+              <!-- 學科 5 -->
+              <div>
+                <input type="checkbox" id="sub-social" name="subjects" value="社會領域" class="hidden tag-checkbox">
+                <label for="sub-social" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🏛️ 社會領域</span>
+                </label>
+              </div>
+
+              <!-- 學科 6 -->
+              <div>
+                <input type="checkbox" id="sub-tech" name="subjects" value="科技領域" class="hidden tag-checkbox">
+                <label for="sub-tech" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>💻 科技/資訊</span>
+                </label>
+              </div>
+
+              <!-- 學科 7 -->
+              <div>
+                <input type="checkbox" id="sub-art" name="subjects" value="藝術領域" class="hidden tag-checkbox">
+                <label for="sub-art" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🎨 藝術/音樂</span>
+                </label>
+              </div>
+
+              <!-- 學科 8 -->
+              <div>
+                <input type="checkbox" id="sub-pe" name="subjects" value="健康與體育" class="hidden tag-checkbox">
+                <label for="sub-pe" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🏃 健體領域</span>
+                </label>
+              </div>
+
+              <!-- 學科 9 -->
+              <div>
+                <input type="checkbox" id="sub-activity" name="subjects" value="綜合活動/輔導" class="hidden tag-checkbox">
+                <label for="sub-activity" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>⛺ 綜合/輔導</span>
+                </label>
+              </div>
+
+              <!-- 學科 10 -->
+              <div>
+                <input type="checkbox" id="sub-vocational" name="subjects" value="技職專業群科" class="hidden tag-checkbox">
+                <label for="sub-vocational" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>⚙️ 技職專業群科</span>
+                </label>
+              </div>
+
+              <!-- 學科 11 -->
+              <div>
+                <input type="checkbox" id="sub-kinder" name="subjects" value="幼兒教保" class="hidden tag-checkbox">
+                <label for="sub-kinder" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🧸 幼兒教保活動</span>
+                </label>
+              </div>
+
+              <!-- 學科 12 -->
+              <div>
+                <input type="checkbox" id="sub-sped" name="subjects" value="特殊教育" class="hidden tag-checkbox">
+                <label for="sub-sped" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🧩 特教/資源班</span>
+                </label>
+              </div>
+
+              <!-- 學科 13 -->
+              <div>
+                <input type="checkbox" id="sub-other" name="subjects" value="跨領域/校本/其他" class="hidden tag-checkbox">
+                <label for="sub-other" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition select-none text-xs font-bold text-slate-700">
+                  <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center bg-white check-icon opacity-40 transition shrink-0">
+                    <i data-lucide="check" class="w-3 h-3 text-indigo-600"></i>
+                  </div>
+                  <span>🌿 跨領域/其他</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -556,7 +739,7 @@
         </div>
       </div>
 
-      <!-- 學員背景交叉分析 (AI 程度 & 教育階段) -->
+      <!-- 學員背景交叉分析 (AI 程度 & 教育階段 & 教學年資 & 年齡性別) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="glass-card border border-slate-200 p-5 rounded-2xl shadow-card">
           <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
@@ -575,6 +758,28 @@
           </h3>
           <div class="h-56 relative flex items-center justify-center">
             <canvas id="chart-stages"></canvas>
+          </div>
+        </div>
+
+        <!-- 新增：教學年資分佈 -->
+        <div class="glass-card border border-slate-200 p-5 rounded-2xl shadow-card">
+          <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <i data-lucide="award" class="w-4 h-4 text-indigo-500"></i>
+            教學年資分佈（新手／中堅／資深）
+          </h3>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="chart-experience"></canvas>
+          </div>
+        </div>
+
+        <!-- 新增：年齡區間與性別分佈 -->
+        <div class="glass-card border border-slate-200 p-5 rounded-2xl shadow-card">
+          <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <i data-lucide="users" class="w-4 h-4 text-purple-500"></i>
+            教師年齡區間分佈
+          </h3>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="chart-age"></canvas>
           </div>
         </div>
       </div>
@@ -764,6 +969,8 @@
     let chartSubjects = null;
     let chartAiLevel = null;
     let chartStages = null;
+    let chartExperience = null;
+    let chartAge = null;
 
     // 頁面載入初始化
     window.addEventListener('DOMContentLoaded', () => {
@@ -989,10 +1196,19 @@
     async function handleFormSubmit(event) {
       event.preventDefault();
 
-      const school = document.getElementById('field-school').value.trim() || '未填寫/匿名';
+      const genderEl = document.querySelector('input[name="gender"]:checked');
+      const gender = genderEl ? genderEl.value : '未填';
+      const ageGroup = document.getElementById('field-age').value;
+      const experience = document.getElementById('field-experience').value;
       const stage = document.getElementById('field-stage').value;
-      const subject = document.getElementById('field-subject').value;
       const aiLevel = document.getElementById('field-ai-level').value;
+
+      // 取得選取的學科 (可複選)
+      const checkedSubjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
+      if (checkedSubjects.length === 0) {
+        alert('請至少勾選 1 項您任教的學科領域（支援複選）喔！');
+        return;
+      }
 
       // 取得選取的痛點
       const checkedPains = Array.from(document.querySelectorAll('input[name="painpoints"]:checked')).map(el => el.value);
@@ -1022,9 +1238,12 @@
       const newRecord = {
         id: 'rec_' + Date.now(),
         timestamp: new Date().toLocaleString('zh-TW', { hour12: false }),
-        school,
+        gender,
+        ageGroup,
+        experience,
         stage,
-        subject,
+        subjects: checkedSubjects,
+        subject: checkedSubjects.join(', '),
         aiLevel,
         painpoints: checkedPains,
         urgentNeed,
@@ -1036,7 +1255,7 @@
       surveyRecords.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
 
-      // 寫入 Google 試算表 (ID: 1rG4tyW47aTsvJs6dVFbvSDFln8JmCE58HtnVkfhuggw)
+      // 寫入 Google 試算表 (全國現役教師大調查專屬分頁)
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         google.script.run
           .withSuccessHandler(function(res) {
@@ -1047,7 +1266,7 @@
           })
           .saveSurveyRecord(newRecord);
       } else {
-        const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwlGG85raH3F4UcQmbs3vApm0-liB_SZbeYgN0aLJiqiHeq_pcQcek8iapcj4WEVNlM/exec";
+        const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwTX8vXyonuUn716M4M3ACA1AC-5IghpaZ4PU-s79C2zZHsm5nJnIYaEkN3d43zPfgB/exec";
         try {
           fetch(DEFAULT_GAS_URL, {
             method: 'POST',
@@ -1081,9 +1300,12 @@
 
     // 複製表單內容為文字（便於備份存查）
     function copyFormContentToClipboard() {
-      const school = document.getElementById('field-school').value.trim() || '未填寫/匿名';
+      const genderEl = document.querySelector('input[name="gender"]:checked');
+      const gender = genderEl ? genderEl.value : '未填';
+      const ageGroup = document.getElementById('field-age').value || '未填';
+      const experience = document.getElementById('field-experience').value || '未填';
       const stage = document.getElementById('field-stage').value || '未填';
-      const subject = document.getElementById('field-subject').value || '未填';
+      const checkedSubjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
       const aiLevel = document.getElementById('field-ai-level').value || '未填';
       const checkedPains = Array.from(document.querySelectorAll('input[name="painpoints"]:checked')).map(el => el.value);
       
@@ -1102,8 +1324,8 @@
       const worry = document.getElementById('field-worry').value.trim() || '無';
 
       const summaryText = `【Puti-AI 全國教師教學現況調研填答備份】\n` +
-        `學校：${school}\n` +
-        `階段/學科：${stage} | ${subject}\n` +
+        `基本背景：${gender} | ${ageGroup} | 年資：${experience}\n` +
+        `階段/學科：${stage} | ${checkedSubjects.join(', ')}\n` +
         `AI使用經驗：${aiLevel}\n` +
         `教學挑戰與負擔：\n${checkedPains.map((p, i) => `  ${i+1}. ${p}`).join('\n')}\n` +
         `最想減輕負擔之任務：${urgentNeed}\n` +
@@ -1128,14 +1350,14 @@
         document.getElementById('stat-main-subject').innerText = '尚無數據';
         document.getElementById('teacher-voices-list').innerHTML = `
           <div class="p-6 rounded-xl bg-slate-50 border border-slate-200 text-center text-slate-400 text-xs py-8">
-            目前尚無填答數據。您可先點擊上方「載入示範數據 (25位國中老師)」預覽講師分析視窗！
+            目前尚無填答數據。您可點擊上方「載入示範數據 (25位全國各級學制教師)」預覽大數據分析成果！
           </div>`;
         document.getElementById('voice-count-badge').innerText = '0 則紀錄';
         destroyCharts();
         return;
       }
 
-      // 統計痛點頻率
+      // 1. 統計痛點頻率
       const painCounts = {};
       surveyRecords.forEach(r => {
         (r.painpoints || []).forEach(p => {
@@ -1147,7 +1369,7 @@
       document.getElementById('stat-top-pain').innerText = sortedPains[0] ? `${sortedPains[0][0]} (${sortedPains[0][1]}票)` : '無';
       document.getElementById('stat-second-pain').innerText = sortedPains[1] ? `${sortedPains[1][0]} (${sortedPains[1][1]}票)` : '無';
 
-      // 統計 AI 程度
+      // 2. 統計 AI 程度
       const levelCounts = {};
       surveyRecords.forEach(r => {
         const lvl = (r.aiLevel || '未知').split('：')[0];
@@ -1156,30 +1378,49 @@
       const sortedLevels = Object.entries(levelCounts).sort((a, b) => b[1] - a[1]);
       document.getElementById('stat-main-level').innerText = sortedLevels[0] ? `${sortedLevels[0][0]}` : '無';
 
-      // 統計學科領域
+      // 3. 統計學科領域 (支援複選)
       const subjectCounts = {};
       surveyRecords.forEach(r => {
-        const sub = (r.subject || '其他').split(' ')[0];
-        subjectCounts[sub] = (subjectCounts[sub] || 0) + 1;
+        const subList = Array.isArray(r.subjects) ? r.subjects : (r.subject ? r.subject.split(/[,，、]/).map(s => s.trim()) : []);
+        subList.forEach(sub => {
+          if (sub) {
+            const cleanSub = sub.split('/')[0].trim();
+            subjectCounts[cleanSub] = (subjectCounts[cleanSub] || 0) + 1;
+          }
+        });
       });
       const sortedSubjects = Object.entries(subjectCounts).sort((a, b) => b[1] - a[1]);
-      document.getElementById('stat-main-subject').innerText = sortedSubjects[0] ? `${sortedSubjects[0][0]}` : '無';
+      document.getElementById('stat-main-subject').innerText = sortedSubjects[0] ? `${sortedSubjects[0][0]} (${sortedSubjects[0][1]}票)` : '無';
 
-      // 統計教育階段分佈
+      // 4. 統計教育階段分佈
       const stageCounts = {};
       surveyRecords.forEach(r => {
         const st = (r.stage || '未指定').split(' ')[0];
         stageCounts[st] = (stageCounts[st] || 0) + 1;
       });
 
+      // 5. 統計教學年資分佈
+      const experienceCounts = {};
+      surveyRecords.forEach(r => {
+        const exp = (r.experience || '未填年資').split(' ')[0];
+        experienceCounts[exp] = (experienceCounts[exp] || 0) + 1;
+      });
+
+      // 6. 統計年齡區間分佈
+      const ageCounts = {};
+      surveyRecords.forEach(r => {
+        const age = (r.ageGroup || '未填年齡').split(' ')[0];
+        ageCounts[age] = (ageCounts[age] || 0) + 1;
+      });
+
       // 渲染 Chart.js 圖表
-      renderCharts(sortedPains, sortedSubjects, levelCounts, stageCounts);
+      renderCharts(sortedPains, sortedSubjects, levelCounts, stageCounts, experienceCounts, ageCounts);
 
       // 渲染文字心聲
       renderVoicesList();
     }
 
-    function renderCharts(sortedPains, sortedSubjects, levelCounts, stageCounts) {
+    function renderCharts(sortedPains, sortedSubjects, levelCounts, stageCounts, experienceCounts, ageCounts) {
       destroyCharts();
 
       // 1. 痛點排行長條圖
@@ -1200,9 +1441,7 @@
           indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
             x: { beginAtZero: true, grid: { display: false } },
             y: { ticks: { font: { size: 11, family: 'Noto Sans TC' } } }
@@ -1210,14 +1449,14 @@
         }
       });
 
-      // 2. 學科分佈長條圖
+      // 2. 學科領域得票排行長條圖 (複選得票統計)
       const ctxSub = document.getElementById('chart-subjects').getContext('2d');
       chartSubjects = new Chart(ctxSub, {
         type: 'bar',
         data: {
           labels: sortedSubjects.map(item => item[0]),
           datasets: [{
-            label: '人數',
+            label: '得票數',
             data: sortedSubjects.map(item => item[1]),
             backgroundColor: 'rgba(59, 130, 246, 0.8)',
             borderRadius: 6
@@ -1275,6 +1514,50 @@
           }
         }
       });
+
+      // 5. 教學年資分佈甜甜圈圖
+      const ctxExp = document.getElementById('chart-experience').getContext('2d');
+      chartExperience = new Chart(ctxExp, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(experienceCounts),
+          datasets: [{
+            data: Object.values(experienceCounts),
+            backgroundColor: ['#38bdf8', '#818cf8', '#c084fc', '#fb7185']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, family: 'Noto Sans TC' } } }
+          }
+        }
+      });
+
+      // 6. 年齡區間分佈長條圖
+      const ctxAge = document.getElementById('chart-age').getContext('2d');
+      chartAge = new Chart(ctxAge, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(ageCounts),
+          datasets: [{
+            label: '人數',
+            data: Object.values(ageCounts),
+            backgroundColor: 'rgba(168, 85, 247, 0.8)',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true },
+            x: { ticks: { font: { size: 10, family: 'Noto Sans TC' } } }
+          }
+        }
+      });
     }
 
     function destroyCharts() {
@@ -1282,6 +1565,8 @@
       if (chartSubjects) chartSubjects.destroy();
       if (chartAiLevel) chartAiLevel.destroy();
       if (chartStages) chartStages.destroy();
+      if (chartExperience) chartExperience.destroy();
+      if (chartAge) chartAge.destroy();
     }
 
     // 渲染心聲卡片
@@ -1302,9 +1587,10 @@
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-1.5 text-xs text-slate-500">
             <span class="font-bold text-slate-800 flex items-center gap-1.5">
               <span class="w-5 h-5 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center font-mono text-[10px]">#${idx+1}</span>
-              ${escapeHtml(r.school)}・${escapeHtml(r.stage)} (${escapeHtml(r.subject)})
+              ${escapeHtml(r.stage)}・${escapeHtml(r.experience || '年資未填')}・${escapeHtml(r.gender || '保密')}
+              <span class="text-indigo-600 font-semibold ml-1">[${escapeHtml(r.subject || '任教領域')}]</span>
             </span>
-            <span class="text-[11px] bg-slate-200/70 text-slate-600 px-2 py-0.5 rounded">${escapeHtml(r.aiLevel.split('：')[0])}</span>
+            <span class="text-[11px] bg-slate-200/70 text-slate-600 px-2 py-0.5 rounded">${escapeHtml((r.aiLevel || '').split('：')[0])}</span>
           </div>
 
           ${r.urgentNeed ? `
@@ -1688,13 +1974,16 @@ ${quotesText || '（無特殊文字備註）'}
         alert('目前無數據可匯出。');
         return;
       }
-      let csvContent = '\uFEFF時間戳記,學校,階段,學科,AI程度,痛點列表,急迫需求,擔憂顧慮,備註留言\n';
+      let csvContent = '\uFEFF時間戳記,生理性別,年齡區間,教學年資,主要任教階段,任教學科領域(複選),AI熟悉程度,痛點列表,急迫需求,擔憂顧慮,備註留言\n';
       surveyRecords.forEach(r => {
+        const subjectsStr = Array.isArray(r.subjects) ? r.subjects.join('; ') : (r.subject || '');
         const row = [
           `"${r.timestamp || ''}"`,
-          `"${r.school || ''}"`,
+          `"${r.gender || '未填'}"`,
+          `"${r.ageGroup || '未填'}"`,
+          `"${r.experience || '未填'}"`,
           `"${r.stage || ''}"`,
-          `"${r.subject || ''}"`,
+          `"${subjectsStr.replace(/"/g, '""')}"`,
           `"${r.aiLevel || ''}"`,
           `"${(r.painpoints || []).join('; ')}"`,
           `"${(r.urgentNeed || '').replace(/"/g, '""')}"`,
@@ -1707,13 +1996,13 @@ ${quotesText || '（無特殊文字備註）'}
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `Puti-AI_全國教師痛點調查數據_${new Date().toISOString().slice(0,10)}.csv`;
+      link.download = `Puti-AI_全國教師痛點大調查數據_${new Date().toISOString().slice(0,10)}.csv`;
       link.click();
     }
 
     // 載入示範數據（模擬 25 位全國各級學制教師真實調查）
     function loadDemoData() {
-      if (confirm('是否載入模擬全國各級學校（涵蓋國小、國中、普通高中、技術型高中高職 25 位教師）的真實痛點數據？這將協助您預覽大數據儀表板與分析報告！')) {
+      if (confirm('是否載入模擬全國各級學校（涵蓋國小、國中、高中、高職、特教 25 位教師）的真實痛點大數據？這將協助您預覽大數據儀表板與分析報告！')) {
         const demoData = generateMockData();
         surveyRecords = demoData;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
@@ -1753,48 +2042,48 @@ ${quotesText || '（無特殊文字備註）'}
     function generateMockData() {
       return [
         {
-          id: 'mock_1', timestamp: '2026/09/01 10:12:30', school: '屏東縣後庄國小', stage: '國小高年段 (5-6年級)', subject: '數學領域',
-          aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
+          id: 'mock_1', timestamp: '2026/09/01 10:12:30', gender: '女性', ageGroup: '31-40 歲 (中堅骨幹)', experience: '4-10 年 (穩健中生代)', stage: '國小高年段 (5-6年級)', subjects: ['數學領域', '國語文/閱讀'], subject: '數學領域, 國語文/閱讀',
+          aiLevel: 'Level 2: 初步體驗（偶爾問生活或聊天，少用在備課）',
           painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '班級雙峰差異大：無法同時照顧落後補救與超前資優延伸'],
-          urgentNeed: '五六年級幾何與分數小數，想出生活情境題卻很耗時，希望能有現成模組。',
+          urgentNeed: '高年級幾何與小數分數，想出生活情境素養題很耗時，希望能有現成模組。',
           worry: '擔心 AI 算數學容易算錯（幻覺），改題目反而要花更多時間校對。',
-          notes: '感謝黃老師熱心推廣，很期待能學到好用的免付費工具！'
+          notes: '感謝發起大調查，希望能看到全台老師真實心聲與統計數據！'
         },
         {
-          id: 'mock_2', timestamp: '2026/09/01 10:45:11', school: '臺中第一高級中等學校', stage: '普通型高級中等學校 (普通高中)', subject: '國語文/閱讀',
-          aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
-          painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', 'AI 提示詞總是答非所問：生成的內容空洞、缺少教學專業深度'],
-          urgentNeed: '高中分科測驗與學測長篇文言文轉探究素養題組與非選評分標準。',
-          worry: '學生都用 AI 寫國文學習歷程自述，教師很難辨識真偽。',
-          notes: '希望多交流能防止學生濫用抄襲、引導思辨的教學契約設計！'
+          id: 'mock_2', timestamp: '2026/09/01 10:45:11', gender: '女性', ageGroup: '41-50 歲 (資深穩健)', experience: '11-20 年 (資深骨幹教師)', stage: '普通型高級中等學校 (普通高中)', subjects: ['國語文/閱讀', '社會領域'], subject: '國語文/閱讀, 社會領域',
+          aiLevel: 'Level 3: 實戰應用（會用 AI 產題目、改編文章或草擬公文）',
+          painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', 'AI 提示詞總是答非所問：生成的內容空洞抽象、缺乏教學專業實務深度'],
+          urgentNeed: '高中學測長篇文言文轉探究素養題組與非選評分標準規準。',
+          worry: '學生都用 AI 寫學習歷程自述，教師很難辨識真實反思深度。',
+          notes: '希望能引導學生建立資訊素養與思辨能力！'
         },
         {
-          id: 'mock_3', timestamp: '2026/09/01 11:20:05', school: '臺北市立大安高工', stage: '技術型高級中等學校 (高職/專業群科)', subject: '科技領域 (資科/生活科技)',
-          aiLevel: 'Level 3: 實戰應用（已用 AI 產生題目、草擬教案或評語）',
+          id: 'mock_3', timestamp: '2026/09/01 11:20:05', gender: '男性', ageGroup: '31-40 歲 (中堅骨幹)', experience: '4-10 年 (穩健中生代)', stage: '技術型高級中等學校 (高職/專業群科)', subjects: ['科技領域', '技職專業群科'], subject: '科技領域, 技職專業群科',
+          aiLevel: 'Level 3: 實戰應用（會用 AI 產題目、改編文章或草擬公文）',
           painpoints: ['學生動機低落：缺乏吸引人的互動模擬器、遊戲式評量', '教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力'],
           urgentNeed: '電機電子與資訊科實習課程，需要快速生成結構化步驟圖解與檢定練習題。',
           worry: '專業科目的專有名詞 AI 容易混淆或給出非台灣用語。',
-          notes: '高職專業科目的 AI 應用資源太少了，敲碗希望能多看到技職的應用分享！'
+          notes: '技職專業科目的 AI 應用太需要被看見了，支持大調查！'
         },
         {
-          id: 'mock_4', timestamp: '2026/09/01 13:10:40', school: '高雄市立中正國中', stage: '國中階段 (7-9年級)', subject: '英語文/雙語',
-          aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
+          id: 'mock_4', timestamp: '2026/09/01 13:10:40', gender: '女性', ageGroup: '21-30 歲 (青年新秀)', experience: '1-3 年 (初任/代理新手)', stage: '國中階段 (7-9年級)', subjects: ['英語文/雙語', '綜合活動/輔導'], subject: '英語文/雙語, 綜合活動/輔導',
+          aiLevel: 'Level 2: 初步體驗（偶爾問生活或聊天，少用在備課）',
           painpoints: ['班級雙峰差異大：無法同時照顧落後補救與超前資優延伸', '教材視覺製作慢：簡報排版、找無版權插圖與圖解費時費力'],
-          urgentNeed: '雙語課堂需要大量情境對話短劇與生活漫畫插圖，但自己美工不擅長。',
+          urgentNeed: '雙語課堂需要大量情境對話短劇與生活插圖，但自己美工不擅長。',
           worry: '怕很多工具都需要收高額月費，公立學校經費無法支援。',
-          notes: '想學用 AI 快速做四格英文對話漫畫！'
+          notes: '初任代理教師很需要能減輕備課負擔的好方法。'
         },
         {
-          id: 'mock_5', timestamp: '2026/09/01 14:02:18', school: '新北市立板橋高中', stage: '普通型高級中等學校 (普通高中)', subject: '社會領域 (歷史/地理/公民)',
-          aiLevel: 'Level 2: 初步體驗（會問問 ChatGPT/Gemini 生活問題）',
-          painpoints: ['素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時', '備課資料零散：校本課程、歷屆試題與研習講義難以智慧化整理'],
-          urgentNeed: '臺灣史與地理圖資結合的跨領域素養探究題，希望能快速對標 108 課綱指標。',
-          worry: '怕 AI 整理歷史脈絡時顛倒史實。',
-          notes: '感謝發起調查，希望能看到全台老師的數據統整！'
+          id: 'mock_5', timestamp: '2026/09/01 14:02:18', gender: '男性', ageGroup: '51 歲以上 (資深典範)', experience: '21 年以上 (資深前輩/名師)', stage: '國小中年段 (3-4年級)', subjects: ['國語文/閱讀', '數學領域', '自然科學'], subject: '國語文/閱讀, 數學領域, 自然科學',
+          aiLevel: 'Level 1: 完全新手（還沒用過或不知如何下手）',
+          painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書', '素養命題頭痛：長篇生活化題組與情境題想破頭、找文本耗時'],
+          urgentNeed: '導師每學期寫期末評語跟親師溝通通知單太耗時間。',
+          worry: '年紀較大怕操作複雜軟體學不來，希望能有直覺簡單的工具。',
+          notes: '願意多了解新科技！'
         },
         {
-          id: 'mock_6', timestamp: '2026/09/01 15:30:22', school: '臺南市立後甲國中', stage: '國中階段 (7-9年級)', subject: '健康與體育',
-          aiLevel: 'Level 1: 完全新手（還沒用過或很少開）',
+          id: 'mock_6', timestamp: '2026/09/01 15:30:22', gender: '女性', ageGroup: '31-40 歲 (中堅骨幹)', experience: '4-10 年 (穩健中生代)', stage: '國中階段 (7-9年級)', subjects: ['健康與體育'], subject: '健康與體育',
+          aiLevel: 'Level 1: 完全新手（還沒用過或不知如何下手）',
           painpoints: ['行政與文字庶務壓垮：評語、輔導紀錄、家長信與活動計畫書'],
           urgentNeed: '當導師每天寫聯絡簿跟親師溝通很耗心力，想學用 AI 快速潤飾有溫度的文字。',
           worry: '完全是 3C 苦手，希望工具越無腦、越直覺越好。',
