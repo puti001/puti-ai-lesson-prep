@@ -691,12 +691,12 @@
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i>
             <span>同步最新數據</span>
           </button>
-          <button onclick="exportDataCSV()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            <span>匯出 CSV</span>
-          </button>
-          <!-- 管理員專用按鈕 (僅在驗證通過時顯示) -->
+          <!-- 管理員專用按鈕 (僅在驗證通過時顯示：包含匯出 CSV、示範數據、清空重測) -->
           <div id="admin-tools-header" class="hidden flex items-center gap-2">
+            <button onclick="exportDataCSV()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>匯出 CSV</span>
+            </button>
             <button onclick="loadDemoData()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
               <i data-lucide="database" class="w-3.5 h-3.5"></i>
               <span>載入示範數據 (25位)</span>
@@ -891,7 +891,7 @@
         <div id="teacher-voices-list" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2">
           <!-- 動態插入卡片 -->
           <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center text-slate-400 text-xs py-8">
-            尚無文字回饋，可點擊上方「載入示範數據」檢視效果。
+            目前尚無文字回饋，隨全台老師陸續填答將即時呈現。
           </div>
         </div>
       </div>
@@ -1455,7 +1455,7 @@
         document.getElementById('stat-main-subject').innerText = '尚無數據';
         document.getElementById('teacher-voices-list').innerHTML = `
           <div class="p-6 rounded-xl bg-slate-50 border border-slate-200 text-center text-slate-400 text-xs py-8">
-            目前尚無填答數據。您可點擊上方「載入示範數據 (25位全國各級學制教師)」預覽大數據分析成果！
+            目前尚無填答數據，隨全台老師陸續送出問卷將自動即時呈現。
           </div>`;
         document.getElementById('voice-count-badge').innerText = '0 則紀錄';
         destroyCharts();
