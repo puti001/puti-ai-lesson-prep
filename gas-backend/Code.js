@@ -4,9 +4,61 @@
  * 試算表 ID: 1rG4tyW47aTsvJs6dVFbvSDFln8JmCE58HtnVkfhuggw
  */
 
-// 1. 提供前端 HTML 頁面
+// 0. 確保並主動初始化【全國現役教師大調查】專屬分頁與美化表頭
+function getOrInitSurveySheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var TARGET_SHEET_NAME = "全國現役教師大調查";
+  var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
+
+  var NEW_HEADERS = [
+    "填答時間",
+    "生理性別",
+    "年齡區間",
+    "教學年資",
+    "主要任教階段",
+    "任教學科領域 (複選)",
+    "AI熟悉程度",
+    "教學現場挑戰 (複選)",
+    "最希望減輕負擔的教學任務",
+    "面對AI融入教育的擔憂或疑慮",
+    "備註"
+  ];
+
+  if (!sheet) {
+    sheet = ss.insertSheet(TARGET_SHEET_NAME);
+  }
+
+  // 若分頁為空或只有舊標題，建立美化標準表頭
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(NEW_HEADERS);
+    var headerRange = sheet.getRange(1, 1, 1, NEW_HEADERS.length);
+    headerRange.setBackground("#4338ca");
+    headerRange.setFontColor("#ffffff");
+    headerRange.setFontWeight("bold");
+    headerRange.setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
 // 1. 提供前端 HTML 頁面與備用 JSON API
 function doGet(e) {
+  try {
+    // 主動確保專屬分頁已在試算表建立
+    getOrInitSurveySheet();
+  } catch (err) {
+    console.warn("主動建立工作表分頁失敗:", err);
+  }
+
+  // 支援手動觸發初始化或檢查分頁
+  if (e && e.parameter && e.parameter.action === "initSheet") {
+    var s = getOrInitSurveySheet();
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: "success", message: "工作表分頁【全國現役教師大調查】已建立就緒！", sheetName: s.getName() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   // 支援透過 GET 參數直接獲取數據（例如本地預覽或第三方取用）
   if (e && e.parameter && e.parameter.action === "getRecords") {
     var recordsData = getSurveyRecords();
@@ -21,53 +73,13 @@ function doGet(e) {
     .addMetaTag("viewport", "width=device-width, initial-scale=1.0");
 }
 
-/// 2. 前端透過 google.script.run 直連寫入試算表（極速、免 CORS、免 URL）
+// 2. 前端透過 google.script.run 直連寫入試算表（極速、免 CORS、免 URL）
 function saveSurveyRecord(data) {
   var lock = LockService.getScriptLock();
   lock.tryLock(10000); // 鎖定防多人併發衝突
 
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var TARGET_SHEET_NAME = "全國現役教師大調查";
-    var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
-
-    var NEW_HEADERS = [
-      "填答時間",
-      "生理性別",
-      "年齡區間",
-      "教學年資",
-      "主要任教階段",
-      "任教學科領域 (複選)",
-      "AI熟悉程度",
-      "教學現場挑戰 (複選)",
-      "最希望減輕負擔的教學任務",
-      "面對AI融入教育的擔憂或疑慮",
-      "備註"
-    ];
-
-    // 若專屬工作表分頁尚不存在，則新建獨立分頁
-    if (!sheet) {
-      sheet = ss.insertSheet(TARGET_SHEET_NAME);
-      sheet.appendRow(NEW_HEADERS);
-      
-      // 美化表頭格式（藍靛底白字、置中、凍結首列）
-      var headerRange = sheet.getRange(1, 1, 1, NEW_HEADERS.length);
-      headerRange.setBackground("#4338ca");
-      headerRange.setFontColor("#ffffff");
-      headerRange.setFontWeight("bold");
-      headerRange.setHorizontalAlignment("center");
-      sheet.setFrozenRows(1);
-    } else if (sheet.getLastRow() <= 1) {
-      // 若已有空分頁，直接更新為最新標準表頭
-      sheet.clear();
-      sheet.appendRow(NEW_HEADERS);
-      var headerRange = sheet.getRange(1, 1, 1, NEW_HEADERS.length);
-      headerRange.setBackground("#4338ca");
-      headerRange.setFontColor("#ffffff");
-      headerRange.setFontWeight("bold");
-      headerRange.setHorizontalAlignment("center");
-      sheet.setFrozenRows(1);
-    }
+    var sheet = getOrInitSurveySheet();
 
     var timestamp = data.timestamp || new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
     var gender = data.gender || "未填";
