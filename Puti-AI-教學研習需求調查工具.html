@@ -108,8 +108,13 @@
         </div>
       </div>
 
-      <!-- 切換模式按鈕 (一般填答隱藏暗門；後台模式顯示「返回問卷」) -->
+      <!-- 切換模式按鈕與已填答回訪快捷入口 -->
       <div class="flex items-center gap-2">
+        <!-- 曾填過的使用者快捷入口 (由 localStorage 偵測或隨時點擊) -->
+        <button onclick="enterPublicDashboard()" id="btn-quick-dashboard" class="px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 flex items-center gap-1.5 text-xs font-bold transition shadow-sm" title="若您之前已填寫過，可點此直接查看最新全台大數據">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-indigo-600"></i>
+          <span class="hidden sm:inline">已填答過？</span><span>查看大數據</span>
+        </button>
         <button onclick="handleLecturerAccess()" id="btn-mode-toggle" title="返回問卷" class="hidden px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-amber-300 hover:bg-slate-700 flex items-center gap-1.5 text-xs font-bold transition shadow-sm">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
           <span>返回問卷</span>
@@ -124,13 +129,37 @@
     <!-- ==================== 模式一：全國教師問卷填寫區 (Teacher Survey Mode) ==================== -->
     <div id="survey-section" class="space-y-8 transition-opacity duration-300">
       
+      <!-- 曾填寫過老師的專屬提示條 (預設隱藏，由 localStorage 自動喚起) -->
+      <div id="returning-visitor-banner" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-3 text-left">
+          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+            <i data-lucide="check-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold">歡迎回來！偵測到您之前已完成過本調查</div>
+            <div class="text-xs text-emerald-700">大數據隨全台老師填答持續動態累積中，無需重複填寫即可即刻追蹤最新成果！</div>
+          </div>
+        </div>
+        <button type="button" onclick="enterPublicDashboard()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow transition shrink-0 flex items-center justify-center gap-1.5">
+          <span>直接查看最新統計</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
       <!-- 頂部引言卡片 -->
       <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold backdrop-blur-sm mb-3 border border-amber-400/30">
-            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
-            填完立即解鎖・查看全台教師大數據分析成果
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold backdrop-blur-sm border border-amber-400/30">
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+              填完立即解鎖・查看全台教師大數據分析成果
+            </div>
+            <!-- 引言區快速跳轉按鈕 -->
+            <button type="button" onclick="enterPublicDashboard()" class="text-xs text-indigo-200 hover:text-amber-300 underline underline-offset-4 flex items-center gap-1 transition">
+              <span>已填答過？想追蹤最新累積數據？點此直達儀表板</span>
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </button>
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3">
             老師您好！想了解您在教學現場所感受到的負擔與挑戰
@@ -142,6 +171,7 @@
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> 全程匿名免登入</span>
             <span class="flex items-center gap-1.5"><i data-lucide="unlock" class="w-4 h-4 text-amber-300"></i> 填答後即時解鎖看結果</span>
             <span class="flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-4 h-4 text-sky-300"></i> 呈現真實教學現場數據</span>
+            <span class="flex items-center gap-1.5 cursor-pointer hover:text-amber-300" onclick="enterPublicDashboard()"><i data-lucide="history" class="w-4 h-4 text-amber-300"></i> 日後可隨時回訪追蹤大數據</span>
           </div>
         </div>
       </div>
@@ -612,10 +642,16 @@
               免密碼開放！即刻瀏覽各學段排行榜、學科佔比圓餅圖與老師們的真實心聲。
             </div>
           </div>
-          <button type="button" onclick="enterPublicDashboard()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-sm font-black shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 shrink-0 transform active:scale-95">
-            <span>立即查看全國統計結果</span>
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </button>
+          <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+            <button type="button" onclick="copyDashboardDirectLink()" id="btn-copy-direct-link" class="w-full sm:w-auto px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0" title="複製直達儀表板專屬網址，方便加入書籤過幾天再回來看">
+              <i data-lucide="bookmark" class="w-4 h-4 text-indigo-600"></i>
+              <span>複製追蹤連結（隨時回訪）</span>
+            </button>
+            <button type="button" onclick="enterPublicDashboard()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-sm font-black shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 shrink-0 transform active:scale-95">
+              <span>立即查看全國統計結果</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
         </div>
 
         <div class="pt-2 border-t border-emerald-200/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
@@ -961,6 +997,7 @@
     // 本地資料庫鍵名
     const STORAGE_KEY = 'puti_teacher_survey_data';
     const GAS_URL_KEY = 'puti_gas_api_url';
+    const SUBMITTED_KEY = 'puti_teacher_survey_submitted';
 
     // 全域變數
     let currentMode = 'survey'; // 'survey' or 'dashboard'
@@ -979,6 +1016,29 @@
       if (savedGasUrl) {
         document.getElementById('gas-url-input').value = savedGasUrl;
       }
+
+      // 檢查 URL 參數是否包含 view=dashboard (透過專屬追蹤連結或書籤進入)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('view') === 'dashboard') {
+        enterPublicDashboard();
+        return;
+      }
+
+      // 檢查本地是否曾填答過問卷
+      const hasSubmitted = localStorage.getItem(SUBMITTED_KEY);
+      if (hasSubmitted === 'true') {
+        const returningBanner = document.getElementById('returning-visitor-banner');
+        if (returningBanner) returningBanner.classList.remove('hidden');
+        
+        // 頂部按鈕高亮提示
+        const quickBtn = document.getElementById('btn-quick-dashboard');
+        if (quickBtn) {
+          quickBtn.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-200');
+          quickBtn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600', 'shadow-md');
+          quickBtn.innerHTML = '<i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-100"></i><span class="hidden sm:inline">已填答・</span><span>看最新大數據</span>';
+        }
+      }
+      lucide.createIcons();
     });
 
     // 載入本地存儲數據
@@ -1279,6 +1339,9 @@
         }
       }
 
+      // 標記本機瀏覽器已完成填答
+      localStorage.setItem(SUBMITTED_KEY, 'true');
+
       // 祝賀特效
       confetti({
         particleCount: 80,
@@ -1293,9 +1356,51 @@
       document.getElementById('success-banner').classList.remove('hidden');
       document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
 
+      // 同步更新頂部按鈕狀態
+      const quickBtn = document.getElementById('btn-quick-dashboard');
+      if (quickBtn) {
+        quickBtn.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-200');
+        quickBtn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600', 'shadow-md');
+        quickBtn.innerHTML = '<i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-100"></i><span class="hidden sm:inline">已填答・</span><span>看最新大數據</span>';
+      }
+
       setTimeout(() => {
         lucide.createIcons();
       }, 100);
+    }
+
+    // 複製直達儀表板專屬網址 (附帶 ?view=dashboard 參數)
+    function copyDashboardDirectLink() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('view', 'dashboard');
+      const directUrl = url.toString();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(directUrl).then(() => {
+          showCopyFeedback();
+        }).catch(() => {
+          prompt('請手動複製以下儀表板專屬追蹤連結（可加到瀏覽器書籤）：', directUrl);
+        });
+      } else {
+        prompt('請手動複製以下儀表板專屬追蹤連結（可加到瀏覽器書籤）：', directUrl);
+      }
+    }
+
+    function showCopyFeedback() {
+      const btn = document.getElementById('btn-copy-direct-link');
+      if (btn) {
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-emerald-600"></i><span class="text-emerald-700">已複製！可加到書籤</span>';
+        btn.classList.add('bg-emerald-50', 'border-emerald-300');
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('bg-emerald-50', 'border-emerald-300');
+          lucide.createIcons();
+        }, 2500);
+      } else {
+        alert('儀表板專屬網址已複製到剪貼簿！您可以儲存到書籤隨時回來看。');
+      }
     }
 
     // 複製表單內容為文字（便於備份存查）
