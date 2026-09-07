@@ -906,16 +906,10 @@
             if (refreshBtn) {
               refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
             }
-            if (res && res.result === 'success' && res.records && res.records.length > 0) {
-              // 與本地資料合併去重
-              const existingIds = new Set(surveyRecords.map(r => r.timestamp + '_' + r.school + '_' + (r.stage || '')));
-              res.records.forEach(cloudRec => {
-                const key = cloudRec.timestamp + '_' + cloudRec.school + '_' + (cloudRec.stage || '');
-                if (!existingIds.has(key)) {
-                  surveyRecords.push(cloudRec);
-                  existingIds.add(key);
-                }
-              });
+            if (res && res.result === 'success' && Array.isArray(res.records)) {
+              // 以雲端試算表為唯一真實來源 (Single Source of Truth)
+              // 試算表刪除或編輯的紀錄，前端同步後立即精準對齊！
+              surveyRecords = res.records;
               localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
             }
             renderDashboard();
@@ -932,7 +926,7 @@
           })
           .getSurveyRecords();
       } else {
-        const gasUrl = localStorage.getItem(GAS_URL_KEY) || "https://script.google.com/macros/s/AKfycbxHkZVd3ETQm4_JZHK4ax5hrbcHfs6nKB4CgSxPfMauakzWiQ2qaB_FmHbFdTOXQIPq/exec";
+        const gasUrl = localStorage.getItem(GAS_URL_KEY) || "https://script.google.com/macros/s/AKfycbznTxxvR9qw0Uri7g2E9YonpNNTtTcEdS5BnSspv9IBsQDeP0l1yVEn0vSmhwmP7-Zd/exec";
         if (gasUrl) {
           fetch(gasUrl + (gasUrl.includes('?') ? '&' : '?') + 'action=getRecords')
             .then(res => res.json())
@@ -940,15 +934,9 @@
               if (refreshBtn) {
                 refreshBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-400"></i><span>同步最新數據</span>';
               }
-              if (res && res.result === 'success' && res.records && res.records.length > 0) {
-                const existingIds = new Set(surveyRecords.map(r => r.timestamp + '_' + r.school + '_' + (r.stage || '')));
-                res.records.forEach(cloudRec => {
-                  const key = cloudRec.timestamp + '_' + cloudRec.school + '_' + (cloudRec.stage || '');
-                  if (!existingIds.has(key)) {
-                    surveyRecords.push(cloudRec);
-                    existingIds.add(key);
-                  }
-                });
+              if (res && res.result === 'success' && Array.isArray(res.records)) {
+                // 以雲端試算表為唯一真實來源
+                surveyRecords = res.records;
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyRecords));
               }
               renderDashboard();
