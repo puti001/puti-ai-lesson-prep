@@ -2393,36 +2393,79 @@ const cardData = [
     }
 
 
-    // ===== 課前等候室倒數計時器系統 =====
-    let timerSecondsRemaining = 10 * 60; // 預設 10 分鐘
+    // ===== 課前等候室倒數計時系統 (精準時間戳版，防瀏覽器後台降頻) =====
+    let timerTargetTimestamp = Date.now() + 10 * 60 * 1000; // 預設倒數 10 分鐘
     let timerIsRunning = true;
     let timerIntervalId = null;
     let timerAudioPlayed = false;
+    let timerPausedRemaining = 10 * 60; // 暫停時剩餘秒數
+
+    function getRemainingSeconds() {
+      if (!timerIsRunning) return timerPausedRemaining;
+      const diff = Math.round((timerTargetTimestamp - Date.now()) / 1000);
+      return Math.max(0, diff);
+    }
 
     function formatTimerTime(sec) {
       if (sec < 0) sec = 0;
-      const m = Math.floor(sec / 60);
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
       const s = sec % 60;
+      if (h > 0) {
+        return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+      }
       return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
     }
 
+    function formatClock(date) {
+      const h = date.getHours();
+      const m = date.getMinutes();
+      const s = date.getSeconds();
+      return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    function formatShortClock(date) {
+      const h = date.getHours();
+      const m = date.getMinutes();
+      return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
+    }
+
     function updateTimerUI() {
+      const sec = getRemainingSeconds();
       const displayEl = document.getElementById('stageTimerDisplay');
       const statusEl = document.getElementById('stageTimerStatus');
       const btnTextEl = document.getElementById('btnTimerToggleText');
+      const currClockEl = document.getElementById('stageCurrentClock');
+      const targetClockEl = document.getElementById('stageTargetClock');
+      const targetInputEl = document.getElementById('targetClockInput');
+
+      const now = new Date();
+      if (currClockEl) {
+        currClockEl.innerText = formatClock(now);
+      }
+
+      const targetDate = new Date(timerIsRunning ? timerTargetTimestamp : Date.now() + timerPausedRemaining * 1000);
+      if (targetClockEl) {
+        targetClockEl.innerText = formatShortClock(targetDate);
+      }
+      if (targetInputEl && document.activeElement !== targetInputEl) {
+        targetInputEl.value = formatShortClock(targetDate);
+      }
+
       if (displayEl) {
-        displayEl.innerText = formatTimerTime(timerSecondsRemaining);
+        displayEl.innerText = formatTimerTime(sec);
       }
       if (btnTextEl) {
         btnTextEl.innerText = timerIsRunning ? '暫停' : '繼續';
       }
+
       if (statusEl) {
-        if (timerSecondsRemaining <= 0) {
+        if (sec <= 0) {
           statusEl.innerHTML = '<span class="text-rose-500 font-black text-sm sm:text-base animate-bounce">🎉 研習正式開始！請老師們坐穩出發～</span>';
         } else if (timerIsRunning) {
-          statusEl.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span><span>倒數進行中 · 研習即將準時開始</span>';
+          statusEl.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span><span>倒數進行中 · 預定 ' + formatShortClock(targetDate) + ' 準時開課</span>';
         } else {
-          statusEl.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="text-amber-600 dark:text-amber-400">計時已暫停</span>';
+          statusEl.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="text-amber-600 dark:text-amber-400">倒數已暫停</span>';
         }
       }
     }
@@ -2451,84 +2494,125 @@ const cardData = [
     function startGlobalTimer() {
       if (timerIntervalId) clearInterval(timerIntervalId);
       timerIntervalId = setInterval(() => {
-        if (timerIsRunning && timerSecondsRemaining > 0) {
-          timerSecondsRemaining--;
-          updateTimerUI();
-          if (timerSecondsRemaining === 0 && !timerAudioPlayed) {
-            timerAudioPlayed = true;
-            playClassStartChime();
-            showToast('🎉 研習時間到！課程正式開始～');
-            if (window.confetti) {
-              try {
-                window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-              } catch(e) {}
-            }
+        const sec = getRemainingSeconds();
+        updateTimerUI();
+        if (sec === 0 && !timerAudioPlayed && timerIsRunning) {
+          timerAudioPlayed = true;
+          playClassStartChime();
+          showToast('🎉 研習時間到！課程正式開始～');
+          if (window.confetti) {
+            try {
+              window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } catch(e) {}
           }
         }
       }, 1000);
     }
 
+    // 分頁切換與視窗聚焦時立即校準，解決後台分頁休眠降頻問題
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) updateTimerUI();
+    });
+    window.addEventListener('focus', () => {
+      updateTimerUI();
+    });
+
     function toggleTimerRun() {
-      timerIsRunning = !timerIsRunning;
+      if (timerIsRunning) {
+        timerPausedRemaining = getRemainingSeconds();
+        timerIsRunning = false;
+      } else {
+        timerTargetTimestamp = Date.now() + timerPausedRemaining * 1000;
+        timerIsRunning = true;
+      }
       playSfx('flip');
       updateTimerUI();
     }
 
     function adjustTimer(deltaSec) {
-      timerSecondsRemaining = Math.max(0, timerSecondsRemaining + deltaSec);
-      if (timerSecondsRemaining > 0) timerAudioPlayed = false;
+      if (timerIsRunning) {
+        timerTargetTimestamp += deltaSec * 1000;
+        if (timerTargetTimestamp < Date.now()) timerTargetTimestamp = Date.now();
+      } else {
+        timerPausedRemaining = Math.max(0, timerPausedRemaining + deltaSec);
+      }
+      timerAudioPlayed = false;
       playSfx('hover');
       updateTimerUI();
+      const currentSec = getRemainingSeconds();
+      showToast((deltaSec > 0 ? '+' : '') + Math.round(deltaSec / 60) + ' 分鐘（剩餘 ' + Math.ceil(currentSec / 60) + ' 分）');
     }
 
     function resetTimer(sec) {
-      timerSecondsRemaining = sec;
+      timerTargetTimestamp = Date.now() + sec * 1000;
+      timerPausedRemaining = sec;
       timerAudioPlayed = false;
       timerIsRunning = true;
       playSfx('copy');
       updateTimerUI();
-      showToast('已重設倒數為 ' + Math.floor(sec / 60) + ' 分鐘');
+      showToast('已重設為倒數 ' + Math.floor(sec / 60) + ' 分鐘');
     }
 
+    // 設定目標開課時刻（如 13:40 或 14:00）
     function setTargetClockTime(timeStr) {
       if (!timeStr) return;
-      const parts = timeStr.split(':');
-      if (parts.length < 2) return;
-      const targetH = parseInt(parts[0], 10);
-      const targetM = parseInt(parts[1], 10);
+      let clean = timeStr.trim();
+      let targetH = 0;
+      let targetM = 0;
+
+      if (clean.includes(':')) {
+        const parts = clean.split(':');
+        targetH = parseInt(parts[0], 10);
+        targetM = parseInt(parts[1], 10);
+      } else if (/^\d{3,4}$/.test(clean)) {
+        // 支援直接輸入 1340 或 1400
+        if (clean.length === 3) clean = '0' + clean;
+        targetH = parseInt(clean.substring(0, 2), 10);
+        targetM = parseInt(clean.substring(2, 4), 10);
+      } else {
+        // 純數字當作分鐘
+        const min = parseFloat(clean);
+        if (!isNaN(min) && min > 0) {
+          resetTimer(Math.round(min * 60));
+          return;
+        }
+      }
+
       const now = new Date();
+      // 12 小時制智慧校正：如果輸入 1:40 但現在是下午 13 點多，自動轉為 13:40
+      if (targetH < 12 && now.getHours() >= 12) {
+        targetH += 12;
+      }
+
       let target = new Date();
       target.setHours(targetH, targetM, 0, 0);
 
       let diffSec = Math.floor((target.getTime() - now.getTime()) / 1000);
       if (diffSec <= 0) {
-        showToast('該時間已過，請選擇未來的時刻喔！');
+        // 若時間已過，自動設為 5 分鐘後或詢問
+        showToast(`${formatShortClock(target)} 已經過了喔！請選擇現在未來的時刻`);
         return;
       }
-      timerSecondsRemaining = diffSec;
+
+      timerTargetTimestamp = target.getTime();
+      timerPausedRemaining = diffSec;
       timerAudioPlayed = false;
       timerIsRunning = true;
       playSfx('copy');
       updateTimerUI();
       const m = Math.floor(diffSec / 60);
       const s = diffSec % 60;
-      showToast(`已設定開課時刻為 ${timeStr}（倒數 ${m} 分 ${s} 秒）`);
+      showToast(`開課時刻設為 ${formatShortClock(target)}（距離現在還有 ${m} 分 ${s} 秒）`);
     }
 
     function promptCustomTime() {
-      const input = prompt('請輸入倒數設定：\n• 輸入數字（如 8 或 15）：設定倒數分鐘\n• 或輸入時間（如 13:40 或 14:00）：設定目標開課時刻', Math.ceil(timerSecondsRemaining / 60) || '10');
+      const now = new Date();
+      const next1 = new Date(now.getTime() + 5 * 60 * 1000);
+      const next2 = new Date(now.getTime() + 10 * 60 * 1000);
+      const hint = `目前現在時間為 ${formatClock(now)}\n\n請輸入開課設定：\n• 輸入時刻（如 ${formatShortClock(next1)} 或 ${formatShortClock(next2)}）：指定幾點幾分開課\n• 或輸入數字（如 5 或 10）：直接倒數幾分鐘`;
+      const input = prompt(hint, formatShortClock(next1));
       if (!input) return;
-      const trimmed = input.trim();
-      if (trimmed.includes(':')) {
-        setTargetClockTime(trimmed);
-      } else {
-        const min = parseFloat(trimmed);
-        if (!isNaN(min) && min > 0) {
-          resetTimer(Math.round(min * 60));
-        } else {
-          showToast('請輸入有效的分鐘數字（例如 10）');
-        }
-      }
+      setTargetClockTime(input);
     }
 
     function setCustomTargetTime() {
@@ -2634,58 +2718,68 @@ const cardData = [
               </div>
             </div>
 
-            <!-- 中間核心：大字倒數計時器 ＋ 快捷面板 -->
+            <!-- 中間核心：雙時鐘對時 ＋ 大字倒數計時器 ＋ 快捷面板 -->
             <div class="my-auto py-2 text-center">
-              <div class="bg-gradient-to-b from-indigo-50/80 to-purple-50/50 dark:from-slate-900/90 dark:to-indigo-950/40 p-5 rounded-3xl border-2 border-indigo-200/80 dark:border-indigo-800/60 shadow-inner">
-                <div id="stageTimerDisplay" onclick="promptCustomTime()" title="點擊直接修改倒數時間或開課時刻" class="font-mono text-6xl sm:text-7xl lg:text-8xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-300 dark:to-pink-400 py-1 select-none cursor-pointer hover:scale-105 transition-transform">
-                  10:00
-                </div>
+              <div class="bg-gradient-to-b from-indigo-50/90 to-purple-50/60 dark:from-slate-900/90 dark:to-indigo-950/50 p-4 sm:p-5 rounded-3xl border-2 border-indigo-200/90 dark:border-indigo-800/80 shadow-inner space-y-3">
                 
-                <div class="flex items-center justify-center gap-2 mb-2">
-                  <div id="stageTimerStatus" class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                <!-- 雙時鐘對齊列：即時顯示目前標準時間 ＆ 預定開課時刻 -->
+                <div class="flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-black">
+                  <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-slate-400">現在時間：</span>
+                    <span id="stageCurrentClock" class="font-mono text-indigo-600 dark:text-indigo-400 font-bold tracking-wider">--:--:--</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 shadow-sm">
+                    <span>🎯 預定開課時刻：</span>
+                    <span id="stageTargetClock" class="font-mono font-black text-amber-700 dark:text-amber-300">--:--</span>
+                  </div>
+                </div>
+
+                <!-- 倒數跳動核心大字 (點擊可直接修改) -->
+                <div class="relative py-0.5">
+                  <div id="stageTimerDisplay" onclick="promptCustomTime()" title="點擊直接修改開課時刻或倒數時間" class="font-mono text-6xl sm:text-7xl lg:text-8xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-300 dark:to-pink-400 py-1 select-none cursor-pointer hover:scale-[1.03] transition-transform">
+                    10:00
+                  </div>
+                  <div id="stageTimerStatus" class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
                     <span>倒數進行中 · 研習即將準時開始</span>
                   </div>
-                  <button onclick="promptCustomTime()" class="text-[11px] text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 underline font-black flex items-center gap-0.5 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800">
-                    <i data-lucide="edit-3" class="w-3 h-3"></i>
-                    <span>自訂時間</span>
-                  </button>
                 </div>
 
                 <!-- 快捷調時面板 (點擊不翻轉) -->
-                <div class="space-y-2 pt-1" onclick="event.stopPropagation()">
+                <div class="space-y-2 pt-1 border-t border-indigo-100 dark:border-slate-800" onclick="event.stopPropagation()">
                   <!-- 第一列：常用分鐘快選 ＋ 暫停繼續 -->
                   <div class="flex flex-wrap items-center justify-center gap-1.5">
-                    <button onclick="resetTimer(180)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">3分鐘</button>
-                    <button onclick="resetTimer(300)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">5分鐘</button>
-                    <button onclick="resetTimer(600)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">10分鐘</button>
-                    <button onclick="resetTimer(900)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">15分鐘</button>
-                    <button onclick="resetTimer(1200)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">20分鐘</button>
-                    <button onclick="promptCustomTime()" class="px-2.5 py-1 rounded-xl text-xs font-black bg-purple-50 dark:bg-purple-950/80 border border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 hover:bg-purple-100 transition shadow-sm flex items-center gap-1">
-                      <i data-lucide="pen-tool" class="w-3 h-3"></i>
-                      <span>輸入分鐘</span>
+                    <button onclick="resetTimer(180)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數3分</button>
+                    <button onclick="resetTimer(300)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數5分</button>
+                    <button onclick="resetTimer(600)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數10分</button>
+                    <button onclick="resetTimer(900)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數15分</button>
+                    <button onclick="promptCustomTime()" class="px-3 py-1 rounded-xl text-xs font-black bg-purple-50 dark:bg-purple-950/80 border border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 hover:bg-purple-100 transition shadow-sm flex items-center gap-1">
+                      <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                      <span>輸入時刻/分鐘</span>
                     </button>
                     <button id="btnTimerToggle" onclick="toggleTimerRun()" class="px-3.5 py-1 rounded-xl text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white shadow-md transition flex items-center gap-1">
                       <span id="btnTimerToggleText">暫停</span>
                     </button>
                   </div>
 
-                  <!-- 第二列：精準微調 ＆ 指定開課時刻時鐘選擇器 -->
-                  <div class="flex flex-wrap items-center justify-center gap-1.5">
-                    <button onclick="adjustTimer(-60)" class="px-2 py-0.5 rounded-lg text-xs font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">-1分</button>
-                    <button onclick="adjustTimer(60)" class="px-2 py-0.5 rounded-lg text-xs font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">+1分</button>
-                    <button onclick="adjustTimer(180)" class="px-2 py-0.5 rounded-lg text-xs font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">+3分</button>
+                  <!-- 第二列：微調 ＆ 原生時鐘選擇器 -->
+                  <div class="flex flex-wrap items-center justify-center gap-1.5 text-xs">
+                    <button onclick="adjustTimer(-60)" class="px-2.5 py-0.5 rounded-lg font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">-1分</button>
+                    <button onclick="adjustTimer(60)" class="px-2.5 py-0.5 rounded-lg font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">+1分</button>
+                    <button onclick="adjustTimer(180)" class="px-2.5 py-0.5 rounded-lg font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">+3分</button>
                     
                     <!-- 時鐘指定器：直接選擇幾點幾分開講 -->
-                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-amber-300 dark:bg-amber-400 text-slate-950 text-xs font-black shadow-sm">
+                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black shadow-sm cursor-pointer">
                       <span>⏰ 指定開講時刻：</span>
-                      <input type="time" id="targetClockInput" onchange="setTargetClockTime(this.value)" class="bg-white text-slate-900 px-1.5 py-0.5 rounded text-xs font-mono font-bold border border-amber-500 outline-none cursor-pointer">
+                      <input type="time" id="targetClockInput" onchange="setTargetClockTime(this.value)" class="bg-white text-slate-900 px-1.5 py-0.5 rounded text-xs font-mono font-bold border border-amber-600 outline-none cursor-pointer">
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <!-- 課前 3 大溫馨設備確認卡 -->
+            <!-- 課前 3 大溫馨設備確認卡 -->
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 text-left">
                 <div class="p-3 rounded-2xl bg-indigo-50/70 dark:bg-slate-800/80 border border-indigo-100 dark:border-slate-700">
                   <div class="text-xs font-black text-indigo-700 dark:text-indigo-300 flex items-center gap-1 mb-1">
