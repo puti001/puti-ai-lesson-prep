@@ -235,6 +235,118 @@
       z-index: 9999;
       display: none;
     }
+    /* 28 場經歷特製震撼動畫樣式 */
+    .exp-wall-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .exp-stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #FFFDF9, #F5EDE0);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 8px 22px;
+      box-shadow: 0 4px 16px rgba(124, 77, 37, 0.08);
+    }
+    .exp-counter-box {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .exp-counter-num {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--danger);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      text-shadow: 0 2px 8px rgba(224, 122, 95, 0.3);
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.15s ease-out;
+    }
+    .exp-counter-label {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .exp-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      max-height: 380px;
+      perspective: 1000px;
+      padding: 4px;
+    }
+    .exp-tag-card {
+      background: #FFFFFF;
+      border: 1.5px solid #EADBCE;
+      border-radius: 9px;
+      padding: 5px 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #3D352E;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      opacity: 0;
+      transform: scale(3.5) translateZ(80px);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+    .exp-tag-card.active {
+      opacity: 1;
+      transform: scale(1) translateZ(0);
+      pointer-events: auto;
+    }
+    .exp-tag-card .exp-idx {
+      background: var(--primary);
+      color: #FFF;
+      border-radius: 5px;
+      padding: 1px 5px;
+      font-size: 0.68rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .exp-tag-card.highlight {
+      border: 2px solid var(--danger);
+      background: #FFF5F2;
+      box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+      transform: scale(1.05) translateZ(0);
+      z-index: 5;
+    }
+    .exp-tag-card.highlight .exp-idx {
+      background: var(--danger);
+    }
+    .exp-tag-card .exp-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      text-align: left;
+    }
+    .btn-replay-exp {
+      background: var(--primary);
+      color: #FFF;
+      border: none;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 8px rgba(124, 77, 37, 0.2);
+      transition: all 0.2s;
+    }
+    .btn-replay-exp:hover {
+      transform: scale(1.05);
+      background: #5D3716;
+    }
   </style>
 </head>
 <body>
@@ -258,7 +370,34 @@
         </div>
       </section>
 
-      <!-- Slide 2｜教育部政策趨勢 -->
+      <!-- Slide 2｜講師實戰足跡：走遍全台 28 場校園 AI 分享 -->
+      <section data-transition="slide" id="slide-exp-wall">
+        <div class="slide-card" style="padding: 22px 32px;">
+          <span class="badge-tag"><i class="fa-solid fa-chalkboard-user"></i> 講師專業經歷・走遍全台校園</span>
+          <h2 class="slide-title" style="margin-bottom: 6px !important; font-size: 1.95rem !important;">
+            黃朝榮老師（菩提老師）的 AI 教學實戰足跡
+          </h2>
+          
+          <div class="exp-wall-container">
+            <!-- 頂部計數與重播看板 -->
+            <div class="exp-stats-bar">
+              <div class="exp-counter-box">
+                <span class="exp-counter-label"><i class="fa-solid fa-award"></i> 全台校園與機構 AI 實戰分享：</span>
+                <span id="expCounter" class="exp-counter-num">0</span>
+                <span style="font-size: 1.35rem; font-weight: 900; color: var(--danger);">場次</span>
+              </div>
+              <button type="button" class="btn-replay-exp" onclick="playExpAnimation(true)">
+                <i class="fa-solid fa-rotate-right"></i> 重播歷程動畫
+              </button>
+            </div>
+
+            <!-- 28 張經歷卡片動態網格（由 JS 自動依序急速飛入並精準定位） -->
+            <div class="exp-grid" id="expGrid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 3｜教育部政策趨勢 -->
       <section data-transition="slide">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-bullhorn"></i> 國家教育大趨勢</span>
@@ -792,16 +931,119 @@
       }
     }
 
+    // 28 場經歷完整資料清單
+    const LECTURES_DATA = [
+      { id: 1, text: "2024/12/14 聯發科技 AI DAY" },
+      { id: 2, text: "2025/02/19 塔樓國小教師進修" },
+      { id: 3, text: "2025/02/26 玉田國小教師進修" },
+      { id: 4, text: "2025/04/16 崇文國小教師進修" },
+      { id: 5, text: "2025/05/14 來義高中教師進修" },
+      { id: 6, text: "2025/06/18 崇文國小教師進修" },
+      { id: 7, text: "2025/08/05 塔樓國小資訊增能" },
+      { id: 8, text: "2025/10/01 崇文國小教師進修" },
+      { id: 9, text: "2025/10/22 琉球國小教師進修" },
+      { id: 10, text: "2025/11/05 後庄國小教師進修" },
+      { id: 11, text: "2025/11/15 岡山高中AI增能研習" },
+      { id: 12, text: "2025/11/19 崇文國小教師進修" },
+      { id: 13, text: "2026/03/04 勝利國小教師進修" },
+      { id: 14, text: "2026/03/11 新園國小教師進修" },
+      { id: 15, text: "2026/03/25 嘉誠國小教師進修" },
+      { id: 16, text: "2026/04/01 九芎國小教師進修" },
+      { id: 17, text: "2026/04/15 新園國小教師進修" },
+      { id: 18, text: "2026/05/15 翠屏國中(上午場)" },
+      { id: 19, text: "2026/05/15 翠屏國中(下午場)" },
+      { id: 20, text: "2026/07/04 佛光山人間社AI實作班" },
+      { id: 21, text: "2026/07/07 塔樓國小資訊夏令營" },
+      { id: 22, text: "2026/07/22 後庄國小資訊夏令營" },
+      { id: 23, text: "2026/07/28 惠農國小AI夏令營 ⭐", highlight: true },
+      { id: 24, text: "2026/08/27 四張犁國中教師研習" },
+      { id: 25, text: "2026/08/28 白河商工教師研習" },
+      { id: 26, text: "2026/09/09 建華國小教師進修" },
+      { id: 27, text: "2026/09/22 玉里高中師生共學" },
+      { id: 28, text: "2026/09/30 志航國小教師進修" }
+    ];
+
+    let expAnimRunning = false;
+    let expAnimPlayed = false;
+
+    function buildExpGrid() {
+      const grid = document.getElementById('expGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      LECTURES_DATA.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `exp-tag-card ${item.highlight ? 'highlight' : ''}`;
+        card.id = `exp-card-${item.id}`;
+        card.innerHTML = `
+          <span class="exp-idx">#${item.id < 10 ? '0' + item.id : item.id}</span>
+          <span class="exp-text" title="${item.text}">${item.text}</span>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function playExpAnimation(force = false) {
+      if (expAnimRunning) return;
+      if (expAnimPlayed && !force) return;
+      expAnimRunning = true;
+      expAnimPlayed = true;
+
+      buildExpGrid();
+      const counterEl = document.getElementById('expCounter');
+      if (counterEl) {
+        counterEl.textContent = '0';
+        counterEl.style.transform = 'scale(1)';
+      }
+
+      let count = 0;
+      const total = LECTURES_DATA.length;
+      const interval = 50; // 每 50ms 急速飛入一張
+
+      const timer = setInterval(() => {
+        count++;
+        const card = document.getElementById(`exp-card-${count}`);
+        if (card) {
+          card.classList.add('active');
+        }
+        if (counterEl) {
+          counterEl.textContent = count;
+          counterEl.style.transform = 'scale(1.25)';
+          setTimeout(() => { if (counterEl) counterEl.style.transform = 'scale(1)'; }, 35);
+        }
+
+        if (count >= total) {
+          clearInterval(timer);
+          expAnimRunning = false;
+          if (counterEl) {
+            counterEl.style.transform = 'scale(1.35)';
+            counterEl.style.color = '#E07A5F';
+            setTimeout(() => { if (counterEl) counterEl.style.transform = 'scale(1)'; }, 250);
+          }
+          // 彩帶震撼結尾
+          if (typeof confetti === 'function') {
+            confetti({
+              particleCount: 60,
+              spread: 80,
+              origin: { y: 0.6 }
+            });
+          }
+        }
+      }, interval);
+    }
+
     // 初始化與頁面切換時觸發
     window.addEventListener('load', () => {
+      buildExpGrid();
       renderVoteQrCode();
       renderCardQrCode();
     });
 
     Reveal.on('slidechanged', event => {
-      if (event.indexh === 2) {
+      if (event.indexh === 1) {
+        playExpAnimation();
+      } else if (event.indexh === 3) {
         renderVoteQrCode();
-      } else if (event.indexh >= 16) {
+      } else if (event.indexh >= 17) {
         renderCardQrCode();
       }
     });
