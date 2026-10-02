@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Puti-AI | 國小家長伴學錦囊卡下載</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #7C4D25;
+      --accent: #D4A373;
+      --bg: #F9F6F0;
+      --text: #2D2724;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+    .container {
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-box {
+      text-align: center;
+      background: #FFF;
+      padding: 16px 20px;
+      border-radius: 20px;
+      border: 2px solid #EBE5DC;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .header-box h1 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 4px;
+      font-weight: 900;
+    }
+    .header-box p {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 700;
+    }
+    .card-wrapper {
+      width: 100%;
+      background: #FFF;
+      padding: 10px;
+      border-radius: 24px;
+      border: 3px solid var(--accent);
+      box-shadow: 0 12px 30px rgba(124, 77, 37, 0.15);
+      position: relative;
+    }
+    .card-img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      display: block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .action-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--primary), #9C6638);
+      color: #FFF;
+      text-decoration: none;
+      padding: 16px 24px;
+      border-radius: 30px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      box-shadow: 0 6px 18px rgba(124, 77, 37, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-download:active {
+      transform: scale(0.98);
+    }
+    .tip-box {
+      background: #FFFDF9;
+      border: 2px dashed var(--accent);
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.88rem;
+      color: #7C4D25;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    footer {
+      margin-top: auto;
+      padding: 16px 0 8px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #888;
+      line-height: 1.6;
+    }
+    footer a { color: var(--primary); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-box">
+      <h1><i class="fa-solid fa-gift"></i> Puti-AI 國小家長伴學錦囊卡</h1>
+      <p>屏東縣惠農國小親職講座・黃朝榮老師 (菩提老師) 敬製</p>
+    </div>
+
+    <!-- 錦囊卡高清預覽 -->
+    <div class="card-wrapper">
+      <img src="puti_ai_parent_card.jpg" alt="Puti-AI 國小家長伴學錦囊卡" class="card-img" id="cardImage">
+    </div>
+
+    <div class="action-group">
+      <!-- 一鍵下載按鈕 -->
+      <a href="puti_ai_parent_card.jpg" download="Puti-AI國小家長伴學錦囊卡.jpg" class="btn-download">
+        <i class="fa-solid fa-download"></i> 點此一鍵下載高清圖卡
+      </a>
+
+      <div class="tip-box">
+        💡 <b>手機小提醒</b>：長按上方圖片亦可直接「儲存影像」到手機相簿隨身看！
+      </div>
+    </div>
+
+    <footer>
+      屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank">點此前往</a>
+    </footer>
+  </div>
+
+</body>
+</html>
