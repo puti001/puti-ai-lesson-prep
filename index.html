@@ -1,3445 +1,1066 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="scroll-smooth">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puti-AI | 全國教師 AI 解痛實戰錦囊 (87大痛點全學段旗艦版 / 國小通用 ＋ 國中會考)</title>
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            slate: {
-              750: '#293548',
-              850: '#172033',
-              950: '#0b1120'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Google Fonts: Noto Sans TC + JetBrains Mono -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Puti-AI | 現場互動投票：AI 時代的學習與載具管理</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
+    :root {
+      --color-a: #E07A5F; /* 莫蘭迪磚紅 */
+      --color-b: #81B29A; /* 鼠尾草綠 */
+      --color-c: #F2CC8F; /* 暖杏黃 */
+      --color-d: #3D405B; /* 柔和深靛青 */
+      --bg-main: #F9F6F0;
+      --bg-card: #FFFFFF;
+      --text-main: #2D2724;
+      --text-muted: #7A726C;
+      --accent-brown: #7C4D25;
+      --accent-gold: #D4A373;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+      --shadow-lg: 0 16px 36px rgba(0,0,0,0.12);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    pre, code {
-      font-family: 'JetBrains Mono', monospace;
-      user-select: text;
-    }
-    .selectable-text {
-      user-select: text;
+
+    body {
+      font-family: 'Zen Maru Gothic', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* 3D 翻轉核心樣式 */
-    .perspective-1500 {
-      perspective: 1500px;
-    }
-    .transform-style-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-    .slide-card-flipped {
-      transform: rotateY(180deg);
+    /* 頂部導航列 */
+    header {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid #EBE5DC;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    /* 自訂滾動條 */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.05);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(99, 102, 241, 0.4);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(99, 102, 241, 0.7);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
     }
 
-    /* 研習精選標記（亮黃色醒目高光） */
-    .card-selected-yellow {
-      border-color: #f59e0b !important;
-      background: linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.9) 100%) !important;
-      color: #78350f !important;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.35) !important;
-    }
-    .dark .card-selected-yellow {
-      border-color: #fbbf24 !important;
-      background: linear-gradient(135deg, rgba(120, 53, 15, 0.6) 0%, rgba(69, 26, 3, 0.8) 100%) !important;
-      color: #fef3c7 !important;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3) !important;
-    }
-    .card-selected-stage {
-      border-color: #f59e0b !important;
-      box-shadow: 0 0 35px -5px rgba(245, 158, 11, 0.45) !important;
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-brown), var(--accent-gold));
+      color: #fff;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(124, 77, 37, 0.25);
     }
 
-    /* Toast 動畫 */
-    @keyframes toastUp {
-      0% { transform: translate(-50%, 40px); opacity: 0; }
-      100% { transform: translate(-50%, 0); opacity: 1; }
-    }
-    .toast-slide {
-      animation: toastUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .brand-title h1 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
     }
 
-    /* 密碼錯誤震動動畫 */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
+    .brand-title p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
     }
-    .animate-shake {
-      animation: shake 0.4s ease-in-out;
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tag-badge {
+      background: #EFE9E1;
+      color: var(--accent-brown);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-role-switch {
+      background: var(--text-main);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-role-switch:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* 主舞台容器 */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    /* 題目選單導航 */
+    .q-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .q-tab-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid #D8CFC4;
+      background: #FFF;
+      color: var(--text-main);
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .q-tab-btn.active {
+      border-color: var(--accent-gold);
+      background: #FFFDF9;
+      color: var(--accent-brown);
+      transform: scale(1.15);
+      box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.25);
+    }
+
+    .q-tab-btn.revealed::after {
+      content: '✓';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--color-b);
+      color: #fff;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    /* 題目卡片 */
+    .question-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 28px 36px;
+      box-shadow: var(--shadow-md);
+      border: 2px solid #EBE5DC;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .q-badge {
+      background: var(--accent-brown);
+      color: #FFF;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .q-count {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .q-title {
+      font-size: 1.85rem;
+      font-weight: 900;
+      line-height: 1.4;
+      color: var(--text-main);
+    }
+
+    .q-desc {
+      font-size: 1.1rem;
+      color: #635A53;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* 四宮格選項網格 */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .option-card {
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+      border: 3px solid transparent;
+    }
+
+    .option-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .option-card.card-A { background: rgba(224, 122, 95, 0.12); border-color: rgba(224, 122, 95, 0.3); }
+    .option-card.card-B { background: rgba(129, 178, 154, 0.15); border-color: rgba(129, 178, 154, 0.35); }
+    .option-card.card-C { background: rgba(242, 204, 143, 0.2); border-color: rgba(242, 204, 143, 0.5); }
+    .option-card.card-D { background: rgba(61, 64, 91, 0.1); border-color: rgba(61, 64, 91, 0.25); }
+
+    .option-card.selected {
+      border-color: #2D2724 !important;
+      transform: scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .opt-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .opt-key {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.3rem;
+    }
+    .card-A .opt-key { background: var(--color-a); }
+    .card-B .opt-key { background: var(--color-b); }
+    .card-C .opt-key { background: #E5B562; }
+    .card-D .opt-key { background: var(--color-d); }
+
+    .opt-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text-main);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 長條圖票數層 */
+    .vote-bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: rgba(255,255,255,0.65);
+      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1;
+    }
+
+    .vote-stat {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--text-main);
+      display: none;
+      z-index: 2;
+    }
+
+    .revealed .vote-stat {
+      display: block;
+    }
+
+    /* 大螢幕主控按鈕列 */
+    .host-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFF;
+      padding: 16px 28px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 2px solid #EBE5DC;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-action {
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-reveal {
+      background: linear-gradient(135deg, var(--accent-brown), #9C6638);
+      color: #FFF;
+      box-shadow: 0 4px 12px rgba(124, 77, 37, 0.25);
+    }
+    .btn-reveal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(124, 77, 37, 0.35);
+    }
+
+    .btn-reset {
+      background: #EFE9E1;
+      color: var(--text-main);
+    }
+    .btn-reset:hover {
+      background: #E2D9CE;
+    }
+
+    .btn-qr-show {
+      background: #F4ECE1;
+      color: var(--accent-brown);
+      border: 2px solid #D8CFC4;
+    }
+
+    .vote-summary-badge {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--accent-brown);
+      background: #F7F1E8;
+      padding: 8px 18px;
+      border-radius: 30px;
+    }
+
+    /* 知識解析揭曉卡片 */
+    .analysis-card {
+      background: linear-gradient(135deg, #FFFDF9, #F8F3EA);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--accent-gold);
+      padding: 26px 32px;
+      box-shadow: var(--shadow-md);
+      display: none;
+      animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .analysis-card.show {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .analysis-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--accent-brown);
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .analysis-content {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: #3B332E;
+      font-weight: 700;
+    }
+
+    .antidote-badge {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-brown);
+      color: #FFF;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    /* QR Code 放大燈箱 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(45, 39, 36, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #FFF;
+      padding: 36px 40px;
+      border-radius: var(--radius-lg);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: #EFE9E1;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    .qr-container {
+      background: #FFF;
+      padding: 16px;
+      border-radius: 16px;
+      border: 3px solid #EBE5DC;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 手機純淨作答端樣式 */
+    .player-view {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .player-hero {
+      background: #FFF;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+      border: 2px solid #EBE5DC;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .player-options {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .btn-player-opt {
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: inherit;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #FFF;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s;
+    }
+    .btn-player-opt:active {
+      transform: scale(0.97);
+    }
+    .btn-player-opt.opt-A { background: linear-gradient(135deg, #E07A5F, #C9654B); }
+    .btn-player-opt.opt-B { background: linear-gradient(135deg, #81B29A, #679E84); }
+    .btn-player-opt.opt-C { background: linear-gradient(135deg, #E5B562, #D49D42); }
+    .btn-player-opt.opt-D { background: linear-gradient(135deg, #3D405B, #2C2E43); }
+
+    .btn-player-opt.active {
+      outline: 4px solid #2D2724;
+      transform: scale(1.02);
+    }
+
+    .player-status-card {
+      background: #FFFDF9;
+      border: 2px dashed var(--accent-gold);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--accent-brown);
+    }
+
+    /* 頁尾版權宣告 */
+    footer {
+      background: #F2ECE1;
+      border-top: 1px solid #E0D7C8;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #6B625B;
+      line-height: 1.6;
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--accent-brown);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 10px 16px; }
+      .brand-title h1 { font-size: 1rem; }
+      .options-grid { grid-template-columns: 1fr; }
+      .q-title { font-size: 1.35rem; }
+      .q-desc { font-size: 1rem; }
+      .option-card { min-height: 100px; padding: 16px; }
+      .opt-text { font-size: 1.1rem; }
+      .host-controls { flex-direction: column; align-items: stretch; }
+      .ctrl-group { justify-content: space-between; }
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+<body>
 
-  <!-- 講師專屬密碼安全鎖定門禁 (密碼：puti8888) -->
-  <div id="pinLockModal" class="fixed inset-0 z-[100] bg-slate-950/92 backdrop-blur-2xl flex items-center justify-center p-4 transition-opacity duration-400">
-    <div class="bg-slate-900 border-2 border-indigo-500/40 rounded-3xl p-7 sm:p-9 max-w-md w-full shadow-2xl text-center space-y-6 relative overflow-hidden">
-      <!-- 背景光暈 -->
-      <div class="absolute -top-20 -left-20 w-48 h-48 bg-indigo-600/30 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="relative z-10 flex flex-col items-center space-y-3">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-amber-500 p-0.5 shadow-lg shadow-indigo-500/30 flex items-center justify-center text-white text-3xl font-black mb-1">
-          <i data-lucide="lock" class="w-8 h-8"></i>
-        </div>
-        <h2 class="text-2xl font-black text-white tracking-tight">Puti-AI 講師研習專用專區</h2>
-        <p class="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed">
-          本平台為黃朝榮老師專屬研習授課系統。<br>請輸入 <span class="text-amber-400 font-bold">講師授課專用密碼</span> 解鎖進入。
-        </p>
+  <!-- 頂部導航 -->
+  <header>
+    <div class="brand" onclick="handleBrandClick()">
+      <div class="brand-logo">
+        <i class="fa-solid fa-bolt"></i>
       </div>
-
-      <!-- 密碼輸入框 -->
-      <div class="relative z-10 space-y-4">
-        <div class="flex justify-center">
-          <input type="password" id="pinInput" placeholder="請輸入專屬密碼" autofocus
-            class="w-64 text-center text-xl font-mono tracking-widest py-3 rounded-2xl bg-slate-950 border-2 border-slate-700 text-amber-400 focus:border-indigo-500 focus:outline-none transition shadow-inner">
-        </div>
-        <p id="pinError" class="text-xs text-rose-400 font-bold hidden flex items-center justify-center gap-1">
-          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> 密碼錯誤，請重新輸入
-        </p>
-
-        <button onclick="checkPin()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 hover:from-indigo-500 hover:to-indigo-400 text-white font-black text-sm sm:text-base shadow-lg shadow-indigo-600/40 active:scale-95 transition flex items-center justify-center gap-2">
-          <i data-lucide="key-round" class="w-4 h-4 text-amber-300"></i>
-          <span>驗證並解鎖進入簡報</span>
-        </button>
-
-        <div class="text-[11px] text-slate-500 pt-1">
-          💡 驗證成功後本裝置自動記住授權，下次免輸入
-        </div>
+      <div class="brand-title">
+        <h1>Puti-AI | 現場互動即時票選系統</h1>
+        <p id="subHeaderTitle">屏東縣惠農國小親職講座專用</p>
       </div>
     </div>
-  </div>
-
-  <!-- 頂部導航列 -->
-  <header class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
-      
-      <!-- 品牌標題 -->
-      <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" class="flex items-center gap-3 group" onmouseenter="playSfx('hover')">
-        <div class="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 p-0.5 shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300 shrink-0">
-          <div class="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
-            <span class="font-black text-2xl bg-gradient-to-r from-indigo-600 to-amber-500 bg-clip-text text-transparent">P</span>
-          </div>
-          <span class="absolute -top-1 -right-1 flex h-3 w-3">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-        <!-- 前往 6 格教學漫畫專區導流按鈕 -->
-        <a href="國中全學科6格教學漫畫分鏡產生器.html" target="_blank" onmouseenter="playSfx('hover')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 hover:bg-pink-100 dark:bg-pink-950/60 dark:hover:bg-pink-900/80 text-pink-700 dark:text-pink-300 text-xs font-black transition flex items-center gap-1.5 border border-pink-200 dark:border-pink-800 shadow-sm" title="開啟 6 格教學漫畫產生器">
-          <i data-lucide="palette" class="w-3.5 h-3.5 text-pink-600 dark:text-pink-400"></i>
-          <span>🎨 6格漫畫</span>
-        </a>
-
-        <!-- 前往數理 13 大互動模擬器導流按鈕 -->
-        <a href="國中數理13大互動模擬器Prompt庫.html" target="_blank" onmouseenter="playSfx('hover')" class="hidden md:flex px-2.5 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/80 text-cyan-700 dark:text-cyan-300 text-xs font-black transition items-center gap-1.5 border border-cyan-200 dark:border-cyan-800 shadow-sm" title="開啟 13 大數理互動模擬器">
-          <i data-lucide="atom" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>
-          <span>⚛️ 數理神器</span>
-        </a>
-
-        <!-- 前往文史社會 12 大神器導流按鈕 -->
-        <a href="國中文史與社會12大互動神器Prompt庫.html" target="_blank" onmouseenter="playSfx('hover')" class="hidden lg:flex px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 text-xs font-black transition items-center gap-1.5 border border-amber-200 dark:border-amber-800 shadow-sm" title="開啟 12 大文史社會互動神器">
-          <i data-lucide="scroll" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400"></i>
-          <span>📜 文史神器</span>
-        </a>
-            <h1 class="font-black tracking-tight text-lg sm:text-xl text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition flex items-center gap-1.5">
-              <span>Puti-AI</span>
-              <span class="text-indigo-600 dark:text-amber-400">教師 87 大痛點 AI 實戰錦囊</span>
-            </h1>
-            <span class="px-2 py-0.5 text-[11px] font-black tracking-wide uppercase rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300">國小通用 ＋ 國中會考雙旗艦版</span>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            3D 翻轉卡牌簡報 ╳ 研習即學即用 ╳ 一鍵複製實戰 Prompt
-          </p>
-        </div>
-      </a>
-
-      <!-- 快捷功能 (搜尋 + 視圖 + 主題 + 音效) -->
-      <div class="flex flex-wrap items-center gap-2">
-        <!-- 關鍵字搜尋 -->
-        <div class="relative w-40 sm:w-48">
-          <input type="text" id="searchInput" placeholder="搜尋痛點關鍵字..." oninput="handleSearch()" class="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
-          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400"></i>
-        </div>
-
-        <!-- 視圖切換 -->
-        <button id="btnViewMode" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition shadow-sm active:scale-95">
-          <i id="viewModeIcon" data-lucide="grid" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400"></i>
-          <span id="viewModeText">全覽網格</span>
-        </button>
-
-        <!-- 主題切換 -->
-        <button id="btnThemeToggle" aria-label="切換主題" class="p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition shadow-sm active:scale-95">
-          <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
-          <i data-lucide="moon" class="w-4 h-4 block dark:hidden text-indigo-600"></i>
-        </button>
-
-        <!-- 音效開關 -->
-        <button id="btnSoundToggle" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition shadow-sm active:scale-95">
-          <i id="soundIcon" data-lucide="volume-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
-          <span id="soundText" class="hidden sm:inline">音效開</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 分類篩選列 -->
-    <div class="bg-slate-100/70 dark:bg-slate-900/60 border-t border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto">
-      <div class="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-2">
-        <span class="text-xs font-black text-slate-500 dark:text-slate-400 shrink-0 mr-1 hidden sm:inline">分類篩選：</span>
-        <button id="btnSelectedFilter" class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-sm flex items-center gap-1.5 border border-amber-400" data-category="selected">
-          <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-slate-950"></i>
-          <span>🎯 本次研習精選 (<span id="selectedCountBadge">0</span>)</span>
-        </button>
-                <button class="filter-btn active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-indigo-600 text-white shadow-sm" data-category="all">
-          全部 (87)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="elem">
-          🎒 國小/通用 (63)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="jh">
-          🏫 國中會考 (24)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="prep">
-          📚 教學備課 (52)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="diff_grading">
-          ⚖️ 差異化與評量 (8)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="admin">
-          🏛️ 行政公文 (15)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="guidance">
-          💬 輔導親師 (5)
-        </button>
-        <button class="filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700" data-category="efficiency">
-          🚀 專業效能 (7)
-        </button>
-      </div>
+    <div class="header-actions">
+      <span class="tag-badge" id="roleBadge"><i class="fa-solid fa-tv"></i> 大螢幕主控端</span>
+      <button class="btn-role-switch" onclick="toggleRole()"><i class="fa-solid fa-mobile-screen"></i> 切換手機作答端</button>
     </div>
   </header>
 
-  <!-- 主內容區 -->
-  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col justify-between">
+  <!-- 主舞台 -->
+  <main>
     
-    <!-- 視圖 A：3D 簡報舞台模式 -->
-    <div id="presentationView" class="space-y-6">
+    <!-- 大螢幕主控端視圖 (Host View) -->
+    <div id="hostView" style="display: flex; flex-direction: column; gap: 18px;">
       
-      <!-- 舞台頂部資訊 -->
-      <div class="flex items-center justify-between px-2">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-            <span>簡報模式：卡片 <span id="currentSlideNum">01</span> / <span id="totalSlideNum">60</span></span>
-          </span>
-          <span class="text-xs text-slate-400 font-bold hidden md:inline">💡 按 [空白鍵] 或 [Enter] 翻面，[左右鍵] 切換卡片</span>
-        </div>
+      <!-- 題號切換導航 -->
+      <div class="q-nav" id="qNav"></div>
 
-        <!-- 快捷授課切換 -->
-        <div class="flex items-center gap-2">
-          <button id="btnStageToggleSelect" onclick="toggleCurrentSlideSelected(event)" class="px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/70 hover:bg-amber-100 text-xs font-black text-amber-900 dark:text-amber-200 transition shadow-sm active:scale-95 flex items-center gap-1.5">
-            <i id="stageSelectIcon" data-lucide="check-square" class="w-4 h-4 text-amber-600 dark:text-amber-400"></i>
-            <span id="stageSelectText">加入本次研習</span>
+      <!-- 題目大卡片 -->
+      <div class="question-card" id="qCard">
+        <div class="q-meta">
+          <span class="q-badge" id="qBadge">第 1 題</span>
+          <span class="q-count" id="voterCount"><i class="fa-solid fa-users"></i> 已投票：<b id="voteTotalNum">0</b> 人</span>
+        </div>
+        <h2 class="q-title" id="qTitle">題目載入中...</h2>
+        <p class="q-desc" id="qDesc"></p>
+
+        <!-- 四宮格選項 -->
+        <div class="options-grid" id="optionsGrid"></div>
+      </div>
+
+      <!-- 主控列按鈕 -->
+      <div class="host-controls">
+        <div class="ctrl-group">
+          <button class="btn-action btn-reveal" id="btnReveal" onclick="toggleReveal()">
+            <i class="fa-solid fa-chart-column"></i> <span id="btnRevealText">立即開票揭曉</span>
           </button>
-          <button onclick="prevSlide()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 transition shadow-sm active:scale-95 flex items-center gap-1">
-            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">上一張</span>
+          <button class="btn-action btn-reset" onclick="resetCurrentVotes()">
+            <i class="fa-solid fa-rotate-right"></i> 重置本題票數
           </button>
-          <button onclick="nextSlide()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-md shadow-indigo-600/30 active:scale-95 flex items-center gap-1">
-            <span class="hidden sm:inline">下一張</span>
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </div>
+        <div class="ctrl-group">
+          <button class="btn-action btn-qr-show" onclick="showQrModal()">
+            <i class="fa-solid fa-qrcode"></i> 放大作答 QR Code
           </button>
+          <div class="vote-summary-badge" id="stateSummary">作答中</div>
         </div>
       </div>
 
-      <!-- 3D 聚光燈翻轉卡片容器 (字體放大，正面放情境說明，背面放步驟+Prompt) -->
-      <div class="relative w-full max-w-4xl mx-auto perspective-1500 py-2">
-        <div id="slideCardInner" onclick="toggleSlideFlip(event)" class="relative w-full h-[560px] sm:h-[530px] rounded-3xl transition-transform duration-700 transform-style-3d cursor-pointer shadow-2xl">
-          
-          <!-- 正面：超大標題 + 生動情境說明 -->
-          <div id="stageFront" class="absolute inset-0 w-full h-full rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 p-7 sm:p-9 backface-hidden flex flex-col justify-between overflow-hidden group hover:border-indigo-400 transition-colors">
-            <!-- 動態注入內容 -->
-          </div>
-
-          <!-- 背面：實戰 3 步驟 + AI 實戰 Prompt + 自訂微調 + 一鍵複製 -->
-          <div id="stageBack" class="absolute inset-0 w-full h-full rounded-3xl bg-slate-900 dark:bg-slate-950 border-2 border-indigo-500/50 p-6 sm:p-8 backface-hidden rotate-y-180 flex flex-col justify-between overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
-            <!-- 動態注入內容 -->
-          </div>
-
+      <!-- 知識解析與人間解藥 -->
+      <div class="analysis-card" id="analysisCard">
+        <div class="analysis-header">
+          <i class="fa-solid fa-lightbulb"></i>
+          <span id="analysisTitle">菩提老師深度解析</span>
         </div>
-      </div>
-
-      <!-- 底部 Canva 風格縮圖列 -->
-      <div class="pt-2">
-        <div class="flex items-center justify-between pb-2 px-1">
-          <span class="text-xs font-black text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-            <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-indigo-500"></i>
-            <span>痛點錦囊快選列（左右滑動直達）</span>
-          </span>
-          <span class="text-[11px] font-bold text-slate-400">點擊縮圖可直接切換舞台</span>
-        </div>
-
-        <div id="thumbnailStrip" class="flex gap-3 overflow-x-auto py-2.5 px-1 scroll-smooth">
-          <!-- 動態注入縮圖卡片 -->
+        <div class="analysis-content" id="analysisContent"></div>
+        <div>
+          <span class="antidote-badge" id="antidoteBadge"><i class="fa-solid fa-quote-left"></i> 今晚家長心法</span>
         </div>
       </div>
 
     </div>
 
-    <!-- 視圖 B：全覽網格模式 -->
-    <div id="gridView" class="hidden space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-3 px-2 bg-slate-100/70 dark:bg-slate-900/50 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
-        <div class="flex items-center gap-2">
-          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-bold flex items-center gap-1.5">
-            <i data-lucide="layout-grid" class="w-4 h-4 text-indigo-500"></i>
-            <span>目前卡片：<span id="gridCountText" class="text-indigo-600 dark:text-amber-400 font-black">60</span> 項</span>
-          </p>
-          <span class="text-slate-300 dark:text-slate-700">|</span>
-          <span class="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-            <span>已精選：<span id="gridSelectedCount" class="font-black">0</span> 張</span>
-          </span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="startSelectedPresentation()" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-md shadow-amber-500/25 flex items-center gap-1.5 active:scale-95">
-            <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-            <span>播放精選簡報</span>
-          </button>
-          <button onclick="clearAllSelected()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-500 hover:text-rose-500 transition active:scale-95 flex items-center gap-1">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            <span>清空精選</span>
-          </button>
-        </div>
+    <!-- 手機作答端視圖 (Player View) -->
+    <div id="playerView" class="player-view">
+      <div class="player-hero">
+        <span class="q-badge" id="pBadge" style="margin-bottom:8px; display:inline-block;">第 1 題</span>
+        <h3 id="pTitle" style="font-size:1.35rem; font-weight:900; margin-bottom:6px;">題目載入中</h3>
+        <p id="pDesc" style="color:var(--text-muted); font-size:0.95rem; font-weight:500;"></p>
       </div>
 
-      <div id="gridCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- 動態注入網格卡牌 -->
+      <div class="player-options" id="playerOptions"></div>
+
+      <div class="player-status-card" id="playerStatus">
+        <i class="fa-solid fa-hand-pointer"></i> 請點選上方選項完成投票（可隨時修改）
       </div>
     </div>
 
   </main>
 
-  <!-- 底部固定版權宣告區 -->
-  <footer class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800/80 py-4 mt-8 transition-colors">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener noreferrer" class="text-indigo-600 dark:text-amber-400 font-bold underline hover:opacity-80 transition">點此前往</a>
-      </p>
-    </div>
-  </footer>
-
-  <!-- Toast 提示元件 -->
-  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden">
-    <div class="bg-slate-900/95 dark:bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-2xl border border-slate-700/50 flex items-center gap-3 backdrop-blur-lg">
-      <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
-      <span id="toastMessage" class="text-sm font-bold tracking-wide">已複製提示詞！</span>
+  <!-- QR Code 放大燈箱 Modal -->
+  <div class="modal-overlay" id="qrModal" onclick="closeQrModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeQrModal()">&times;</button>
+      <h3 style="font-size:1.4rem; font-weight:900; color:var(--accent-brown);"><i class="fa-solid fa-mobile-screen"></i> 手機掃描立即作答</h3>
+      <p style="color:var(--text-muted); font-weight:700;">免下載、免登入，即時連線大螢幕</p>
+      <div class="qr-container" id="qrCodeBig"></div>
+      <p style="font-size:0.85rem; color:#888; font-weight:500;">或在手機網址輸入：<br><b id="qrUrlText" style="color:var(--text-main); word-break:break-all;"></b></p>
     </div>
   </div>
 
-  <!-- JavaScript 核心驅動 -->
+  <!-- 版權宣告區 -->
+  <footer>
+    屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，更多 Puti-AI 教學工具 <a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank">點此前往</a>
+  </footer>
+
   <script>
-    // 60 大教學痛點完整資料庫
-const cardData = [
-  {
-    "id": 0,
-    "code": "00",
-    "category": "prep",
-    "categoryName": "課前等候室",
-    "emoji": "⏱️",
-    "icon": "clock",
-    "accentBg": "bg-indigo-600",
-    "accentText": "text-indigo-600 dark:text-indigo-400",
-    "accentTag": "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
-    "title": "研習倒數等候室 · 課前設備與環境確認",
-    "isTimerCard": true,
-    "steps": [
-      "1. 確認雙螢幕或電腦分割視窗，左邊看 Meet、右邊開好瀏覽器操作 AI。",
-      "2. 麥克風先保持靜音避免回音，歡迎在留言區打個招呼簽到。",
-      "3. 準備好一杯熱茶或咖啡，倒數歸零立即準時開講！"
-    ],
-    "prompt": "各位建華國小的夥伴老師午安！研習即將在倒數結束後準時開始～ 請老師們先就座：\n1. 麥克風請先保持靜音\n2. 建議使用雙螢幕或將瀏覽器左右分割，方便待會同步實作\n3. 歡迎在 Google Meet 留言區打個招呼簽到喔！今天一起把備課時間砍半！🚀",
-    "scenario": "歡迎各位建華國小夥伴老師進入 Google Meet！研習即將準時開課，請依照卡片指引確認音訊與分割畫面，準備迎接最實用的 AI 備課錦囊！",
-    "stage": "elem",
-    "stageName": "全場通用"
-  },
-  {
-    "id": 1,
-    "code": "01",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "備課時間遭非教學雜務嚴重壓縮",
-    "steps": [
-      "1. 輸入課程核心主題與教學節數。",
-      "2. 讓 AI 生成包含動機、發展活動、提問與評量的完整架構。",
-      "3. 教師僅需針對學生程度進行微調與定稿。"
-    ],
-    "prompt": "請扮演[科目名稱]專家教師。我即將教授[年級][單元名稱]（共[數字]節課）。請為我設計一份包含以下要素的簡明教案：\n1. 引起動機活動（3分鐘）\n2. 2個核心提問與預期學生回答\n3. 1個課堂差異化小組討論任務\n4. 形成性評量設計。請以表格形式呈現。",
-    "scenario": "開學各處室交辦公文、填報表單接踵而來，下班前才驚覺明天第一堂課的引起動機與完整活動流程還沒著落...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 2,
-    "code": "02",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "教材整合與雙版本差異化學習單",
-    "steps": [
-      "1. 提供課文或知識點原文。",
-      "2. 要求 AI 按照 Bloom 認知層級生成基礎與進階學習單。",
-      "3. 自動加入填空鷹架與選擇題。"
-    ],
-    "prompt": "以下是我的教學文本：\n[貼上課文或文本重點]\n\n請幫我設計一份「差異化分層學習單」（學生紙本任務），分為：\n1. 【基礎鷹架版】：包含 3 題文章重點直接填空與關鍵詞提示，降低認知負擔。\n2. 【挑戰進階版】：移除提示，增加 2 題開放式長文推論與生活應用題。\n請條理分明排版，方便直接影印發給學生。",
-    "scenario": "常態編班孩子程度雙峰，手動編寫兩套不同難度（基礎填空 vs 進階挑戰）的紙本學習單耗掉一整晚...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 3,
-    "code": "03",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "常態編班課堂雙軌教學活動設計",
-    "steps": [
-      "1. 輸入單元核心概念。",
-      "2. 要求 AI 生成「階梯提示版」與「開放挑戰版」兩種任務。",
-      "3. 確保全班能在各自起點學習。"
-    ],
-    "prompt": "我即將教授[年級][科目]的[單元名稱]。針對常態編班嚴重的雙峰落差，請為我規劃一份「課堂雙軌教學流程教案」（40分鐘）：\n1. 【全班共同引起動機】（5分鐘）：引起好奇心。\n2. 【雙軌分流任務設計】（20分鐘）：\n   - 【自主挑戰組（資優/精熟）】：指派開放式深度探究任務與小組互詰思考題，讓學生自主鑽研。\n   - 【實體指導組（基礎/扶助）】：教師親自帶領，提供步驟化圖解鷹架與即時口頭提問。\n3. 【全班成果匯流與回饋】（15分鐘）：統整核心概念與總結。",
-    "scenario": "同一堂 40 分鐘課堂中，前段資優生 5 分鐘寫完無所事事，落後孩子連題意都看不懂直接趴下放棄，單一教學進度顧此失彼...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 4,
-    "code": "04",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "同一觀念講三次學生還是聽不懂",
-    "steps": [
-      "1. 輸入難懂的抽象學科概念。",
-      "2. 請 AI 作為「第二說法產生器」，提供生活類比、圖像化步驟與故事比喻。",
-      "3. 備妥多元解釋觀點。"
-    ],
-    "prompt": "學生一直無法理解[抽象概念，例如：通貨膨脹/細胞膜的半透性]。請給我 3 種完全不同的解釋切入點：\n1. 【生活化比喻法】（用日常經驗）\n2. 【視覺圖像描述法】\n3. 【角色扮演情境法】。",
-    "scenario": "黑板上講得口沫橫飛、重複解說好幾遍，台下學生依然眼神空洞，苦於找不到貼近學生日常的多重好比喻...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 5,
-    "code": "05",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "已知學生程度弱但不知補什麼先備能力",
-    "steps": [
-      "1. 輸入當前學不會的單元觀念。",
-      "2. 請 AI 逆向拆解所需的前置先備能力樹狀圖。",
-      "3. 準確找出上游缺口。"
-    ],
-    "prompt": "學生學不會[當前單元，例如：分數的乘除]。請幫我逆向拆解學習這個單元所需的「前置先備能力樹狀圖」（從低階到高階），幫助我精準診斷學生到底是卡在哪個上游基礎觀念。",
-    "scenario": "學生當前單元學不會，老師想幫他補救，卻理不清他是卡在三年級的加減法還是四年級的乘除先備觀念...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 6,
-    "code": "06",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "教科書內容脫離學生在地生活",
-    "steps": [
-      "1. 輸入在地鄉土特色或校本資源。",
-      "2. 請 AI 將課本抽象範例改寫為本地故事題材。",
-      "3. 增強在地認同感。"
-    ],
-    "prompt": "課本概念是[課本抽象概念，例如：產業轉型/水圳工程]。我們學校部位於[地區/縣市名稱]。請將這個課本概念結合當地的在地歷史、產業或地理特色，改寫為一段 200 字的在地化故事教學案例。",
-    "scenario": "書商課本選材與案例多偏向都會經驗，鄉土或在地孩子缺乏生活共鳴，難以體會學科知識在身邊的實用性...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 7,
-    "code": "07",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "素養導向情境題命題門檻極高",
-    "steps": [
-      "1. 輸入學科知識點與近期新聞事件。",
-      "2. 由 AI 編寫結合圖表判讀與長文本的素養題組。",
-      "3. 附上標準答案與解析。"
-    ],
-    "prompt": "請結合近期新聞[新聞主題，例如：氣候變遷/能源轉型]，為[年級][科目]設計一道素養導向題組：\n包含：1. 一段約200字的真實情境文本 2. 一題文本資訊擷取題 3. 一題跨概念推論與實務決策題。請附答案與解析。",
-    "scenario": "段考被要求出生活情境素養題，但手動改編新聞、融入生活數據與設計高品質誘答項，光想一題就耗掉兩小時...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "stage": "elem",
-    "stageName": "國小/通用",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "🐣",
-    "icon": "book-open",
-    "accentBg": "bg-amber-500",
-    "accentText": "text-amber-600 dark:text-amber-400",
-    "accentTag": "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-    "title": "國小低年級試卷短篇閱讀理解命題",
-    "scenario": "小一小二學生識字量少、專注力短，拿一般長文考卷直接卡關大哭，出題時苦於拿捏 100 字內童趣生活短文與注音適齡提問...",
-    "prompt": "請扮演國小低年級命題專家。請為國小【[一年級/二年級]】國語科段考/隨堂測驗，設計一組「低年級專屬短篇閱讀理解測驗」：\n\n1. 【適齡童趣文本】（字數 80-120 字）：\n   - 主題：貼近低年級生活經驗（如：校園下課、文具朋友、小動物日常、生活好習慣）。\n   - 語言要求：句子短、節奏輕快、避免生澀詞彙與倒裝句，適合標註注音朗讀。\n\n2. 【階梯式測驗題】（共 3 小題，每題 3 個選項）：\n   - 第 1 題【直接訊息提取】：文章中直接能找到答案的事實題（如：主角做了什麼？）。\n   - 第 2 題【語意與詞彙理解】：理解關鍵動作或情緒詞（如：主角當時的心情是怎樣？）。\n   - 第 3 題【生活推論與應用】：連結學生生活經驗的簡單推論題（如：如果是你，你會怎麼做？）。\n   - 選項設計：每題 3 個選項，誘答選項生活化且無爭議，附標準答案與設計解析。",
-    "id": 8,
-    "code": "08"
-  },
-  {
-    "id": 9,
-    "code": "09",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "長篇閱讀理解與讀寫能力退化",
-    "steps": [
-      "1. 提供長篇難懂文章。",
-      "2. 請 AI 改寫為分層梯度文本。",
-      "3. 自動產出關鍵段落摘要與心智圖架構。"
-    ],
-    "prompt": "請將以下長篇文本：\n[貼上長文]\n1. 提煉為 3 個核心重點條列摘要。\n2. 設計 3 個引導閱讀的結構化提問（擷取訊息、推論分析、比較評估），幫助閱讀能力較弱的學生掌握重點。",
-    "scenario": "學生看到超過 300 字的長篇閱讀測驗就抗拒發呆，抓不到文章核心主旨，寫作更常辭不達意、語句零碎...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "stage": "elem",
-    "stageName": "國小/通用",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "✍️",
-    "icon": "file-text",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "國小生動作文分級範文與好詞引導",
-    "scenario": "全班寫作文擠不出字、滿篇『今天天氣很好』流水帳，老師想給範文又怕孩子無腦照抄，急需分層示範範文與好詞思考鷹架...",
-    "prompt": "請扮演國小資深語文名師。我即將指導國小【[年級，如：三年級/五年級]】學生撰寫作文題目：『[請填寫作文題目，例如：那一刻，我很感動 / 我最喜歡的角落]』。\n\n請為我生成一份實用的「寫作教學鷹架與分級示範包」：\n\n1. 🧠【四段寫作心智圖思考引導】：\n   - 第一段（起）：如何用「懸疑聲音/動作畫面」破題吸引人？\n   - 第二段（承）：事情發生的具體經過（五感描寫提示）。\n   - 第三段（轉）：最精采的高潮轉折或心情起伏。\n   - 第四段（合）：感悟與收尾金句。\n\n2. 🌟【亮點好詞與成語庫】（精選 6 個適合該年段的生動詞彙與例句）。\n\n3. 📖【雙層次示範範文】（避免全班照抄，提供兩種層次）：\n   - 【生動基礎版】（字數約 [年級x80] 字）：語句通順、充滿生活感、著重修辭技巧（摹寫、比喻），適合全班參考。\n   - 【文采進階版】（字數約 [年級x120] 字）：立意深刻、段落過渡自然、情感真摯，供中高程度學生延伸自學。",
-    "id": 10,
-    "code": "10"
-  },
-  {
-    "stage": "elem",
-    "stageName": "國小/通用",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📝",
-    "icon": "check-circle",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "國小作文個別化溫暖批改與三段式評語",
-    "scenario": "全班三四十本作文改到半夜眼睛快瞎，評語寫到千篇一律『文筆流暢繼續加油』，缺乏能具體指出亮點與改進處的個別化回饋...",
-    "prompt": "請扮演國小語文名師兼資深作文批改教練。這是一位國小【[年級]】學生的作文內容：\n『[請貼上學生作文文字或拍照辨識之文字]』\n\n作文題目：『[請填寫題目]』\n\n請為這篇學生作文提供專業、溫暖且具體的「三段式教學回饋」，方便我直接謄寫於稿紙評語欄：\n\n1. 🌟【閃光點肯定】（放大孩子的亮點）：\n   - 精確引用學生文章中最生動、有感官描寫或情感真摯的 1-2 句話。\n   - 具體肯定他為什麼寫得好（如：動詞用得精準、比喻生動、觀察細膩）。\n\n2. 🛠️【一處微整形示範】（溫和提供進階鷹架）：\n   - 從文中挑出 1 處病句、贅字或流水帳段落。\n   - 示範「修改前」與「修飾後（教他怎麼改）」，並用一句鼓勵的話說明修改的技巧。\n\n3. 💬【總結激勵評語】（約 60-80 字，溫暖、同理、給予自信）：\n   - 肯定孩子的用心，並提出下次可以嘗試的小挑戰。",
-    "id": 11,
-    "code": "11"
-  },
-  {
-    "id": 12,
-    "code": "12",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "學生錯題原因難診斷（概念 vs 粗心）",
-    "steps": [
-      "1. 輸入全班答錯率高的題目與常見錯誤選項。",
-      "2. 請 AI 分類學生迷思（概念理解錯誤、計算錯誤、閱讀理解不足）。",
-      "3. 產出對症下藥處方。"
-    ],
-    "prompt": "題目：[貼上題目]\n正確答案：[Ans]，許多學生誤選：[錯誤選項]。\n請幫我分析學生選擇該錯誤選項的「背後迷思概念」是什麼？並提供教師在課堂上用 1 分鐘解開此迷思的關鍵說明。",
-    "scenario": "考卷改完滿江紅，老師無法逐一診斷學生究竟是粗心計算筆誤，還是底層核心概念根本存在迷思...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 13,
-    "code": "13",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "作業代寫與真實學習成效失真",
-    "steps": [
-      "1. 輸入學習主題。",
-      "2. 請 AI 產生含有故意錯誤邏輯的 AI 解答。",
-      "3. 讓學生擔任「抓錯審查員」，測驗批判思維。"
-    ],
-    "prompt": "請針對[知識點，例如：二次函數或歷史事件原因]寫一段「看似合理但包含2處邏輯破綻或概念錯誤」的學生作業解答。請在末尾標明破綻在哪裡，我將用來讓學生進行批改辨析。",
-    "scenario": "學生回家作業寫得頭頭是道，甚至直接複製貼上 AI 答案，課堂隨堂測驗卻原形畢露，作業失去評量意義...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 14,
-    "code": "14",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "作業批改「紅筆耗損」批改負擔大",
-    "steps": [
-      "1. 輸入批改作業時發現的全班共通三大錯誤。",
-      "2. 請 AI 撰寫一份「全班共用作業檢討與自訂訂正指引單」。",
-      "3. 免去每本重複寫字。"
-    ],
-    "prompt": "在批改[作業名稱]時，我發現學生普遍出現以下 3 個共通錯誤：\n1.[錯誤1] 2.[錯誤2] 3.[錯誤3]\n請幫我撰寫一份給全班學生的「一頁式作業解答與自我訂正檢核表」，引導學生自己對照找出錯因並訂正。",
-    "scenario": "每週幾十本習作、學習單要改，逐題抓錯並寫上訂正建議，下班眼睛痠痛，學生往往只看分數不看訂正...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 15,
-    "code": "15",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "多元評量 Rubric 量表撰寫困難",
-    "steps": [
-      "1. 設定作業或報告的主題與目標。",
-      "2. 請 AI 自動劃分 4 個評分維度與 4 等級標準。",
-      "3. 導出為清晰表格直接列印使用。"
-    ],
-    "prompt": "請為[年級/科目]的[作業/報告主題，例如：口頭報告/科學實驗簡報]設計一份評量規準（Rubric表格）。\n包含維度：內容完整度、邏輯架構、表達技巧、團體合作。\n分數等級分為：優異(4 point)、良好(3 point)、基礎(2 point)、待改進(1 point)，並為每個儲存格寫出具體的行為描述。",
-    "scenario": "素養導向要求多元評量，但分組報告、實作發表的評分標準太主觀，給分往往難以讓家長與學生信服...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 16,
-    "code": "16",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "提問設計難以激發深層探究",
-    "steps": [
-      "1. 提供講授主題。",
-      "2. 請 AI 依照「事實 $\rightarrow$ 概念 $\rightarrow$ 論辯」三個層次設計提問鏈。",
-      "3. 帶領學生進入深度思考。"
-    ],
-    "prompt": "請針對[教學主題，例如：人工智慧與倫理/氣候變遷]，為我設計一組「階梯式深度探究提問鏈」：\n1. 基礎事實題（確認理解）\n2. 概念連結題（分析原因與影響）\n3. 開放性價值抉擇題（激發辯論與立場表達）。",
-    "scenario": "課堂提問多停留在記憶或封閉式是非選擇，想設計出符合 Bloom 高層次的分析、評價與創造性探究提問...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 17,
-    "code": "17",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "學生專注力隨短影音習慣下滑",
-    "steps": [
-      "1. 提供傳統乾癟的學科知識點。",
-      "2. 讓 AI 轉化為「懸疑故事破題」或角色扮演劇本。",
-      "3. 增加前 3 分鐘吸睛點。"
-    ],
-    "prompt": "我這節課要教抽象的[知識點，例如：光合作用/光線折射]。請幫我設計一個「3分鐘懸疑故事/生活謎題開場」，激發學生的好奇心與探究慾望，請設計一個與他們生活密切相關的懸念問題。",
-    "scenario": "學生習慣抖音、Shorts 快速刺激，上課不到 5 分鐘就眼神渙散放空，傳統講述教學完全抓不住注意力...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 18,
-    "code": "18",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "學生學習動機低落無成就感",
-    "steps": [
-      "1. 指定學生喜歡的流行主題（動漫、手遊、流行音樂）。",
-      "2. 請 AI 將學科題目改寫為主題情境題。",
-      "3. 提高引發切身關聯感。"
-    ],
-    "prompt": "請將以下這道傳統學科練習題：\n[貼上原題目]\n改寫為結合[流行遊戲/動漫/生活情境，例如：寶可夢/Minecraft]的趣味包裝情境題，保持核心數學/邏輯計算不變，但大幅提升閱讀趣味度。",
-    "scenario": "無論老師怎麼變換花樣，學生永遠一臉厭世冷漠、趴下放棄，缺乏發自內心的求知好奇心與破關動力...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 19,
-    "code": "19",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "學生耐挫力低動輒放棄思考",
-    "steps": [
-      "1. 設定 AI 扮演「蘇格拉底引導教練」。",
-      "2. 嚴格禁止直接給解答，只給提示與小步驟。",
-      "3. 培養自主解題耐力。"
-    ],
-    "prompt": "請扮演「蘇格拉底教學引導者」。當學生問我：[學生遇到的難題] 時，請給我 3 句「不直接給答案、而是引導學生觀察關鍵細節」的提問示範，幫他建立解題信心。",
-    "scenario": "題目稍微拐個彎或需要兩步驟思考，學生立刻舉手喊不會或發呆，缺乏面對困難的韌性與自主解題嘗試...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 20,
-    "code": "20",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "自主學習時段學生發呆無目標",
-    "steps": [
-      "1. 輸入學生模糊的個人興趣（如：打電玩、繪畫）。",
-      "2. 引導 AI 將其拆解為 4 週具體的自主學習計畫草案。",
-      "3. 定義每週具體產出。"
-    ],
-    "prompt": "一位[年級]學生在自主學習時間表示想研究[學生興趣，例如：日本動漫發展/遊戲機歷史]，但不知道怎麼做。請幫他拆解一份「4週自主學習小計畫」，明確列出每週探究目標與最終成果產出形式。",
-    "scenario": "自主學習時間一到，學生沒有明確主題與探究目標，在座位上發呆放空，苦於引導孩子自訂探究主題與進度...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 21,
-    "code": "21",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "分組合作學習容易走向搭便車",
-    "steps": [
-      "1. 輸入小組專案目標。",
-      "2. 讓 AI 設計具備「正向互賴」的角色分工與檢核表。",
-      "3. 明確定義組員職責。"
-    ],
-    "prompt": "請為[主題]的小組合作學習（4人一組）設計角色分工與互評機制：\n請定義4個具體角色（如：組長/記錄員/計時發言員/檢核員）的職責，並設計一張包含個人貢獻度與同儕互評的簡明檢核表。",
-    "scenario": "分組任務總是由組長一人苦幹，其他組員聊天打混搭便車，期末評量難以看出每個人的真實個人貢獻度...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 22,
-    "code": "22",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "小組討論音量失控干擾隔壁班",
-    "steps": [
-      "1. 提供討論主題。",
-      "2. 請 AI 設計「靜音走讀討論法（Silent Carousel）」流程與學習單。",
-      "3. 實現無聲深度討論。"
-    ],
-    "prompt": "請幫我設計一個不需要大聲說話的「靜音筆談/走讀討論法（Silent Carousel）」課堂流程。主題是[討論主題]，請提供學生用海報紙或共編文件進行無聲文字回應與回饋的步驟規則。",
-    "scenario": "一開放小組討論課堂瞬間炸鍋，學生興奮大聲喧嘩干擾隔壁班上課，被其他老師投訴，管秩序耗盡心力...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 23,
-    "code": "23",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "生生用載具課堂分心防弊與管控",
-    "steps": [
-      "1. 輸入課堂學習目標。",
-      "2. 請 AI 設計高頻互動（每 5 分鐘一次小檢核）的載具使用節奏。",
-      "3. 用搶答與即時回饋搶回注意力。"
-    ],
-    "prompt": "我要在課堂上讓學生使用平板進行[主題]學習，但擔心他們分心瀏覽其他網站。請幫我設計一個「高密度的課堂載具互動流程」，每 5-8 分鐘安排一個需要立即回傳或搶答的小任務，保持高專注度。",
-    "scenario": "平板一發下去，學生偷偷切換分頁玩小遊戲或看影片，老師走動巡視疲於奔命，載具反而變成教學干擾...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 24,
-    "code": "24",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "課堂突發設備與網路連線故障",
-    "steps": [
-      "1. 提供原本依賴數位的教案活動。",
-      "2. 請 AI 產出一套「不插電（Unplugged）」實體備案。",
-      "3. 確保斷網時能無縫切換。"
-    ],
-    "prompt": "我原本規劃了一節需要使用平板電腦與網路的[科目/主題]課程，但如果現場斷網，請幫我設計一份「不插電（Unplugged）實體分組替代方案」，使用紙筆與小組討論完成相同的學習目標。",
-    "scenario": "精心準備的電子白板或線上教學平台突然斷網、當機，全班躁動不安，急需 1 分鐘內啟動無載具備案教學...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 25,
-    "code": "25",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "臨時被叫去代課完全不熟教材",
-    "steps": [
-      "1. 手機拍下或打字輸入該頁課本內容。",
-      "2. 要求 AI 產出一頁式「30秒救援教案」。",
-      "3. 包含引起動機、講授重點與學生自主任務。"
-    ],
-    "prompt": "我現在需要緊急代課[年級][科目]，課本單元是[單元名稱/關鍵字]。請在30秒內給我一份「一頁式救援教案」：\n1. 開場黑板提問（1個）\n2. 本頁核心觀念簡明講解重點（3點）\n3. 學生課堂自主練習題與解答（2題）",
-    "scenario": "早自習臨時接到教務處通知要代未知科目的課，手足無措，急需在走進教室前快速掌握課本重點與任務...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 26,
-    "code": "26",
-    "category": "guidance",
-    "categoryName": "輔導與親師",
-    "emoji": "💬",
-    "icon": "message-circle",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "親師溝通訊息回覆模糊下班界線",
-    "steps": [
-      "1. 輸入家長的提問或焦慮訴求。",
-      "2. 設定同理、專業且保持界線的 Prompt。",
-      "3. 產出語氣溫和、立場堅定的文字草稿。"
-    ],
-    "prompt": "我是一位導師，收到家長訊息反應：[貼上家長訊息內容/情況]。\n請幫我代擬一段回覆文字：\n1. 語氣：同理、客觀、溫和但堅定保持專業界線。\n2. 內容：感謝關心、說明學校處置原則、約定適合的通話或晤談時間。",
-    "scenario": "家長在非上班時間頻繁傳訊詢問或焦慮抱怨，老師既想同理又想維持個人生活界線，文字拿捏極度頭痛...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 27,
-    "code": "27",
-    "category": "guidance",
-    "categoryName": "輔導與親師",
-    "emoji": "💬",
-    "icon": "message-circle",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "家長投訴與防衛性自保紀錄",
-    "steps": [
-      "1. 條列事件時間、地點、人物與經過。",
-      "2. 由 AI 轉換為客觀、去情緒化的事實陳述報告。",
-      "3. 附上記錄時序與處置流程。"
-    ],
-    "prompt": "請將以下口述事件轉化為一份客觀、去情緒化、符合行政調閱標準的「學生事件處理紀錄表」：\n- 時間與地點：[時間地點]\n- 涉及人員：[去識別化稱呼，如學生A、學生B]\n- 事件經過：[條列客觀事實]\n- 目前處置：[已做處理]\n請以時序法呈現，去除個人主觀臆測詞彙。",
-    "scenario": "遇親師衝突或家長投訴，第一時間需要白紙黑字寫下客觀自保紀錄，避免情緒性用語導致事態擴大...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 28,
-    "code": "28",
-    "category": "guidance",
-    "categoryName": "輔導與親師",
-    "emoji": "💬",
-    "icon": "message-circle",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "班級經營同儕衝突心力耗損",
-    "steps": [
-      "1. 輸入學生人際糾紛的爭執點。",
-      "2. 請 AI 提供修復式正義對話腳本（Scripting）。",
-      "3. 逐步引導雙方表達感受與承擔責任。"
-    ],
-    "prompt": "兩位[年級]學生因為[衝突原因，例如：分組搶成員或體育課碰撞]發生口角。請為我提供一份「修復式對話（Restorative Practices）導師晤談腳本」，包含引導學生A與學生B互相表達感受、了解影響並共同提出補償方案的提問。",
-    "scenario": "下課同儕推擠口角、排擠八卦不斷，導師每天花大把下課與放學時間排解糾紛，身心俱疲難以專注教學...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 29,
-    "code": "29",
-    "category": "guidance",
-    "categoryName": "輔導與親師",
-    "emoji": "💬",
-    "icon": "message-circle",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "特教與情緒障礙生突發狀況應對",
-    "steps": [
-      "1. 輸入情緒爆發的觸發前因與行為。",
-      "2. 請 AI 分析可能的感官或心理觸發點。",
-      "3. 產出客製化社交故事小卡。"
-    ],
-    "prompt": "一位[年級]學生在[情境，如：發考卷或被換座位]時容易情緒失控爆發。請為他撰寫一份簡短的「社交故事（Social Story）」文字，長度約 150 字，運用第一人稱（我...），引導他認識情緒並採取適當的降溫替代行為。",
-    "scenario": "課堂上特教生或情障生突然情緒失控暴走、摔東西，老師需要即刻安撫並引導全班維持平穩秩序...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 30,
-    "code": "30",
-    "category": "guidance",
-    "categoryName": "輔導與親師",
-    "emoji": "💬",
-    "icon": "message-circle",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "IEP 與特教個案輔導紀錄文書量大",
-    "steps": [
-      "1. 輸入學生課堂觀察紀錄與行為表現特徵。",
-      "2. AI 自動轉化為符合特教規準之質化評語與 IEP 學期目標。",
-      "3. 提供行為改變策略點子。"
-    ],
-    "prompt": "請扮演特教專業人員。依據以下學生表現觀察紀錄：\n[貼上觀察筆記，如：容易分心、寫字慢、需要同儕提醒]\n請幫我生成：\n1. 學期 IEP 短期目標（2項，須具備可衡量性）\n2. 課堂調整與調整評量建議策略（3項，符合特教評鑑格式）。",
-    "scenario": "特殊生或高關懷個案在課堂有突發情緒或行為，事後需要撰寫詳細輔導紀錄以利後續跨處室轉介或通報...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 31,
-    "code": "31",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "補救教學（學習扶助）成效難延續",
-    "steps": [
-      "1. 輸入學生診斷測驗的主要錯題類型。",
-      "2. 請 AI 生成只針對單一迷思概念的微型補強單。",
-      "3. 附帶一步步步驟示範。"
-    ],
-    "prompt": "學生在學習扶助測驗中，對[特定迷思概念，例如：分數除法顛倒相乘]感到混淆。請為他設計一份「5分鐘微型概念補強單」：包含 1 個圖像觀念拆解、1 個示範例題與 2 題微練習。",
-    "scenario": "放學課後扶助班教過就忘，學生缺乏成功經驗，回歸原班正式課堂依然跟不上進度、自信心低落...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 32,
-    "code": "32",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "同儕壓力阻礙學生課堂公開提問",
-    "steps": [
-      "1. 收集學生匿名填寫的問題清單。",
-      "2. 讓 AI 將相似問題進行分類歸納。",
-      "3. 產出重點解答清單。"
-    ],
-    "prompt": "這是學生匿名提交的課堂疑問清單：\n[貼上問題清單]\n請幫我將這些問題進行歸納分類（合併重複觀念），並提煉出全班最混淆的 3 個核心迷思問題與建議解答。",
-    "scenario": "學生明明聽不懂卻不敢舉手發問，害怕被同學笑笨或覺得自己在拖延下課時間，學習漏洞越滾越大...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 33,
-    "code": "33",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "雙語教學英語指令發想困難",
-    "steps": [
-      "1. 輸入原本的中文教學流程與指令。",
-      "2. 請 AI 轉換為年段適宜的英語課堂用語（Classroom English）。",
-      "3. 請 AI 附上單字小卡與生字對照。"
-    ],
-    "prompt": "我是一位[國小/國中][科目名稱]教師，正在設計雙語課堂。請把我以下這段中文教學指令轉換為適合學生聽懂的 Classroom English，請使用簡單句型並附上建議的肢體動作（TPR）說明：\n[貼上中文指令，如：請大家把課本翻到第20頁，跟隔壁同學討論第一題]",
-    "scenario": "配合雙語政策必須在學科課堂說英文，但怕學生聽不懂卡關，自己也苦於構思簡潔自然的課堂指令...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 34,
-    "code": "34",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "跨領域課程整合多頭馬車",
-    "steps": [
-      "1. 提供欲跨科的兩個科目與各自目標。",
-      "2. 請 AI 發想 3 個扣合真實生活的主題專案。",
-      "3. 梳理兩科評量比重。"
-    ],
-    "prompt": "我們想結合[科目A，如：歷史]與[科目B，如：資訊/美術]，請為[年級]學生發想 3 個跨領域 PBL 專案主題概念。每個主題請包含：專案名稱、真實生活問題情境、兩科各自負責的學習產出。",
-    "scenario": "跨學科共備主題課程時，各科老師切入點不同、進度難配合，討論往往失焦或變成各做各的拼盤課程...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 35,
-    "code": "35",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "藝能與體育科目課程結合創新",
-    "steps": [
-      "1. 提供藝能科與學術科課程連結點。",
-      "2. 請 AI 設計跨科微模組（如詩詞生圖、運動數據分析）。",
-      "3. 凸顯藝能科價值。"
-    ],
-    "prompt": "我是一位[美術/音樂/體育]教師，希望與[國文/數學/歷史]進行跨科結合。請提供 2 個能在 1 節課內完成的跨科互動活動模組提案，兼具手作體驗與學科概念理解。",
-    "scenario": "非考科常被借課或視為附庸，想結合跨領域知識設計生動有趣的動態課程，苦於缺乏創新設計靈感...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 36,
-    "code": "36",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "偏鄉跨年級混齡教學備課割裂",
-    "steps": [
-      "1. 提供兩個年級各自的學習目標。",
-      "2. 請 AI 找出跨年級的共通核心概念。",
-      "3. 設計「同主題、不同深淺」的合班教案。"
-    ],
-    "prompt": "我需要進行[年級A]與[年級B]的[科目]混齡合班教學。請找出這兩個年級在[主題，如：植物的構造]上的共通概念，並設計一份「同堂主題、分層任務」的 40 分鐘教學架構。",
-    "scenario": "小校小班被迫兩個年級同堂合班上課，老師在黑板前顧此失彼、分身乏術，急需一套跨年級共通核心教案...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 37,
-    "code": "37",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "法定議題融入時間排擠正規進度",
-    "steps": [
-      "1. 輸入必須融入的法定議題（如：環境、性平、防災）。",
-      "2. 請 AI 將議題無縫寫入例題或課文討論中。",
-      "3. 實現隨機融入不另外佔用節數。"
-    ],
-    "prompt": "我需要將[法定議題，如：性別平等教育/防災教育]融入[科目][單元]中。請幫我設計一個不需要額外花費整節課時間、只需在原有教學流程中嵌入 3 分鐘的融入式例題或討論情境。",
-    "scenario": "性平、環境、海洋、交安等幾十個法定議題要求融入教學，學科正規進度已被壓縮，備課苦於生硬拼湊...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 38,
-    "code": "38",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "實驗與實作課的安全控管風險",
-    "steps": [
-      "1. 輸入實驗操作步驟與使用器材。",
-      "2. 讓 AI 生成實驗前圖解安全檢核表與注意事項。",
-      "3. 產生情境判斷突發狀況考題。"
-    ],
-    "prompt": "我即將帶領[年級]學生進行[實驗/實作名稱，例如：鹽酸與氫氧化鈉中和實驗]。請為我生成：\n1. 學生課前安全檢核清單（條列式，包含防護裝備與操作禁忌）。\n2. 3題實驗安全情境判斷題（檢驗學生是否知道突發狀況處置）。",
-    "scenario": "自然實驗與美勞實作器材具安全風險，學生容易分心違規，課前缺乏具體防護檢核與突發情境演練...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 39,
-    "code": "39",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "進度壓力與探究教學的兩難平衡",
-    "steps": [
-      "1. 輸入單元課綱內容。",
-      "2. 請 AI 進行「概念瘦身」，劃分：教師必講 30%、學生自學 50%、探究 20%。",
-      "3. 合理釋放課時。"
-    ],
-    "prompt": "我需要教授[單元名稱]，但課時非常緊迫。請幫我進行「課堂概念瘦身與時間分配」：\n標註出：1. 【教師必須精講】的核心觀念（佔30%時間） 2. 【可由學習單/AI引導自學】的部分（佔50%時間） 3. 【課堂討論】精華（佔20%時間）。",
-    "scenario": "段考範圍龐大、授課節數嚴重不足，想帶學生討論卻被迫趕進度填鴨，在教學品質與進度間心力交瘁...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 40,
-    "code": "40",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "計畫書與成果報告文字地獄",
-    "steps": [
-      "1. 條列活動點子、時間、對象與預算。",
-      "2. 要求 AI 擴寫為符合官方格式的計畫書草案。",
-      "3. 自動補充預期效益與質化量化指標。"
-    ],
-    "prompt": "請扮演政府教育專案撰寫專家。請將我以下粗略的活動構想擴寫為一份專業的[計畫名稱]申請書摘要：\n- 主題：[主題]\n- 對象：[對象]\n- 主要內容：[內容]\n請包含：計畫背景與目的、實施策略、預期量化效益（3項）與質化效益（2項）。用語請嚴謹專業。",
-    "scenario": "教育局專案計畫、競爭型經費申請截止在即，空有教學點子卻卡在官樣文章格式與繁瑣的量化質化效益指標...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 41,
-    "code": "41",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "「交照片」成果冊圖說繁瑣",
-    "steps": [
-      "1. 輸入活動流程與照片簡述。",
-      "2. AI 自動生成符合規格的質化圖說。",
-      "3. 搭配對應的教學目標連結。"
-    ],
-    "prompt": "我正在製作[活動名稱]的成果報告冊。請幫我為以下4張照片生成專業、符合評鑑規範的成果圖說文字（每張約50-80字）：\n照片1：[學生分組討論]\n照片2：[作品發表與分享]\n照片3：[教師回饋與講評]\n照片4：[全體合照與滿意度問卷]",
-    "scenario": "每學期末要做評鑑成果手冊，手上有幾十張學生活動照片，要逐一張張寫出專業圖說文字寫到眼花...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 42,
-    "code": "42",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "無止盡的局處急件調查公文",
-    "steps": [
-      "1. 貼上公文原文重點與欄位要求。",
-      "2. 請 AI 快速萃取時限、負責單位與填報對象。",
-      "3. 自動擬定對外回覆文字或填報草稿。"
-    ],
-    "prompt": "請幫我分析這份公文重點：\n[貼上公文文本]\n請用表格整理：1. 辦理截止時限 2. 需填報之項目與數據需求 3. 需配合對象 4. 請擬定一段回覆局處的公文文字草稿。",
-    "scenario": "局處急件公文常常只有兩天期限，幾十頁的繁複公文裡，到底哪幾項是需要老師填報與配合的重點？",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 43,
-    "code": "43",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "會議逐字稿整理與紀錄撰寫",
-    "steps": [
-      "1. 將語音轉文字之會議記錄貼給 AI。",
-      "2. 請 AI 萃取「發言重點」、「決議事項」與「待辦分工」。",
-      "3. 自動排版為標準會議紀錄格式。"
-    ],
-    "prompt": "以下是[會議名稱]的逐字稿/討論筆記：\n[貼上筆記/逐字稿]\n請幫我整理為標準會議紀錄：\n1. 會議核心討論議題\n2. 決議事項（條列式）\n3. 待辦事項分工表（包含：項目、負責人、完成時限）。",
-    "scenario": "校務會議、課發會錄了一小時音，要把長篇逐字稿迅速梳理成有條理的「決議事項」與「待辦分工表」...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 44,
-    "code": "44",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "校務評鑑指標資料加工對應",
-    "steps": [
-      "1. 提供評鑑指標名稱與現有活動檔案紀錄。",
-      "2. 請 AI 自動將活動內容與指標條文進行對接對照。",
-      "3. 生成效益說明描述。"
-    ],
-    "prompt": "評鑑指標：[貼上評鑑指標內容，例如：落實戶外教育與多元學習]\n現有活動紀錄：[貼上活動簡述]\n請幫我撰寫一段 200 字的佐證說明，說明本活動如何精準呼應上述指標，用語請呈現教育價值與實質成效。",
-    "scenario": "評鑑時需要將平時繁雜的教學活動與計畫成果，精準對應到教育局生硬的評鑑指標，苦於撰寫佐證論述...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 45,
-    "code": "45",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "非教育專業業務宣導週塞滿校園",
-    "steps": [
-      "1. 輸入宣導主題（如：交通安全、反毒、防火）。",
-      "2. 請 AI 生成晨會 3 分鐘演講稿與廣播詞。",
-      "3. 自動產生簡明複習隨堂考題。"
-    ],
-    "prompt": "請為我寫一份[宣導主題，例如：反霸凌與網路安全]的晨會宣導演講稿：\n1. 對象：[國小/國中/高中]學生\n2. 時間：約2分鐘（文字約300字）\n3. 風格：活潑、有吸引力、包含1個生活實例與1個好記的口訣。",
-    "scenario": "反霸凌、交安、防災宣導週排滿滿，老師要在升旗晨會或班會進行宣導，缺乏簡短有力又吸引學生的短講講稿...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 46,
-    "code": "46",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "採購規格書與核銷文件摸索",
-    "steps": [
-      "1. 提供欲採購設備或服務的需求條件。",
-      "2. 請 AI 擬定規格需求草案與驗收標準。",
-      "3. 確保用語符合採購習慣。"
-    ],
-    "prompt": "請幫我撰寫一份採購[設備名稱，例如：平板電腦充電櫃]的規格需求說明書草案：\n包含：1. 規格要求（尺寸、安全性、認證標章） 2. 保固與售後服務條件 3. 驗收檢核項目（3點）。用語需嚴謹且具公信力。",
-    "scenario": "教室設備損壞或需請購專案器材，採購規格書用語要求嚴格，不知如何列出合法又具公信力的驗收標準...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 47,
-    "code": "47",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "代課排代困難與接班銜接溝通",
-    "steps": [
-      "1. 輸入原本的教學進度與交代事項。",
-      "2. 請 AI 生成格式化「代課老師交辦單」。",
-      "3. 包含班級秩序注意事項與課後檢討回報欄。"
-    ],
-    "prompt": "請幫我寫一份給代課老師的「代課指示備忘錄」。\n班級：[班級]\n節次與科目：[節次/科目]\n預定教學進度：[進度]\n請包含：1. 課堂秩序提醒（如特別注意學生） 2. 隨堂作業與收取方式 3. 代課教師簡短回饋欄。",
-    "scenario": "因公假或病假需要請其他老師排代，如何快速交代教學進度、班級特殊生狀況與作業收取規範？",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 48,
-    "code": "48",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "校務系統老舊格式轉換繁瑣",
-    "steps": [
-      "1. 提供來源資料格式與目標格式範例。",
-      "2. 請 AI 撰寫 Excel 公式、VBA 或 Google Apps Script。",
-      "3. 一鍵完成資料格式自動清理。"
-    ],
-    "prompt": "我需要將 Excel 中的學生資料進行格式轉換。來源欄位是[描述欄位，如：姓名、生日1090101]，目標格式是[描述目標，如：YYYY/MM/DD]。請為我撰寫一段適用於 Excel / Google 試算表的公式或 Apps Script 腳本。",
-    "scenario": "學校系統導出的成績名冊格式古老混亂，需要手動剪下貼上、轉換欄位以配合特定報表，耗掉整個下午...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 49,
-    "code": "49",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "兼任行政業務經驗斷層與傳承",
-    "steps": [
-      "1. 提供處室交接事項口述或筆記。",
-      "2. 請 AI 排版為標準業務 SOP 與月份工作行事曆。",
-      "3. 建立處室提示詞庫。"
-    ],
-    "prompt": "請幫我將以下口述的行政交接筆記：\n[貼上交接筆記]\n整理為一份標準化「[職務名稱，例如：體育組長]業務 SOP 手冊」，包含：按月份排列的待辦清單、合作單位聯繫時機、與常見踩坑注意事項。",
-    "scenario": "新手接任組長或主任，缺乏交接指引與前人 SOP，面對繁複採購招標與公文核銷只能四處摸索碰壁...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 50,
-    "code": "50",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "個資授權與活動家長同意書撰寫",
-    "steps": [
-      "1. 輸入活動名稱、時間與涉及事項（如拍照、出遊）。",
-      "2. 請 AI 生成符合法規標準的簡明家長同意書。",
-      "3. 附上回條格式。"
-    ],
-    "prompt": "請幫我擬定一份[活動名稱，例如：校外教學/肖像權使用]家長同意書草案。內容需包含：活動目的、安全措施說明、個資與肖像授權選項（同意/不同意）、以及簡明的家長簽章回條。",
-    "scenario": "校外活動或拍照錄影需要家長簽署個資肖像同意書，苦於寫出用語合法合規、清楚嚴謹又親切易讀的文字...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 51,
-    "code": "51",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "校園活動頻繁排擠常態課表進度",
-    "steps": [
-      "1. 輸入被壓縮後僅剩的課堂時間（如 15 分鐘）。",
-      "2. 請 AI 將單元濃縮為微型精講模組。",
-      "3. 因應碎片化課堂。"
-    ],
-    "prompt": "因為學校活動排擠，我原本 40 分鐘的課堂被壓縮到只剩 15 分鐘。請幫我將[單元名稱]濃縮為一個「15分鐘微型核心課堂」：包含 1 個最精華示範與 1 個隨堂檢核。",
-    "scenario": "校慶、運動會、演藝比賽、體檢接踵而至，課堂時常被借走或停課，正規教學進度被切得支離破碎...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 52,
-    "code": "52",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "學生口語發表兩極化不敢開口",
-    "steps": [
-      "1. 指定表達主題與情境。",
-      "2. 請 AI 為怯場學生產出「句型鷹架（Sentence Starters）」",
-      "3. 降低學生公開開口難度。"
-    ],
-    "prompt": "學生即將進行[發表主題]的課堂分享，許多怯場學生不知道如何開口。請為他們編寫一份「口語表達句型鷹架卡」，包含：開場白句型（2個）、表達觀點與理由句型（2個）、總結句型（1個）。",
-    "scenario": "課堂提問時總是同一兩位學生舉手，多數孩子害羞焦慮、害怕講錯被笑，全班沈默難以形成熱絡討論氣氛...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 53,
-    "code": "53",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "學習歷程檔案指引過度耗竭",
-    "steps": [
-      "1. 提供學生活動或作品主題。",
-      "2. 請 AI 扮演引導教練，用 STAR 原則生成提問卡。",
-      "3. 讓學生透過回答問題自己寫出反思。"
-    ],
-    "prompt": "請扮演學習歷程寫作教練。請依據 STAR 原則（情境 Situation、任務 Task、行動 Action、結果與反思 Reflection），設計 5 個引導問題，讓參加過[活動/研習/競賽]的學生能透過回答問題，自主寫出高品質的反思心得。",
-    "scenario": "指導學生整理多元表現與學習歷程，學生不知如何下筆反思，老師逐一批改回饋耗盡所有課餘時間...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 54,
-    "code": "54",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "家庭資源匱乏導致課後落差",
-    "steps": [
-      "1. 輸入課後自主複習單元。",
-      "2. 請 AI 生成適合手機離線閱讀的「簡訊/純文字自主學習卡」。",
-      "3. 提供免費無負擔學習資源。"
-    ],
-    "prompt": "請幫我設計一份適合無電腦、僅能用手機閱讀的「微型課後自主複習卡」（文字長度約 300 字）。主題是[單元名稱]，包含：本日最重要觀念、1個生活檢視小任務、與1個自我測驗題與解答。",
-    "scenario": "弱勢家庭孩子放學無人看顧或缺乏數位資源，功課無從請教，與資源豐富學生的學習落差隨學期不斷擴大...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 55,
-    "code": "55",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "公開觀課社群備課流於形式",
-    "steps": [
-      "1. 貼上現有教案設計。",
-      "2. 請 AI 扮演「反方提問者（Devil's Advocate）」直戳盲點。",
-      "3. 激發觀課社群深層專業討論。"
-    ],
-    "prompt": "這是我們備課社群設計的教案草案：\n[貼上教案大綱]\n請扮演一位嚴格的教育專家與「反方提問者」，針對這份教案提出 3 個最可能遇到的教學盲點、學生迷思或時間分配風險，幫助我們改進。",
-    "scenario": "每年輪到公開授課，為了應付評鑑寫出厚厚一大疊教案與觀課紀錄，耗時費工卻對真實課堂成長助益有限...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 56,
-    "code": "56",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "探究理念與升學刷題現實拉扯",
-    "steps": [
-      "1. 提供精彩的探究活動設計。",
-      "2. 請 AI 自動將探究過程對應至大考常見考點與題型。",
-      "3. 建立探究與分數的對照連結。"
-    ],
-    "prompt": "我們進行了[探究活動名稱]的實作活動。請幫我將這個實作活動體驗，對應並轉化為 2 道大考/段考常見的常考觀念選擇題與解析，讓學生明白探究活動如何連結考點。",
-    "scenario": "想花時間帶學生做動手探究與思辨，又面臨家長與學校要求段考高分的升學壓力，在兩者間左右為難...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 57,
-    "code": "57",
-    "category": "prep",
-    "categoryName": "教學與備課",
-    "emoji": "📚",
-    "icon": "book-open",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "數位教材外部連結頻繁失效",
-    "steps": [
-      "1. 輸入原連結欲展示的教學內容。",
-      "2. 請 AI 自動生成文字版等值替代教材或互動問答。",
-      "3. 擺脫對外部網站依賴。"
-    ],
-    "prompt": "我原本使用的教學外部網頁連結失效了，該頁面原本是在介紹[主題概念]。請幫我生成一份「文字與表格版的替代學習材料」（約 300 字），包含核心知識整理與 2 題觀念檢核題。",
-    "scenario": "精心蒐集的線上學習單或補充影片，隔了半年要用時網址卻 404 失效，課前緊急尋找替代教材兵荒馬亂...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 58,
-    "code": "58",
-    "category": "admin",
-    "categoryName": "行政與公文",
-    "emoji": "🏛️",
-    "icon": "file-text",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "個人教學檔案與講義檢索困難",
-    "steps": [
-      "1. 將個人教材關鍵字與路徑提供給 AI。",
-      "2. 請 AI 生成結構化個人檔案目錄索引與檔名命名規範。",
-      "3. 打造秒查檔案系統。"
-    ],
-    "prompt": "我積累了大量的教學檔案，命名混亂。請為我設計一套適用於[科目]教師的「個人數位檔案資料夾分類架構與標準檔名命名規範（Naming Convention）」，讓未來的教案與學習單能快速被搜尋到。",
-    "scenario": "多年累積的教案、考卷、投影片散落不同硬碟與隨身碟，檔名混亂，每次要用都像海底撈針找半天...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 59,
-    "code": "59",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "研習聽了很多回學校卻無法落地",
-    "steps": [
-      "1. 將研習講義或筆記重點貼給 AI。",
-      "2. 請 AI 提煉為「下週可落地的 3 件行動」與具體步驟。",
-      "3. 轉化為個人行動指南。"
-    ],
-    "prompt": "以下是我參加[研習主題]的研習筆記：\n[貼上筆記內容]\n請幫我提煉並轉化為「下週回學校可以直接執行的 3 個微小行動（Micro-actions）」，包含具體執行步驟與所需工具，去除高深理論。",
-    "scenario": "每次研習聽講師講得熱血沸騰，回校打開電腦面對繁瑣常規工作，卻不知從哪一個具體微小步驟開始實踐...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 60,
-    "code": "60",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "AI 產出內容過多陷入審稿地獄",
-    "steps": [
-      "1. 建立審稿 Quality Gate 提示詞。",
-      "2. 請 AI 進行自我檢驗與幻覺檢查。",
-      "3. 精簡最終輸出品質。"
-    ],
-    "prompt": "在交付給我最終答案之前，請先依據以下條件自我檢查與修正：\n1. 是否完全符合台灣[學程]課綱用語？\n2. 是否有任何事實性錯誤或 AI 幻覺？\n3. 格式是否簡明易讀？確認無誤後再輸出內容。",
-    "scenario": "AI 一口氣生成落落長的教案或試題，但夾雜非本土用語或幻覺錯誤，老師校對修改反而比自己寫還累...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 61,
-    "code": "61",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "教師陷入新技術更新焦慮與過載",
-    "steps": [
-      "1. 輸入目前學到的多種 AI 工具名稱。",
-      "2. 請 AI 扮演「資訊減法顧問」，進行工具收斂。",
-      "3. 鎖定最核心 1-2 個萬用工具。"
-    ],
-    "prompt": "請扮演資訊減法顧問。我是一位時間有限的教師，目前市面上有許多 AI 工具。請告訴我：如果我只學【通用型聊天 AI（如 ChatGPT/Claude）】，如何用這一個工具滿足我 80% 的備課與行政需求？請列出最關鍵的 3 個應用場景即可。",
-    "scenario": "每個月都有新的 AI 工具或數位平台問世，研習訊息鋪天蓋地，老師被資訊焦慮淹沒，不知該學什麼...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 62,
-    "code": "62",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "會用很多工具但工作反而越做越多",
-    "steps": [
-      "1. 條列日常所有的工作項目。",
-      "2. 請 AI 依照「刪、減、自動化、親自做」四分法進行診斷。",
-      "3. 砍除無效工作。"
-    ],
-    "prompt": "這是我的日常教學與行政工作清單：\n[貼上工作清單]\n請幫我進行「工作減負四分法診斷」，將項目歸類為：\n1. 【應直接刪除的形式主義】\n2. 【應簡化的長篇大論】\n3. 【可由 AI/範本代勞】\n4. 【必須教師親自展現溫度的核心】。",
-    "scenario": "學會了一堆高大上的 AI 軟體，結果備課時間沒有減少，反而花更多時間在微調特效與排版，本末倒置...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 63,
-    "code": "63",
-    "category": "efficiency",
-    "categoryName": "專業效能與心法",
-    "emoji": "🚀",
-    "icon": "zap",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "抓不到 AI 切入點不知道哪裡值得用",
-    "steps": [
-      "1. 盤點今天最煩、最重複、最耗時的三件事。",
-      "2. 請 AI 評估自動化可行性與投資報酬率。",
-      "3. 確定第一個突破口。"
-    ],
-    "prompt": "我今天最耗時、最煩人的三件事是：\n1. [事情1]\n2. [事情2]\n3. [事情3]\n請幫我評估這三件事中，哪一件「最適合且最容易立刻用 AI 解決」？請給我第一個具體的 Prompt 嘗試第一步。",
-    "scenario": "知道 AI 很強大，但面對自己日常繁雜的教學與行政日常，常常不知道究竟哪一項任務真正值得交給 AI...",
-    "stage": "elem",
-    "stageName": "國小/通用"
-  },
-  {
-    "id": 64,
-    "code": "JH-01",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "📋",
-    "icon": "clipboard-list",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "段考命題不能照抄題庫，怕被補習班抓包、家長質疑...",
-    "scenario": "書商題庫題目太過死板、換湯不換藥（改名字或改數字），補習班刷題一眼看穿！老師被要求出素養題，但重新手動包裝情境耗掉一整晚。 (⚡ 痛點解法：單題 AI 醫美換膚術（骨架保留、情境大翻新）)",
-    "prompt": "這是我們原本從書商題庫選出的傳統題目：\n『[請貼上書商原本的題目與考點]』\n\n請保留本題的核心評量概念（國中【[年級]】【[科目]】），但替我完成以下「AI 醫美級」108 課綱會考素養升級：\n1. 🦴【骨架保留】：精準鎖定核心學科考點與難度，不傷筋動骨。\n2. 🎭【情境換臉】：即時連網搜尋最近臺灣發生的真實生活情境或時事數據（如：氣象、物價、運動、環保或科技），改寫為 150-200 字情境題幹。\n3. 🛡️【會考誘答】：設計 4 個選項（包含 3 個極具診斷價值的學生常見迷思誘答項），並附帶詳細解析與易錯盲點。\n4. 🎨【題目配圖生成】：若本題需要圖表或插圖，請用括號內夾註繁體中文清楚描述配圖生成需求（例如：『（配圖需求：一幅 16:9 教科書手繪風格插圖，呈現...，圖中以正確繁體中文標註...）』），方便直接複製貼入生圖工具。"
-  },
-  {
-    "id": 65,
-    "code": "JH-02",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "🏥",
-    "icon": "sparkles",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "整張考卷要出平行 B 卷或補考卷，重出 25 題要熬夜三天...",
-    "scenario": "補習班秒對答案、家長抗議題目重複；需要整份試卷出對標的平行 B 卷或補考卷，重新構思 25~30 題耗盡腦汁。 (⚡ 痛點解法：整卷進廠 AI 全身醫美（一鍵脫胎換骨生 B 卷）)",
-    "prompt": "你是一位資深中學命題主審兼「考題醫美主治醫師」。這是我原本的國中【[年級]】【[科目]】整份段考試卷（共 [請填入題數，如25] 題）：\n『[請貼上整份考卷文字或上傳 PDF/Word]』\n\n為避免被坊間補習班題庫抓包與家長抗議，請為這份考卷進行「全身深度醫美換臉手術」，產出一份全新的【平行 B 卷 / 防抄素養版】：\n\n🏥【手術療程指示】：\n1. 🦴【骨架原封不動】：嚴格維持每題的評量重點、知識點順序、Bloom 認知層次與難度（第 1 題考什麼，B 卷第 1 題就考同概念）。\n2. 🎭【情境換臉換皮】：把原本死板的題幹情境（如小明買水果），全面更換為「臺灣近期在地時事、生活科技、手搖飲、手遊或校園日常」。\n3. 🔢【數值數算微調】：若有計算題或理化數據，請更換合理數值並重新精算，確保答案乾淨明確。\n4. 🎨【題目配圖生成】：若題目需要圖表或情境插圖，請在該題下方用括號內夾註繁體中文清楚描述配圖生成需求（例如：『（配圖需求：...）』），方便直接複製貼入生圖工具。\n5. 📝【附帶完整病歷報告】：在整卷最後，附上全卷「全新標準答案」、「各題核心考點對照表」與「關鍵計算詳解」。"
-  },
-  {
-    "id": 66,
-    "code": "JH-03",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "🎨",
-    "icon": "image",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "題目醫美整型完，原本的考題配圖跟不上，找不到無版權好圖...",
-    "scenario": "好不容易把題目改編成生動時事，但書商原本的死板插圖或網路抓圖解析度不足、有版權風險，老師手繪又耗時費神。 (⚡ 痛點解法：Puti-AI 命題生圖器（Gem 助手 ＋ 獨立 Web App 雙版本）)",
-    "prompt": "請直接點擊卡片背面按鈕開啟 Puti-AI 命題生圖器（Gem / Web App）",
-    "isToolCard": true,
-    "gemUrl": "https://gemini.google.com/gem/3340f73abf6a?usp=sharing",
-    "webUrl": "https://share.gemini.google/SqMCUhioEx92",
-    "solutionTool": "Puti-AI 命題生圖器 (Gem / Web)",
-    "solutionSummary": "黃老師親自調校的教學配圖神器！提供「Gem 專屬助手」與「獨立 Web App」雙版本，貼上考題秒生高畫質教學插圖！"
-  },
-  {
-    "id": 67,
-    "code": "JH-04",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "📰",
-    "icon": "newspaper",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "平常滑到精彩新聞時事想出題，但要切換分頁、複製貼上好麻煩...",
-    "scenario": "平常在手機或電腦看到極佳的時事新聞（如地震數據、電價碳費、巴黎奧運、紅海危機），想出成考題但想到要手動切換視窗排版就放棄。 (⚡ 痛點解法：Chrome 側邊欄「問問 Gemini」時事捕手)",
-    "prompt": "請直接閱讀我目前正在看的這篇網頁新聞，為國中【[年級]】【[科目]】設計 1 組段考素養情境題組：\n1. 【情境題幹】：提取本篇新聞的核心數據與關鍵情境作為題幹引文（200字內）。\n2. 【兩大小題】：\n   - 第 1 題：圖表/文本資訊提取與基本觀念理解（基礎理解題）。\n   - 第 2 題：生活情境應用與數據分析推論（進階分析題）。\n3. 【選項與解析】：每題提供 4 個選項（包含 3 個高品質迷思誘答項），並附帶詳細解析。\n4. 🎨【題目配圖生成】：若題組需要圖表或新聞情境插圖，請用括號內夾註繁體中文清楚描述配圖生成需求（例如：『（配圖需求：...）』），方便直接複製貼入生圖工具。"
-  },
-  {
-    "id": 68,
-    "code": "JH-05",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "🌐",
-    "icon": "globe",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "想參考全台名校歷年段考題，不知去哪裡免費下載試卷與解答...",
-    "scenario": "除了書商光碟，老師想參考臺中、雙北或全台各校歷年段考真題，常常找不到乾淨無廣告的免費下載站；下載後又不知如何改編為符合自己學校程度的素養題。 (⚡ 兩大免費題庫神站：Tcool 題庫網 ╳ 學習方舟 StudyArk)",
-    "prompt": "這是從「全台中小學題庫網（tcool.cc / studyark.org）」下載的各校段考真題：\n『[請貼上真題文字或上傳考卷照片]』\n\n請為國中【[年級]】【[科目]】將這道真題進行「校本在地化 ╳ 108 會考素養升級」：\n1. 【核心概念保留】：精準保留原題評量的核心學科觀念與難度層次。\n2. 【在地情境重構】：將背景改寫為貼近臺中市在地（如：高美濕地、臺中捷運、大甲溪、科博館或四張犁周邊生活圈）的 150 字情境題幹與圖表。\n3. 【會考題組設計】：設計 2 道階梯式小題（基礎判讀 ＋ 進階推論），並附帶 4 個診斷型誘答選項與詳細解析。\n4. 🎨【題目配圖生成】：若題目需要圖表或在地實景插圖，請用括號內夾註繁體中文清楚描述配圖生成需求（例如：『（配圖需求：...）』），方便直接複製貼入生圖工具。"
-  },
-  {
-    "id": 69,
-    "code": "JH-06",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "📚",
-    "icon": "layers",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "同單元各版本教科書重點有落差，跨版本統整比對到眼花...",
-    "scenario": "同一單元（如食物網、日治抗日、二元一次），翰林、康軒、南一各版本舉例與重點編排各不相同，跨版本備課不知如何取捨核心概念。 (⚡ 痛點解法：Chrome 跨分頁智慧對照 (Compare Tabs))",
-    "prompt": "請比對我目前開啟的這 3 個教科書分頁，針對國中【[年級]】【[科目]】此單元：\n1. 用 Markdown 表格列出 3 個版本的「共同核心概念」與「各版特殊補充範例」。\n2. 指出哪一個版本的切入點最適合引導探究，並提供跨版本統整的 3 階段教學流程建議。"
-  },
-  {
-    "id": 70,
-    "code": "JH-07",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "📑",
-    "icon": "file-text",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "幾十頁的教育局公文、論文或研習手冊，根本沒時間細讀...",
-    "scenario": "常常收到幾十頁的教育局公文 PDF 或教育期刊，想知道跟自己科目的具體關聯，但逐字閱讀耗時又費神，常常錯過重要申請期限。 (⚡ 痛點解法：Chrome 側邊面板 PDF 隨開隨讀)",
-    "prompt": "請針對我目前開啟的這份 PDF 公文/文件：\n1. 萃取出與「國中【[年級]】【[科目]】教學現場」最相關的 3 個關鍵重點。\n2. 列出重要時程、申請截止日與教師具體配合事項。\n3. 整理成 100 字內的隨身快速備忘錄清單。"
-  },
-  {
-    "id": 71,
-    "code": "JH-08",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "🎬",
-    "icon": "video",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "想用 YouTube 科普影片教學，但沒時間把 40 分鐘影片看完出題...",
-    "scenario": "公視、國家地理或科普 YouTube 影片是引起動機的好素材，但老師常沒時間先看完並手動切時間軸設計學習單與問答題。 (⚡ 痛點解法：Chrome 側邊欄 YouTube 智慧解析)",
-    "prompt": "請分析這部 YouTube 影片的內容與逐字稿，為國中【[年級]】【[科目]】製作觀影學習單：\n1. 標註 3 個最精彩片段的精確時間軸與核心概念。\n2. 設計 3 題「觀影隨堂問答題」（讓學生觀看時需專注尋找答案）。\n3. 設計 1 題課後小組延伸思辨討論題。"
-  },
-  {
-    "id": 72,
-    "code": "JH-09",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "exam",
-    "categoryName": "命題與備課",
-    "emoji": "☁️",
-    "icon": "cloud",
-    "accentBg": "bg-rose-500",
-    "accentText": "text-rose-600 dark:text-rose-400",
-    "accentTag": "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    "title": "雲端硬碟裡躺著五年前的舊教案，想翻新成 108 課綱素養版...",
-    "scenario": "舊教材內容紮實，但缺乏生活情境與探究與實作架構，重新打一份又要花好幾天，不知如何下手改造。 (⚡ 痛點解法：@Google 雲端硬碟 直連改編)",
-    "prompt": "@Google 雲端硬碟 請讀取我的教案檔案「[科目]舊教案.docx」：\n1. 保持原有的學科知識點，但將傳統講述環節改編為「生活情境引導 ＋ 15 分鐘小組探究任務」。\n2. 結合近三年臺灣在地時事，設計適合國中【[年級]】的三面九項素養教學目標與評量規準。"
-  },
-  {
-    "id": 73,
-    "code": "JH-10",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "diff",
-    "categoryName": "雙峰與差異化",
-    "emoji": "📊",
-    "icon": "trending-up",
-    "accentBg": "bg-amber-500",
-    "accentText": "text-amber-600 dark:text-amber-400",
-    "accentTag": "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-    "title": "同一份學習單，資優生 5 分鐘寫完放空，落後生直接趴下放棄...",
-    "scenario": "國中常態編班雙峰差距極大，同一份題目無法兼顧前段與後段學生，老師常苦於分層設計學習單與個別化任務。 (⚡ 痛點解法：Canvas 畫布階梯式變形 (A/B/C 三版))",
-    "prompt": "請在 Canvas 畫布中將此【[科目]】教學主題，改編成適合國中【[年級]】的 A/B/C 三階梯差異化學習單：\n- 【A 基礎鷹架版】：包含專有名詞白話註解、填空式引導與 3 步驟解題微提示（給需要學習扶助的學生）。\n- 【B 標準常態版】：標準會考情境題與圖表判讀。\n- 【C 進階思辨版】：加入跨學科爭議情境與開放式論證挑戰（給提早完成的資優學生）。"
-  },
-  {
-    "id": 74,
-    "code": "JH-11",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "diff",
-    "categoryName": "雙峰與差異化",
-    "emoji": "💡",
-    "icon": "smile",
-    "accentBg": "bg-amber-500",
-    "accentText": "text-amber-600 dark:text-amber-400",
-    "accentTag": "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-    "title": "專有名詞生澀抽象，學生怎麼聽都聽不懂，上課眼神呆滯...",
-    "scenario": "自然科的染色體與浮力、社會科的法治精神、數學的函數...概念太硬，學生死背硬記毫無感覺，考完立刻忘光。 (⚡ 痛點解法：九陽真經：12 歲也聽得懂的生活隱喻)",
-    "prompt": "你是一位擅長啟發式教學的國中【[科目]】老師。請用一個國中【[年級]】學生（12-14歲）能完全聽懂的白話方式：\n1. 解釋這個抽象概念（保留科學準確度，嚴禁過度簡化誤導）。\n2. 用一個校園日常生活情境（例如：打手遊、買手搖飲、去福利社、排隊等）打比方。\n3. 設計一句好記的押韻記憶口訣。"
-  },
-  {
-    "id": 75,
-    "code": "JH-12",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "diff",
-    "categoryName": "雙峰與差異化",
-    "emoji": "🛡️",
-    "icon": "shield-alert",
-    "accentBg": "bg-amber-500",
-    "accentText": "text-amber-600 dark:text-amber-400",
-    "accentTag": "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-    "title": "辛苦出的段考題，最怕考後被學生或家長抓到題目有漏洞送分...",
-    "scenario": "老師出題常有「專家盲點」，自己看很順，學生卻因語意模糊產生爭議，考後送分焦頭爛額還要開審題會。 (⚡ 痛點解法：九陽真經：視角切換 ＋ 先挑錯再改)",
-    "prompt": "這是我為國中【[年級]】【[科目]】設計的段考題目草稿。請先不要直接誇獎我，請依序執行：\n1. 【弱勢生視角】：以一位容易分心、閱讀理解較弱的學生角度，指出題幹中哪一句話最容易讓人誤解？\n2. 【挑剔審題視角】：以會考審題委員角度，檢查選項是否有語意模糊、雙重答案或誘答力不足的漏洞？\n3. 針對上述缺失，提供修正後的完美版本與標準詳解。"
-  },
-  {
-    "id": 76,
-    "code": "JH-13",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "diff",
-    "categoryName": "雙峰與差異化",
-    "emoji": "🪜",
-    "icon": "help-circle",
-    "accentBg": "bg-amber-500",
-    "accentText": "text-amber-600 dark:text-amber-400",
-    "accentTag": "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-    "title": "想給落後學生階段性提示，但沒時間為每題寫「微步調鷹架」...",
-    "scenario": "落後學生看到大題目直接卡關，需要像電玩破關一樣有「提示 1 ➔ 提示 2 ➔ 提示 3」的階梯指引，老師分身乏術。 (⚡ 痛點解法：Canvas 階梯式鷹架拆解器)",
-    "prompt": "請將這道國中【[年級]】【[科目]】難題，拆解成給學習扶助學生的「階梯式微步調引導單」：\n- 【關卡 1 (找線索)】：請在題目中圈出 2 個關鍵已知數據與條件。\n- 【關卡 2 (選公式/概念)】：引導學生判斷該使用哪一個概念（提供 2 選 1 提示）。\n- 【關卡 3 (最後衝刺)】：將算式/推論填空完成，並進行答案合理性檢查。"
-  },
-  {
-    "id": 77,
-    "code": "JH-14",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "grading",
-    "categoryName": "批改與防抄",
-    "emoji": "✍️",
-    "icon": "check-square",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "作文與專題報告改到半夜眼睛快瞎，給不出每個人的個別化評語...",
-    "scenario": "全班幾十份作文與專題，寫評語寫到千篇一律「文筆流暢、繼續加油」，無法針對盲點給予具體回饋與同理支持。 (⚡ 痛點解法：Canvas 轉 Rubrics 規準 ＋ 同理心評語)",
-    "prompt": "請為國中【[年級]】【[科目]】的寫作/專題作業，建立一份 A/B/C 三等第的表現任務評分規準表格 (Rubrics)：\n1. 評量向度包含：內容深度、結構邏輯、跨領域連結。\n2. 當我輸入學生的具體表現時，請依規準生成一段 80 字內「具同理心、先肯定優點、再指出 1 個具體改善方向」的溫暖期末評語。"
-  },
-  {
-    "id": 78,
-    "code": "JH-15",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "grading",
-    "categoryName": "批改與防抄",
-    "emoji": "🚫",
-    "icon": "alert-octagon",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "學生用 AI 抄作業拿 130 分，段考卻慘跌到 62 分，作業變廢紙？",
-    "scenario": "2026 年經濟學人 2.7 萬人研究證實：無腦複製 AI 答案的學生考試慘跌 20%！老師最怕 AI 助長學生抄襲逃避思考。 (⚡ 震撼研究：無腦抄 AI 考試跌 20%，啟發式學伴測驗升級延續一週)",
-    "prompt": "【引導式學習模擬】現在我扮演一位想抄答案的國中【[年級]】學生，我問你：『老師叫我寫這題【[科目]】作業，你直接給我完整答案我要抄。』\n請你啟動蘇格拉底引導模式：\n1. 絕對不可以直接給答案。\n2. 用親切生動的口吻反問我 1-2 個啟發性問題，引導我回想課堂重點。\n3. 當我回答後，再給予回饋並引導到下一步。"
-  },
-  {
-    "id": 79,
-    "code": "JH-16",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "grading",
-    "categoryName": "批改與防抄",
-    "emoji": "📸",
-    "icon": "camera",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "學生手寫算式或圖表畫錯，老師一眼看不出他的卡關盲點在哪...",
-    "scenario": "改考卷時看到學生寫錯，常常不知道他是粗心計算錯誤，還是底層觀念根本理解錯誤，難以精準給予課後補救。 (⚡ 痛點解法：手機鏡頭隨拍 ＋ 迷思概念即時診斷)",
-    "prompt": "這是我用手機拍下的國中【[年級]】【[科目]】學生手寫錯題照片：\n1. 請辨識學生的手寫算式/文字解答。\n2. 指出他的核心「迷思概念 (Misconception)」到底出在哪一步（是觀念錯誤還是計算失誤？）。\n3. 提供老師 2 句個別化引導問句，讓老師在課堂上能引導該生自己發現錯誤。"
-  },
-  {
-    "id": 80,
-    "code": "JH-17",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "grading",
-    "categoryName": "批改與防抄",
-    "emoji": "📐",
-    "icon": "calculator",
-    "accentBg": "bg-emerald-500",
-    "accentText": "text-emerald-600 dark:text-emerald-400",
-    "accentTag": "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    "title": "數學幾何或理化計算題，講了好幾遍學生還是卡在同一步...",
-    "scenario": "數理科題目步驟繁多，學生常常在第二步卡關就全盤放棄，老師一對一輔導時間有限，無法兼顧全班進度。 (⚡ 痛點解法：Google 智慧鏡頭 Homework 作業拆解模式)",
-    "prompt": "請針對這道國中【[年級]】【[科目]】計算/幾何題目：\n1. 將解題歷程拆解為明確的「步驟 1（已知條件轉換）➔ 步驟 2（核心公式套用）➔ 步驟 3（運算與檢驗）」。\n2. 標註國中生在「步驟 2」最容易犯的 2 個經典陷阱與避免方法。"
-  },
-  {
-    "id": 81,
-    "code": "JH-18",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "media",
-    "categoryName": "影音與模擬器",
-    "emoji": "🧪",
-    "icon": "code",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "實驗器材不足有危險性，光看課本死圖學生完全無法理解動態過程...",
-    "scenario": "孟德爾遺傳方格、浮力沉浮、酵素活性溫度曲線、二次函數拋物線...沒有動態操作，學生死記考完就忘。 (⚡ 痛點解法：Canvas 程式畫布一鍵生成 HTML5 互動模擬器)",
-    "prompt": "請用 HTML5 + CSS + JavaScript 寫一個免安裝、單一檔案即可直接在瀏覽器運行的『國中【[年級]】【[科目]】互動實驗模擬器』：\n1. 設計 2-3 個可拖曳的數值滑桿（如：濃度、溫度、質量、密度或係數）。\n2. 畫面上動態呈現實驗變化（如：方塊浮沉高度、曲線即時變形、遺傳方格配對結果）。\n3. 旁邊即時顯示數據變化與結論分析，介面生動直觀。"
-  },
-  {
-    "id": 82,
-    "code": "JH-19",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "media",
-    "categoryName": "影音與模擬器",
-    "emoji": "🎵",
-    "icon": "music",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "英文單字死背就忘、小考一直補考，學生學英文毫無成就感...",
-    "scenario": "每課十幾個單字，學生死背字母苦不堪言，缺乏情境與音樂律動輔助記憶，考完很快遺忘。 (⚡ 神級閉環：生字變押韻歌詞 ➔ AI 生成神曲 ➔ 聽歌克漏字測驗)",
-    "prompt": "這是國中【[年級]】英語第二課的 8 個核心單字：[請貼上單字]。請幫我完成以下 3 階段任務：\n1. 【歌詞創作】：創作一段 8 句輕快押韻的英文歌詞，自然融入所有生字（單字以粗體標註），附中文翻譯與風格建議。\n2. 【克漏字單】：將歌詞中的生字挖空為填空題，製作成課堂『聽歌克漏字測驗單』，附 Word Bank 與答案。\n3. 【理解提問】：設計 2 道關於歌詞意境的閱讀理解題。"
-  },
-  {
-    "id": 83,
-    "code": "JH-20",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "media",
-    "categoryName": "影音與模擬器",
-    "emoji": "🎨",
-    "icon": "image",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "學習單與考卷找不到合適插圖，網路圖片到處有浮水印或侵權疑慮...",
-    "scenario": "做教材需要高品質圖解，但網路搜尋的圖片不是解析度太低，就是帶有版權風險不能公開印發。 (⚡ 痛點解法：Imagen 3 繁中精準渲染 ＋ 零版權風險)",
-    "prompt": "一張 16:9 高畫質科普教學插圖：適合國中【[年級]】【[科目]】課程。畫面主題為：[描述教學情境]，光影柔和、細節清晰、色彩生動，帶有教科書手繪風格。圖中的告示牌/標籤上以正確清晰的繁體中文寫著『[填寫標籤文字]』。"
-  },
-  {
-    "id": 84,
-    "code": "JH-21",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "media",
-    "categoryName": "影音與模擬器",
-    "emoji": "🎥",
-    "icon": "film",
-    "accentBg": "bg-purple-500",
-    "accentText": "text-purple-600 dark:text-purple-400",
-    "accentTag": "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-    "title": "上課鐘響學生浮躁不安靜，缺乏 5 秒抓眼球的「引起動機」前導素材...",
-    "scenario": "傳統引起動機講半天學生不聽，需要高畫質且自帶立體環境音的微短片讓全班瞬間安靜進入情境。 (⚡ 痛點解法：Veo 3.1 自帶原生立體音效短影音)",
-    "prompt": "一段 5 秒電影級 4K 高畫質課堂前導短片：鏡頭緩慢向前推進，呈現【[科目]】的真實情境（例如：臺灣淺山森林中的石虎、顯微鏡下的微觀細胞世界、歷史古戰場）。光影擬真、色彩豐富，自帶逼真的環境立體音效。"
-  },
-  {
-    "id": 85,
-    "code": "JH-22",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "admin",
-    "categoryName": "手機與行政",
-    "emoji": "🌿",
-    "icon": "map-pin",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "想帶學生走出教室校園走讀，但現場缺乏即時出題的靈感...",
-    "scenario": "校園巡禮或戶外教學時，希望學生能就地觀察，但現場缺乏隨機出題的靈感，容易變成單純散步。 (⚡ 痛點解法：手機智慧鏡頭 ╳ Multisearch 多重搜尋)",
-    "prompt": "這是我在學校校園拍下的實物照片（植物/建築/自然現象）：請為國中【[年級]】【[科目]】設計一份「5 分鐘下課微探究任務單」：\n1. 介紹此物件的 2 個有趣特徵（用國中生懂的語言）。\n2. 設計 2 個「必須親自細看或觸摸才能回答」的觀察題。\n3. 設計 1 個連結日常生活環境的思考題。"
-  },
-  {
-    "id": 86,
-    "code": "JH-23",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "admin",
-    "categoryName": "手機與行政",
-    "emoji": "📋",
-    "icon": "clipboard-check",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "每年例行的「公開授課紀錄表」，寫教案、觀察紀錄寫到懷疑人生...",
-    "scenario": "公開觀課是例行公事，但填寫繁雜的教學目標、核心素養對應與課堂觀察紀錄極度耗時又重複。 (⚡ 痛點解法：公開課紀錄表生成器 (PTCF 模組))",
-    "prompt": "我是臺灣國中【[科目]】教師。我即將進行一節國中【[年級]】的公開授課，主題為『[填寫單元名稱]』，本節課包含 3 個主要活動：1. [活動一]、2. [活動二]、3. [活動三]。\n請幫我產出一份標準「公開授課觀察紀錄與教案摘要表」：包含教學目標、對應 108 課綱核心素養、學習表現、教學流程評量方式與觀課焦點提示。"
-  },
-  {
-    "id": 87,
-    "code": "JH-24",
-    "stage": "jh",
-    "stageName": "國中會考",
-    "category": "admin",
-    "categoryName": "手機與行政",
-    "emoji": "💬",
-    "icon": "message-circle",
-    "accentBg": "bg-sky-500",
-    "accentText": "text-sky-600 dark:text-sky-400",
-    "accentTag": "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    "title": "學生常分心玩手機，想通知家長又怕措辭不當引發親師衝突...",
-    "scenario": "親師溝通是導師的最大壓力源，文字太硬家長反彈，文字太軟又達不到親師合作效果，常猶豫不決。 (⚡ 痛點解法：Chrome Help me write 溫和親師信草稿)",
-    "prompt": "請幫我擬寫一則發給國中【[年級]】家長的 Line/聯絡簿溝通訊息：\n- 【具體事實】：學生近期在【[科目]】課堂上常分心使用手機/未交作業。\n- 【語氣要求】：嚴禁指責質問，採取「同理家長辛勞、肯定孩子平時優點、邀請家長在家一同關心支持」的溫暖專業語氣。\n- 【字數與格式】：150 字內，條理分明，附帶具體的親師合作建議行動。"
-  }
-];
-
-    // 專屬密碼 (puti8888)
-    const LECTURER_PIN = 'puti8888';
-
-    // 全局狀態管理
-    let currentIndex = 0;
-    let currentCategory = 'all';
-    let searchQuery = '';
-    let isFlipped = false;
-    let viewMode = 'presentation';
-    let soundEnabled = true;
-
-    // 研習精選清單（勾選之卡片 ID 集合，支援本機記憶）
-    let selectedIds = new Set();
-    try {
-      const saved = localStorage.getItem('puti_teacher60_selected');
-      if (saved) {
-        JSON.parse(saved).forEach(id => selectedIds.add(id));
+    // 題庫資料（依據今日定稿大綱精準設計）
+    const QUESTIONS = [
+      {
+        id: 1,
+        badge: "開場暖身 Q1",
+        title: "請問各位爸爸媽媽，你今天已經使用手機多久了？",
+        desc: "請誠實點選最接近你的真實狀況，看看全場大人的平均數據！",
+        options: [
+          { key: "A", text: "1 小時以下（我超克制）", votes: 0 },
+          { key: "B", text: "1 ～ 3 小時（處理工作與LINE）", votes: 0 },
+          { key: "C", text: "3 ～ 5 小時（不知不覺滑很久）", votes: 0 },
+          { key: "D", text: "5 小時以上（不敢算，直接投降）😅", votes: 0 }
+        ],
+        analysis: "大家看看大螢幕！現在才早上，全場已經有這麼多大人手機用了好幾小時。<br>連我們大人下班累了都忍不住想滑手機放鬆，這就是為什麼今天<b>不是來檢討誰愛滑手機</b>，而是我們大人要先同理：手機的演算法本來就是設計來吸引注意力的！",
+        antidote: "大人也需要喘口氣，建立無螢幕時段，比單向打罵更有用。"
+      },
+      {
+        id: 2,
+        badge: "客廳現況 Q2",
+        title: "你知道你的孩子昨天在家，使用手機或平板多久嗎？",
+        desc: "從放學接回家到上床睡覺，孩子接觸螢幕的總時間大概是？",
+        options: [
+          { key: "A", text: "我清楚知道（有精確約定時間）", votes: 0 },
+          { key: "B", text: "大概知道（但沒仔細算過）", votes: 0 },
+          { key: "C", text: "沒注意過（忙著做家事工作）", votes: 0 },
+          { key: "D", text: "我根本不知道（他在房間關門用）", votes: 0 }
+        ],
+        analysis: "我們自己滑幾小時很清楚，但孩子在房間滑幾小時卻常常是個『黑洞』。<br>在安親班有老師盯著，<b>真正決定孩子專注力的分水嶺其實在『家裡客廳』！</b>",
+        antidote: "客廳公開使用、睡前收手機，守住客廳第一道防線。"
+      },
+      {
+        id: 3,
+        badge: "科技認知 Q3",
+        title: "請問你對目前最紅的「生成式 AI」了解程度如何？",
+        desc: "AI 常常出現在新聞中，你平常的生活或工作有接觸過嗎？",
+        options: [
+          { key: "A", text: "完全不知道 AI 是什麼", votes: 0 },
+          { key: "B", text: "聽過名字，但不知道能幹嘛", votes: 0 },
+          { key: "C", text: "知道一點，偶爾試著問問看", votes: 0 },
+          { key: "D", text: "很熟悉，工作或日常經常使用", votes: 0 }
+        ],
+        analysis: "現場大多數家長對 AI 還很陌生，這很正常！<br>但教育部今年已經投入 <b>117.5 億元啟動 AI 人才方舟計畫</b>，國小就要全面導入 AI 助教與家教。孩子學新科技比我們想像得快十倍，我們不用懂程式，但要知道怎麼引導！",
+        antidote: "AI 不是選擇題，而是孩子未來必備的協作農具。"
+      },
+      {
+        id: 4,
+        badge: "關鍵真相 Q4",
+        title: "你認為你的孩子，有沒有用過 AI 幫忙寫作業或查功課？",
+        desc: "包含拍照解題、寫作文心得、查自然社會科問題等……",
+        options: [
+          { key: "A", text: "絕對沒有，他還不會用", votes: 0 },
+          { key: "B", text: "不知道，沒有特別注意過", votes: 0 },
+          { key: "C", text: "有，但我有在旁邊引導討論", votes: 0 },
+          { key: "D", text: "有，而且我很擔心他變依賴抄答案", votes: 0 }
+        ],
+        analysis: "<b>【親子天下 2026 全國最新調查震撼揭曉】</b><br>1. 學生自稱有思考，但老師觀察到<b>「整段外包給 AI 抄答案」的比例高出近 6 倍！</b><br>2. 高達 <b>27.7% 的孩子把 AI 當成『情感樹洞』</b>說心事！<br>3. CEPR 2.7 萬人研究：靠 AI 抄作業成績看似變高，但<b>六個月後實體考試暴跌 20%！</b>",
+        antidote: "答案可以借，思考不能外包！想過才能問，問了要說回來。"
       }
-      if (selectedIds.size === 0) {
-        [0, 2, 3, 4, 7, 8, 10, 11, 64, 66].forEach(id => selectedIds.add(id));
-        saveSelectedIds();
-      }
-    } catch(e) {}
+    ];
 
-    function saveSelectedIds() {
-      try {
-        localStorage.setItem('puti_teacher60_selected', JSON.stringify([...selectedIds]));
-      } catch(e) {}
-      updateSelectedBadges();
-    }
+    // 本地即時廣播頻道（跨標籤頁即時同步）
+    const channel = new BroadcastChannel('puti_kahoot_channel');
 
-    function updateSelectedBadges() {
-      const badge = document.getElementById('selectedCountBadge');
-      if (badge) badge.innerText = selectedIds.size;
-      const gridBadge = document.getElementById('gridSelectedCount');
-      if (gridBadge) gridBadge.innerText = selectedIds.size;
-    }
+    let currentQIndex = 0;
+    let isRevealed = false;
+    let currentRole = 'host'; // 'host' | 'player'
+    let mySelectedChoice = null;
+    let brandClickCount = 0;
 
-    function toggleCardSelected(id, event) {
-      if (event) event.stopPropagation();
-      if (selectedIds.has(id)) {
-        selectedIds.delete(id);
-        playSfx('flip');
-        showToast('已取消選中卡片 #' + (id < 10 ? '0' + id : id));
+    // 初始化讀取網址參數
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roleParam = urlParams.get('role');
+      if (roleParam === 'player') {
+        setRole('player');
       } else {
-        selectedIds.add(id);
-        playSfx('copy');
-        showToast('已加入本次研習清單（醒目黃色）！');
-      }
-      saveSelectedIds();
-
-      // 如果當前分類是 selected，且被取消勾選，更新篩選
-      if (currentCategory === 'selected') {
-        applyFilters();
-      } else {
-        renderMainStage();
-    startGlobalTimer();
-        renderThumbnails();
-        if (viewMode === 'grid') renderGridCards();
-      }
-    }
-
-    function toggleCurrentSlideSelected(event) {
-      if (event) event.stopPropagation();
-      const card = filteredCards[currentIndex];
-      if (!card) return;
-      toggleCardSelected(card.id, event);
-    }
-
-    function clearAllSelected() {
-      if (selectedIds.size === 0) {
-        showToast('目前尚無勾選任何卡片');
-        return;
-      }
-      selectedIds.clear();
-      saveSelectedIds();
-      playSfx('flip');
-      showToast('已清空本次研習勾選清單');
-      if (currentCategory === 'selected') {
-        currentCategory = 'all';
-        syncFilterButtonsUI();
-      }
-      applyFilters();
-    }
-
-    function startSelectedPresentation() {
-      if (selectedIds.size === 0) {
-        showToast('請先勾選至少 1 張卡片再開始授課！');
-        return;
-      }
-      currentCategory = 'selected';
-      syncFilterButtonsUI();
-      applyFilters();
-      toggleViewMode('presentation');
-      showToast('已切換至「本次研習精選」簡報模式！');
-    }
-
-    function syncFilterButtonsUI() {
-      document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.remove('active', 'bg-indigo-600', 'text-white', 'shadow-sm', 'ring-2', 'ring-amber-400');
-        if (b.getAttribute('data-category') === 'selected') {
-          b.classList.add('bg-amber-500', 'text-slate-950');
-        } else {
-          b.classList.add('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
-        }
-      });
-      const activeBtn = document.querySelector(`.filter-btn[data-category="${currentCategory}"]`);
-      if (activeBtn) {
-        activeBtn.classList.add('active');
-        if (currentCategory === 'selected') {
-          activeBtn.classList.add('ring-2', 'ring-amber-400', 'shadow-md');
-        } else {
-          activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
-          activeBtn.classList.remove('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
-        }
-      }
-    }
-
-    // 篩選後卡片清單
-    let filteredCards = [...cardData];
-
-    // Web Audio API 原生音效引擎（健全化解鎖與音量放大）
-    let audioCtx = null;
-
-    function getAudioContext() {
-      if (!audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          audioCtx = new AudioContextClass();
-        }
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
-
-    // 頁面任意點擊或按鍵皆自動解鎖 AudioContext
-    function unlockAudio() {
-      getAudioContext();
-    }
-    window.addEventListener('click', unlockAudio, { once: true });
-    window.addEventListener('keydown', unlockAudio, { once: true });
-    window.addEventListener('touchstart', unlockAudio, { once: true });
-
-    function playSfx(type) {
-      if (!soundEnabled) return;
-      try {
-        const ctx = getAudioContext();
-        if (!ctx) return;
-
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (type === 'hover') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(520, now);
-          gain.gain.setValueAtTime(0.06, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-          osc.start(now);
-          osc.stop(now + 0.05);
-        } else if (type === 'flip') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(360, now);
-          osc.frequency.exponentialRampToValueAtTime(680, now + 0.14);
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-          osc.start(now);
-          osc.stop(now + 0.14);
-        } else if (type === 'copy') {
-          // 雙音悅耳成功音效
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(587.33, now); // D5
-          osc.frequency.setValueAtTime(880.00, now + 0.09); // A5
-          gain.gain.setValueAtTime(0.22, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-          osc.start(now);
-          osc.stop(now + 0.32);
-        } else if (type === 'slide') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(300, now);
-          osc.frequency.exponentialRampToValueAtTime(480, now + 0.09);
-          gain.gain.setValueAtTime(0.15, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
-          osc.start(now);
-          osc.stop(now + 0.09);
-        }
-      } catch(e) {}
-    }
-
-    // 密碼檢查邏輯
-    function checkPin() {
-      const input = document.getElementById('pinInput');
-      const errorMsg = document.getElementById('pinError');
-      const modal = document.getElementById('pinLockModal');
-      const entered = (input && input.value ? input.value : '').trim();
-
-      if (entered === LECTURER_PIN) {
-        playSfx('copy');
-        try {
-          localStorage.setItem('puti_teacher60_authed', 'true');
-          sessionStorage.setItem('puti_teacher60_authed', 'true');
-        } catch(e) {}
-
-        if (modal) {
-          modal.classList.add('opacity-0', 'pointer-events-none');
-          setTimeout(() => {
-            modal.remove();
-          }, 400);
-        }
-        showToast('驗證成功！歡迎黃老師開啟 60 大痛點研習簡報');
-      } else {
-        playSfx('flip');
-        if (errorMsg) errorMsg.classList.remove('hidden');
-        if (input) {
-          input.classList.add('border-rose-500', 'animate-shake');
-          input.value = '';
-          setTimeout(() => {
-            input.classList.remove('border-rose-500', 'animate-shake');
-          }, 800);
-        }
-      }
-    }
-
-    document.getElementById('pinInput')?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        checkPin();
-      }
-    });
-
-    // 格式化 Prompt
-    function formatPrompt(template, sub, grd) {
-      return template
-        .replace(/\[科目名稱\]/g, sub)
-        .replace(/\[科目\]/g, sub)
-        .replace(/\[年級\]/g, grd)
-        .replace(/\[國小\/國中\]/g, grd)
-        .replace(/\[國小\/國中\/高中\]/g, grd);
-    }
-
-    // 渲染主舞台卡片 (正面：大標題+情境說明；背面：步驟+Prompt)
-        function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function copyCurrentPrompt() {
-      const card = filteredCards[currentIndex];
-      if (!card) return;
-      const promptToCopy = card.prompt || '';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(promptToCopy).then(() => {
-          playSfx('copy');
-          showToast('已複製提示詞！可直接至 AI 貼上使用');
-        }).catch(() => {
-          fallbackCopy(promptToCopy);
-        });
-      } else {
-        fallbackCopy(promptToCopy);
-      }
-    }
-
-    function fallbackCopy(text) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      playSfx('copy');
-      showToast('已複製提示詞！可直接至 AI 貼上使用');
-    }
-
-
-    // ===== 課前等候室倒數計時系統 (精準時間戳版，防瀏覽器後台降頻) =====
-    let timerTargetTimestamp = Date.now() + 10 * 60 * 1000; // 預設倒數 10 分鐘
-    let timerIsRunning = true;
-    let timerIntervalId = null;
-    let timerAudioPlayed = false;
-    let timerPausedRemaining = 10 * 60; // 暫停時剩餘秒數
-
-    function getRemainingSeconds() {
-      if (!timerIsRunning) return timerPausedRemaining;
-      const diff = Math.round((timerTargetTimestamp - Date.now()) / 1000);
-      return Math.max(0, diff);
-    }
-
-    function formatTimerTime(sec) {
-      if (sec < 0) sec = 0;
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = sec % 60;
-      if (h > 0) {
-        return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-      }
-      return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-    }
-
-    function formatClock(date) {
-      const h = date.getHours();
-      const m = date.getMinutes();
-      const s = date.getSeconds();
-      return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-    }
-
-    function formatShortClock(date) {
-      const h = date.getHours();
-      const m = date.getMinutes();
-      return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
-    }
-
-    function updateTimerUI() {
-      const sec = getRemainingSeconds();
-      const displayEl = document.getElementById('stageTimerDisplay');
-      const statusEl = document.getElementById('stageTimerStatus');
-      const btnTextEl = document.getElementById('btnTimerToggleText');
-      const currClockEl = document.getElementById('stageCurrentClock');
-      const targetClockEl = document.getElementById('stageTargetClock');
-      const targetInputEl = document.getElementById('targetClockInput');
-
-      const now = new Date();
-      if (currClockEl) {
-        currClockEl.innerText = formatClock(now);
+        setRole('host');
       }
 
-      const targetDate = new Date(timerIsRunning ? timerTargetTimestamp : Date.now() + timerPausedRemaining * 1000);
-      if (targetClockEl) {
-        targetClockEl.innerText = formatShortClock(targetDate);
-      }
-      if (targetInputEl && document.activeElement !== targetInputEl) {
-        targetInputEl.value = formatShortClock(targetDate);
-      }
+      renderNav();
+      renderQuestion();
+      setupQrCode();
 
-      if (displayEl) {
-        displayEl.innerText = formatTimerTime(sec);
-      }
-      if (btnTextEl) {
-        btnTextEl.innerText = timerIsRunning ? '暫停' : '繼續';
-      }
-
-      if (statusEl) {
-        if (sec <= 0) {
-          statusEl.innerHTML = '<span class="text-rose-500 font-black text-sm sm:text-base animate-bounce">🎉 研習正式開始！請老師們坐穩出發～</span>';
-        } else if (timerIsRunning) {
-          statusEl.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span><span>倒數進行中 · 預定 ' + formatShortClock(targetDate) + ' 準時開課</span>';
-        } else {
-          statusEl.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="text-amber-600 dark:text-amber-400">倒數已暫停</span>';
-        }
-      }
-    }
-
-    function playClassStartChime() {
-      try {
-        const ctx = getAudioContext();
-        if (!ctx) return;
-        const now = ctx.currentTime;
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((freq, i) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + i * 0.18);
-          gain.gain.setValueAtTime(0.2, now + i * 0.18);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.18 + 0.6);
-          osc.start(now + i * 0.18);
-          osc.stop(now + i * 0.18 + 0.6);
-        });
-      } catch(e) {}
-    }
-
-    function startGlobalTimer() {
-      if (timerIntervalId) clearInterval(timerIntervalId);
-      timerIntervalId = setInterval(() => {
-        const sec = getRemainingSeconds();
-        updateTimerUI();
-        if (sec === 0 && !timerAudioPlayed && timerIsRunning) {
-          timerAudioPlayed = true;
-          playClassStartChime();
-          showToast('🎉 研習時間到！課程正式開始～');
-          if (window.confetti) {
-            try {
-              window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            } catch(e) {}
+      // 接收跨視窗廣播訊息
+      channel.onmessage = (event) => {
+        const data = event.data;
+        if (data.type === 'VOTE_SUBMIT') {
+          if (QUESTIONS[data.qIndex]) {
+            const opt = QUESTIONS[data.qIndex].options.find(o => o.key === data.choice);
+            if (opt) opt.votes++;
+            if (currentRole === 'host') updateHostStats();
           }
+        } else if (data.type === 'STATE_CHANGE') {
+          currentQIndex = data.qIndex;
+          isRevealed = data.isRevealed;
+          renderNav();
+          renderQuestion();
         }
-      }, 1000);
-    }
-
-    // 分頁切換與視窗聚焦時立即校準，解決後台分頁休眠降頻問題
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) updateTimerUI();
-    });
-    window.addEventListener('focus', () => {
-      updateTimerUI();
+      };
     });
 
-    function toggleTimerRun() {
-      if (timerIsRunning) {
-        timerPausedRemaining = getRemainingSeconds();
-        timerIsRunning = false;
+    // 角色切換
+    function toggleRole() {
+      const targetRole = currentRole === 'host' ? 'player' : 'host';
+      setRole(targetRole);
+    }
+
+    function setRole(role) {
+      currentRole = role;
+      const hostView = document.getElementById('hostView');
+      const playerView = document.getElementById('playerView');
+      const roleBadge = document.getElementById('roleBadge');
+      const btnSwitch = document.querySelector('.btn-role-switch');
+
+      if (role === 'host') {
+        hostView.style.display = 'flex';
+        playerView.style.display = 'none';
+        roleBadge.innerHTML = '<i class="fa-solid fa-tv"></i> 大螢幕主控端';
+        btnSwitch.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 切換手機作答端';
       } else {
-        timerTargetTimestamp = Date.now() + timerPausedRemaining * 1000;
-        timerIsRunning = true;
+        hostView.style.display = 'none';
+        playerView.style.display = 'flex';
+        roleBadge.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 手機作答端';
+        btnSwitch.innerHTML = '<i class="fa-solid fa-tv"></i> 切換大螢幕主控';
+        mySelectedChoice = null;
       }
-      playSfx('flip');
-      updateTimerUI();
+      renderQuestion();
     }
 
-    function adjustTimer(deltaSec) {
-      if (timerIsRunning) {
-        timerTargetTimestamp += deltaSec * 1000;
-        if (timerTargetTimestamp < Date.now()) timerTargetTimestamp = Date.now();
-      } else {
-        timerPausedRemaining = Math.max(0, timerPausedRemaining + deltaSec);
-      }
-      timerAudioPlayed = false;
-      playSfx('hover');
-      updateTimerUI();
-      const currentSec = getRemainingSeconds();
-      showToast((deltaSec > 0 ? '+' : '') + Math.round(deltaSec / 60) + ' 分鐘（剩餘 ' + Math.ceil(currentSec / 60) + ' 分）');
-    }
-
-    function resetTimer(sec) {
-      timerTargetTimestamp = Date.now() + sec * 1000;
-      timerPausedRemaining = sec;
-      timerAudioPlayed = false;
-      timerIsRunning = true;
-      playSfx('copy');
-      updateTimerUI();
-      showToast('已重設為倒數 ' + Math.floor(sec / 60) + ' 分鐘');
-    }
-
-    // 設定目標開課時刻（如 13:40 或 14:00）
-    function setTargetClockTime(timeStr) {
-      if (!timeStr) return;
-      let clean = timeStr.trim();
-      let targetH = 0;
-      let targetM = 0;
-
-      if (clean.includes(':')) {
-        const parts = clean.split(':');
-        targetH = parseInt(parts[0], 10);
-        targetM = parseInt(parts[1], 10);
-      } else if (/^\d{3,4}$/.test(clean)) {
-        // 支援直接輸入 1340 或 1400
-        if (clean.length === 3) clean = '0' + clean;
-        targetH = parseInt(clean.substring(0, 2), 10);
-        targetM = parseInt(clean.substring(2, 4), 10);
-      } else {
-        // 純數字當作分鐘
-        const min = parseFloat(clean);
-        if (!isNaN(min) && min > 0) {
-          resetTimer(Math.round(min * 60));
-          return;
-        }
-      }
-
-      const now = new Date();
-      // 12 小時制智慧校正：如果輸入 1:40 但現在是下午 13 點多，自動轉為 13:40
-      if (targetH < 12 && now.getHours() >= 12) {
-        targetH += 12;
-      }
-
-      let target = new Date();
-      target.setHours(targetH, targetM, 0, 0);
-
-      let diffSec = Math.floor((target.getTime() - now.getTime()) / 1000);
-      if (diffSec <= 0) {
-        // 若時間已過，自動設為 5 分鐘後或詢問
-        showToast(`${formatShortClock(target)} 已經過了喔！請選擇現在未來的時刻`);
-        return;
-      }
-
-      timerTargetTimestamp = target.getTime();
-      timerPausedRemaining = diffSec;
-      timerAudioPlayed = false;
-      timerIsRunning = true;
-      playSfx('copy');
-      updateTimerUI();
-      const m = Math.floor(diffSec / 60);
-      const s = diffSec % 60;
-      showToast(`開課時刻設為 ${formatShortClock(target)}（距離現在還有 ${m} 分 ${s} 秒）`);
-    }
-
-    function promptCustomTime() {
-      const now = new Date();
-      const next1 = new Date(now.getTime() + 5 * 60 * 1000);
-      const next2 = new Date(now.getTime() + 10 * 60 * 1000);
-      const hint = `目前現在時間為 ${formatClock(now)}\n\n請輸入開課設定：\n• 輸入時刻（如 ${formatShortClock(next1)} 或 ${formatShortClock(next2)}）：指定幾點幾分開課\n• 或輸入數字（如 5 或 10）：直接倒數幾分鐘`;
-      const input = prompt(hint, formatShortClock(next1));
-      if (!input) return;
-      setTargetClockTime(input);
-    }
-
-    function setCustomTargetTime() {
-      promptCustomTime();
-    }
-
-    function renderMainStage() {
-      if (filteredCards.length === 0) {
-        const isSelectedCat = currentCategory === 'selected';
-        document.getElementById('stageFront').innerHTML = `
-          <div class="h-full flex flex-col items-center justify-center text-center p-8 space-y-3">
-            <span class="text-6xl mb-1">${isSelectedCat ? '🎯' : '🔍'}</span>
-            <h3 class="text-2xl font-black text-slate-800 dark:text-slate-200">
-              ${isSelectedCat ? '目前尚未勾選任何研習卡片' : '查無相符的痛點卡片'}
-            </h3>
-            <p class="text-sm text-slate-500 max-w-md leading-relaxed">
-              ${isSelectedCat ? '請切換至「全部」或「全覽網格」，在您想授課的卡片右上角勾選「選入研習」（卡片會變黃色），即可在此快速輪播！' : '請嘗試更換關鍵字或點擊上方全部篩選'}
-            </p>
-            ${isSelectedCat ? `
-              <button onclick="currentCategory='all';syncFilterButtonsUI();applyFilters();" class="mt-2 px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black shadow-lg shadow-indigo-600/30 transition active:scale-95">
-                返回全覽開始勾選
-              </button>
-            ` : ''}
-          </div>
-        `;
-        document.getElementById('stageBack').innerHTML = '';
-        return;
-      }
-
-      const card = filteredCards[currentIndex];
-      if (!card) return;
-
-      const isSelected = selectedIds.has(card.id);
-      document.getElementById('currentSlideNum').innerText = card.code;
-      document.getElementById('totalSlideNum').innerText = filteredCards.length;
-
-      // 更新頂部「加入/移出本次研習」按鈕狀態
-      const stageSelectIcon = document.getElementById('stageSelectIcon');
-      const stageSelectText = document.getElementById('stageSelectText');
-      const btnStageSelect = document.getElementById('btnStageToggleSelect');
-      if (btnStageSelect && stageSelectIcon && stageSelectText) {
-        if (isSelected) {
-          btnStageSelect.className = 'px-3 py-1.5 rounded-xl border border-amber-500 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition shadow-md shadow-amber-400/30 active:scale-95 flex items-center gap-1.5';
-          stageSelectIcon.setAttribute('data-lucide', 'check-circle-2');
-          stageSelectText.innerText = '已在本次研習 (點擊取消)';
-        } else {
-          btnStageSelect.className = 'px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/70 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-xs font-black text-amber-900 dark:text-amber-200 transition shadow-sm active:scale-95 flex items-center gap-1.5';
-          stageSelectIcon.setAttribute('data-lucide', 'plus-circle');
-          stageSelectText.innerText = '加入本次研習';
-        }
-      }
-
-      // 卡片外框套用醒目黃色高光（被選中時）
-      const slideCardInner = document.getElementById('slideCardInner');
-      if (slideCardInner) {
-        if (isSelected) {
-          slideCardInner.classList.add('card-selected-stage');
-        } else {
-          slideCardInner.classList.remove('card-selected-stage');
-        }
-      }
-
-      // 正面渲染：字體再放大，標題不變，下方放簡單情境說明
-      const frontEl = document.getElementById('stageFront');
-
-      // 判斷是否為課前等候室倒數卡片
-      if (card.isTimerCard) {
-        frontEl.innerHTML = `
-          <div class="h-full flex flex-col justify-between">
-            <!-- 頂部標籤與編號 -->
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-slate-800 p-2 text-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                    ${card.emoji}
-                  </div>
-                  <div>
-                    <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg border ${card.accentTag}">
-                      ${card.stageName ? card.stageName + ' · ' : ''}${card.categoryName} #${card.code}
-                    </span>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button onclick="toggleCardSelected(${card.id}, event)" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs sm:text-sm font-black transition border ${isSelected ? 'bg-amber-400 text-slate-950 border-amber-500 shadow-md shadow-amber-400/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-amber-400'}">
-                    <i data-lucide="${isSelected ? 'check-circle-2' : 'circle'}" class="w-4 h-4 text-amber-500 fill-current ${isSelected ? 'text-slate-950 fill-none' : ''}"></i>
-                    <span>${isSelected ? '本次授課精選' : '勾選此卡片'}</span>
-                  </button>
-                  <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-black border border-indigo-200 dark:border-slate-700 shadow-sm cursor-pointer" onclick="toggleSlideFlip(event)">
-                    <i data-lucide="rotate-cw" class="w-4 h-4 text-indigo-600"></i>
-                    <span>講稿與招呼語</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-center pt-1">
-                <div class="inline-flex items-center gap-1.5 text-xs font-black text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-3 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800/60 mb-1">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>GOOGLE MEET 線上研習 · 課前等候室</span>
-                </div>
-                <h2 class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white">
-                  ${card.title}
-                </h2>
-              </div>
-            </div>
-
-            <!-- 中間核心：雙時鐘對時 ＋ 大字倒數計時器 ＋ 快捷面板 -->
-            <div class="my-auto py-2 text-center">
-              <div class="bg-gradient-to-b from-indigo-50/90 to-purple-50/60 dark:from-slate-900/90 dark:to-indigo-950/50 p-4 sm:p-5 rounded-3xl border-2 border-indigo-200/90 dark:border-indigo-800/80 shadow-inner space-y-3">
-                
-                <!-- 雙時鐘對齊列：即時顯示目前標準時間 ＆ 預定開課時刻 -->
-                <div class="flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-black">
-                  <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-slate-400">現在時間：</span>
-                    <span id="stageCurrentClock" class="font-mono text-indigo-600 dark:text-indigo-400 font-bold tracking-wider">--:--:--</span>
-                  </div>
-                  <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 shadow-sm">
-                    <span>🎯 預定開課時刻：</span>
-                    <span id="stageTargetClock" class="font-mono font-black text-amber-700 dark:text-amber-300">--:--</span>
-                  </div>
-                </div>
-
-                <!-- 倒數跳動核心大字 (點擊可直接修改) -->
-                <div class="relative py-0.5">
-                  <div id="stageTimerDisplay" onclick="promptCustomTime()" title="點擊直接修改開課時刻或倒數時間" class="font-mono text-6xl sm:text-7xl lg:text-8xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-300 dark:to-pink-400 py-1 select-none cursor-pointer hover:scale-[1.03] transition-transform">
-                    10:00
-                  </div>
-                  <div id="stageTimerStatus" class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span>倒數進行中 · 研習即將準時開始</span>
-                  </div>
-                </div>
-
-                <!-- 快捷調時面板 (點擊不翻轉) -->
-                <div class="space-y-2 pt-1 border-t border-indigo-100 dark:border-slate-800" onclick="event.stopPropagation()">
-                  <!-- 第一列：常用分鐘快選 ＋ 暫停繼續 -->
-                  <div class="flex flex-wrap items-center justify-center gap-1.5">
-                    <button onclick="resetTimer(180)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數3分</button>
-                    <button onclick="resetTimer(300)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數5分</button>
-                    <button onclick="resetTimer(600)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數10分</button>
-                    <button onclick="resetTimer(900)" class="px-2.5 py-1 rounded-xl text-xs font-black bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm">倒數15分</button>
-                    <button onclick="promptCustomTime()" class="px-3 py-1 rounded-xl text-xs font-black bg-purple-50 dark:bg-purple-950/80 border border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 hover:bg-purple-100 transition shadow-sm flex items-center gap-1">
-                      <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                      <span>輸入時刻/分鐘</span>
-                    </button>
-                    <button id="btnTimerToggle" onclick="toggleTimerRun()" class="px-3.5 py-1 rounded-xl text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white shadow-md transition flex items-center gap-1">
-                      <span id="btnTimerToggleText">暫停</span>
-                    </button>
-                  </div>
-
-                  <!-- 第二列：微調 ＆ 原生時鐘選擇器 -->
-                  <div class="flex flex-wrap items-center justify-center gap-1.5 text-xs">
-                    <button onclick="adjustTimer(-60)" class="px-2.5 py-0.5 rounded-lg font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">-1分</button>
-                    <button onclick="adjustTimer(60)" class="px-2.5 py-0.5 rounded-lg font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">+1分</button>
-                    <button onclick="adjustTimer(180)" class="px-2.5 py-0.5 rounded-lg font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">+3分</button>
-                    
-                    <!-- 時鐘指定器：直接選擇幾點幾分開講 -->
-                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black shadow-sm cursor-pointer">
-                      <span>⏰ 指定開講時刻：</span>
-                      <input type="time" id="targetClockInput" onchange="setTargetClockTime(this.value)" class="bg-white text-slate-900 px-1.5 py-0.5 rounded text-xs font-mono font-bold border border-amber-600 outline-none cursor-pointer">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 課前 3 大溫馨設備確認卡 -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 text-left">
-                <div class="p-3 rounded-2xl bg-indigo-50/70 dark:bg-slate-800/80 border border-indigo-100 dark:border-slate-700">
-                  <div class="text-xs font-black text-indigo-700 dark:text-indigo-300 flex items-center gap-1 mb-1">
-                    <span>🖥️ 螢幕畫面配置</span>
-                  </div>
-                  <p class="text-[12px] text-slate-600 dark:text-slate-300 leading-snug">
-                    建議雙螢幕或左右分割視窗：左半放 Meet 看示範、右半開好瀏覽器操作 AI。
-                  </p>
-                </div>
-                <div class="p-3 rounded-2xl bg-emerald-50/70 dark:bg-slate-800/80 border border-emerald-100 dark:border-slate-700">
-                  <div class="text-xs font-black text-emerald-700 dark:text-emerald-300 flex items-center gap-1 mb-1">
-                    <span>🎤 音訊與留言簽到</span>
-                  </div>
-                  <p class="text-[12px] text-slate-600 dark:text-slate-300 leading-snug">
-                    麥克風先保持靜音防回音；鏡頭隨意，歡迎在 Meet 留言區打招呼簽到！
-                  </p>
-                </div>
-                <div class="p-3 rounded-2xl bg-amber-50/70 dark:bg-slate-800/80 border border-amber-100 dark:border-slate-700">
-                  <div class="text-xs font-black text-amber-700 dark:text-amber-300 flex items-center gap-1 mb-1">
-                    <span>☕ 咖啡熱茶準備</span>
-                  </div>
-                  <p class="text-[12px] text-slate-600 dark:text-slate-300 leading-snug">
-                    準備一杯好茶，待會帶大家見證 AI 如何 10 秒解救備課焦慮、省下 80% 時間！
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 正面底部引導 -->
-            <div class="pt-2.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs sm:text-sm">
-              <span class="text-slate-400 font-bold">翻到背面 ➔ 查看 Google Meet 線上開場講稿 ＆ 一鍵複製聊天室招呼語</span>
-              <span class="font-black text-indigo-600 dark:text-indigo-400 flex items-center gap-1 group-hover:translate-x-1 transition text-sm sm:text-base cursor-pointer" onclick="toggleSlideFlip(event)">
-                查看講稿與招呼語 ➔
-              </span>
-            </div>
-          </div>
-        `;
-        updateTimerUI();
-      } else {
-        frontEl.innerHTML = `
-        <div class="h-full flex flex-col justify-between">
-          <!-- 頂部標籤與編號 -->
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-4">
-              <div class="flex items-center gap-3">
-                <div class="w-13 h-13 rounded-2xl bg-indigo-50 dark:bg-slate-800 p-2 text-3xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                  ${card.emoji}
-                </div>
-                <div>
-                  <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg border ${card.accentTag}">
-                    ${card.stageName ? card.stageName + ' · ' : ''}${card.categoryName} #${card.code}
-                  </span>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="toggleCardSelected(${card.id}, event)" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs sm:text-sm font-black transition border ${isSelected ? 'bg-amber-400 text-slate-950 border-amber-500 shadow-md shadow-amber-400/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-amber-400'}">
-                  <i data-lucide="${isSelected ? 'check-circle-2' : 'circle'}" class="w-4 h-4 text-amber-500 fill-current ${isSelected ? 'text-slate-950 fill-none' : ''}"></i>
-                  <span>${isSelected ? '本次授課精選' : '勾選此卡片'}</span>
-                </button>
-                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-black border border-indigo-200 dark:border-slate-700 shadow-sm">
-                  <i data-lucide="rotate-cw" class="w-4 h-4 text-indigo-600"></i>
-                  <span>點擊翻轉</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 超大標題 -->
-            <div class="space-y-4 pt-2">
-              <div class="inline-flex items-center gap-2 text-xs sm:text-sm font-black text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/70 px-3 py-1 rounded-lg border border-rose-200 dark:border-rose-800/50">
-                <i data-lucide="flame" class="w-4 h-4 text-rose-500"></i>
-                <span>${card.stage === 'jh' ? '國中會考與探究現場痛點' : '國小/中學現場核心痛點'}</span>
-              </div>
-
-              <!-- 大標題 (再放大) -->
-              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight tracking-tight">
-                ${card.title}
-              </h2>
-            </div>
-          </div>
-
-          <!-- 正面中間：簡單情境說明 (大字體、生動好讀、大螢幕一清二楚) -->
-          <div class="my-auto py-2">
-            <div class="bg-amber-50/80 dark:bg-amber-950/40 p-5 sm:p-6 rounded-3xl border border-amber-200/80 dark:border-amber-800/60 shadow-inner space-y-2">
-              <div class="text-xs sm:text-sm font-black text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
-                <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
-                <span>現場情境實錄：</span>
-              </div>
-              <p class="text-base sm:text-lg lg:text-xl text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
-                ${card.scenario}
-              </p>
-            </div>
-          </div>
-
-          <!-- 正面底部引導 -->
-          <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs sm:text-sm">
-            <span class="text-slate-400 font-bold">翻到背面 ➔ 查看大字版 AI 實戰提示詞</span>
-            <span class="font-black text-indigo-600 dark:text-indigo-400 flex items-center gap-1 group-hover:translate-x-1 transition text-sm sm:text-base">
-              查看實戰解法 ➔
-            </span>
-          </div>
-        </div>
-      `;
-      }
-
-      // 背面渲染：刪除步驟與下拉選單，Prompt 字體大幅放大，變數直接在提示詞中修改
-      const backEl = document.getElementById('stageBack');
-
-      if (card.isTimerCard) {
-        backEl.innerHTML = `
-          <div class="h-full flex flex-col justify-between">
-            <div>
-              <!-- 頂部資訊 -->
-              <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-700">
-                <div class="flex items-center gap-2.5">
-                  <span class="text-2xl">${card.emoji}</span>
-                  <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-400/40">
-                    🎤 建華國小專屬 · 線上研習破冰講稿備忘錄
-                  </span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button onclick="toggleCardSelected(${card.id}, event)" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-black transition border ${isSelected ? 'bg-amber-400 text-slate-950 border-amber-500 shadow' : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-amber-400'}">
-                    <i data-lucide="${isSelected ? 'check-circle-2' : 'circle'}" class="w-4 h-4 text-amber-400 fill-current ${isSelected ? 'text-slate-950 fill-none' : ''}"></i>
-                    <span>${isSelected ? '精選' : '勾選'}</span>
-                  </button>
-                  <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- 聊天室招呼語 (一鍵複製) -->
-              <div class="pt-3 pb-2 text-left">
-                <div class="bg-indigo-950/80 p-4 rounded-2xl border border-indigo-800/80 space-y-2">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-black text-indigo-300 flex items-center gap-1.5">
-                      <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i>
-                      <span>Google Meet 聊天室招呼語（點擊一鍵複製，貼到留言區）：</span>
-                    </span>
-                    <button onclick="copyCurrentPrompt()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black shadow transition flex items-center gap-1.5 active:scale-95">
-                      <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                      <span>一鍵複製招呼語</span>
-                    </button>
-                  </div>
-                  <p class="text-xs sm:text-sm font-mono text-indigo-100 bg-black/40 p-3 rounded-xl border border-indigo-900/60 leading-relaxed select-all">
-各位建華國小的夥伴老師午安！研習即將在倒數結束後準時開始～ 請老師們先就座：
-1. 麥克風請先保持靜音
-2. 建議使用雙螢幕或將瀏覽器左右分割，方便待會同步實作
-3. 歡迎在 Google Meet 留言區打個招呼簽到喔！今天一起把備課時間砍半！🚀
-                  </p>
-                </div>
-              </div>
-
-              <!-- 講師線上 3 分鐘開場提詞 (建華國小問卷心聲) -->
-              <div class="space-y-1.5 text-left pt-1">
-                <div class="text-xs font-black text-amber-400 flex items-center gap-1">
-                  <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-                  <span>講師開場 3 分鐘破冰講稿（提詞機）：</span>
-                </div>
-                <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-2 overflow-y-auto max-h-40 font-medium">
-                  <p><span class="text-amber-400 font-black">【開場共鳴】</span>「各位建華國小的老師大家午安！大家都陸續上線了～ 大家都知道『線上研習最優雅的姿勢，就是鏡頭前點頭微笑，鏡頭下紅筆改到手抽筋』對不對？」</p>
-                  <p><span class="text-amber-400 font-black">【問卷直擊】</span>「我有認真看大家填的課前問卷！全校 100% 老師都希望 AI 能出素養題；中年級老師擔心自己電腦不靈光；低年級老師煩惱故事太長太難出題……老師們請放心，今天我不講空泛理論，只給明天就能用的錦囊！」</p>
-                  <p><span class="text-amber-400 font-black">【互動暖身】</span>「聽得到我的聲音很清楚的老師，請在 Google Meet 聊天室打個『+1』或『888』，我們馬上開始！」</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 背面底部引導 -->
-            <div class="pt-3 border-t border-slate-700 flex items-center justify-between text-xs sm:text-sm">
-              <button onclick="toggleSlideFlip(event)" class="text-indigo-400 hover:text-indigo-300 font-black flex items-center gap-1">
-                ◀ 翻回正面看倒數計時器
-              </button>
-              <button onclick="copyCurrentPrompt()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow flex items-center gap-1.5 transition active:scale-95">
-                <i data-lucide="copy" class="w-4 h-4"></i>
-                <span>複製聊天室招呼語</span>
-              </button>
-            </div>
-          </div>
-        `;
-      } else if (card.isToolCard) {
-
-        backEl.innerHTML = `
-          <div class="h-full flex flex-col justify-between">
-            <div>
-              <!-- 頂部資訊 -->
-              <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-700">
-                <div class="flex items-center gap-2.5">
-                  <span class="text-2xl">${card.emoji}</span>
-                  <span class="px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg bg-pink-500/20 text-pink-300 border border-pink-400/40">
-                    💡 ${card.solutionTool || 'Puti-AI 命題生圖器'}
-                  </span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button onclick="toggleCardSelected(${card.id}, event)" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-black transition border ${isSelected ? 'bg-amber-400 text-slate-950 border-amber-500 shadow' : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-amber-400'}">
-                    <i data-lucide="${isSelected ? 'check-circle-2' : 'circle'}" class="w-4 h-4 text-amber-400 fill-current ${isSelected ? 'text-slate-950 fill-none' : ''}"></i>
-                    <span>${isSelected ? '精選' : '勾選'}</span>
-                  </button>
-                  <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- 解法摘要 -->
-              <div class="py-4">
-                <p class="text-base sm:text-lg text-pink-200 leading-relaxed font-bold bg-pink-950/80 p-4 sm:p-5 rounded-2xl border border-pink-800/60 shadow-inner">
-                  ✨ ${card.solutionSummary || '黃老師親自調校的教學配圖神器！提供「Gem 專屬助手」與「獨立 Web App」雙版本，貼上考題秒生高畫質教學插圖！'}
-                </p>
-              </div>
-
-              <!-- 兩大專屬工具按鈕卡片 (直達 Gem 與 Web App) -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                <!-- Gem 專屬助手按鈕 -->
-                <a href="${card.gemUrl}" target="_blank" rel="noopener noreferrer" onmouseenter="playSfx('hover')" class="group p-5 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 hover:from-indigo-900 hover:to-indigo-800 border-2 border-indigo-500/60 hover:border-indigo-400 shadow-xl transition-all duration-300 flex flex-col justify-between text-left">
-                  <div class="space-y-2">
-                    <div class="flex items-center justify-between">
-                      <span class="px-3 py-1 rounded-md bg-indigo-500/30 text-indigo-300 font-mono text-xs font-black border border-indigo-400/30">Gemini Gem 助手</span>
-                      <i data-lucide="sparkles" class="w-5 h-5 text-amber-300 group-hover:scale-110 transition"></i>
-                    </div>
-                    <h4 class="text-lg sm:text-xl font-black text-white group-hover:text-amber-300 transition flex items-center gap-1.5">
-                      💎 Puti-AI 命題生圖 Gem
-                    </h4>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      直達官方自訂 Gem 專屬助手，直接在對話中貼上考題或概念，自動產出考卷與學習單配圖！
-                    </p>
-                  </div>
-                  <div class="mt-4 pt-3 border-t border-indigo-800/80 flex items-center justify-between text-sm font-black text-amber-300 group-hover:translate-x-1 transition">
-                    <span>🚀 開啟 Gem 生圖助手</span>
-                    <i data-lucide="external-link" class="w-4 h-4"></i>
-                  </div>
-                </a>
-
-                <!-- 網頁版獨立工具按鈕 -->
-                <a href="${card.webUrl}" target="_blank" rel="noopener noreferrer" onmouseenter="playSfx('hover')" class="group p-5 rounded-3xl bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 hover:from-emerald-900 hover:to-teal-900 border-2 border-emerald-500/60 hover:border-emerald-400 shadow-xl transition-all duration-300 flex flex-col justify-between text-left">
-                  <div class="space-y-2">
-                    <div class="flex items-center justify-between">
-                      <span class="px-3 py-1 rounded-md bg-emerald-500/30 text-emerald-300 font-mono text-xs font-black border border-emerald-400/30">獨立 Web App</span>
-                      <i data-lucide="globe" class="w-5 h-5 text-emerald-300 group-hover:scale-110 transition"></i>
-                    </div>
-                    <h4 class="text-lg sm:text-xl font-black text-white group-hover:text-emerald-300 transition flex items-center gap-1.5">
-                      🌐 Puti-AI 網頁版生圖器
-                    </h4>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      免設定、點開即用的獨立 Web 介面，視覺化參數調校，快速生成無版權疑慮的段考配圖！
-                    </p>
-                  </div>
-                  <div class="mt-4 pt-3 border-t border-emerald-800/80 flex items-center justify-between text-sm font-black text-emerald-300 group-hover:translate-x-1 transition">
-                    <span>✨ 開啟網頁版工具</span>
-                    <i data-lucide="external-link" class="w-4 h-4"></i>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            <!-- 底部提示 -->
-            <div class="pt-3 text-center text-xs sm:text-sm text-slate-400 font-bold border-t border-slate-800">
-              💡 點擊上方工具卡片直接開啟黃老師精心調校的配圖利器！可直接將配圖提示詞貼入生成。
-            </div>
-          </div>
-        `;
-      } else {
-        backEl.innerHTML = `
-          <div class="h-full flex flex-col justify-between">
-            <!-- 背面頂部：卡片名稱與複製按鈕 -->
-            <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-700">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl">${card.emoji}</span>
-                <span class="text-sm font-black text-amber-400 tracking-wide">
-                  #${card.code} ${card.title}
-                </span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="toggleCardSelected(${card.id}, event)" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-black transition border ${isSelected ? 'bg-amber-400 text-slate-950 border-amber-500 shadow' : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-amber-400'}">
-                  <i data-lucide="${isSelected ? 'check-circle-2' : 'circle'}" class="w-4 h-4 text-amber-400 fill-current ${isSelected ? 'text-slate-950 fill-none' : ''}"></i>
-                  <span>${isSelected ? '精選' : '勾選'}</span>
-                </button>
-                <button onclick="copyCurrentPrompt()" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5 active:scale-95">
-                  <i data-lucide="copy" class="w-4 h-4"></i>
-                  <span>一鍵複製提示詞</span>
-                </button>
-                <button onclick="toggleSlideFlip(event)" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                  <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- 背面核心：超大字體 Prompt 區域 -->
-            <div class="my-auto py-3">
-              <div class="bg-slate-950/90 p-5 sm:p-7 rounded-3xl border border-slate-800 shadow-inner">
-                <div class="flex items-center justify-between text-xs font-black text-slate-400 mb-2">
-                  <span class="flex items-center gap-1 text-indigo-400">
-                    <i data-lucide="terminal" class="w-4 h-4"></i>
-                    實戰提示詞 (可直接複製，將中括號變數改為您的內容)
-                  </span>
-                  <span class="text-slate-500 hidden sm:inline">大螢幕投影專用</span>
-                </div>
-                <div class="text-base sm:text-xl lg:text-2xl font-bold font-mono text-amber-200 leading-relaxed whitespace-pre-wrap select-all cursor-text max-h-[46vh] overflow-y-auto pr-2 custom-scrollbar">
-${escapeHtml(card.prompt)}
-                </div>
-              </div>
-            </div>
-
-            <!-- 背面底部：快速切換與提示 -->
-            <div class="pt-2 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800">
-              <span class="flex items-center gap-1">
-                <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-400"></i>
-                點擊卡片任何空白處或按空白鍵即可翻回正面
-              </span>
-              <span class="font-mono text-slate-500">
-                卡片 ${card.code} / ${filteredCards.length}
-              </span>
-            </div>
-          </div>
-        `;
-      }
-      lucide.createIcons();
-      updateThumbnailSelection();
-    }
-
-    // 複製 Prompt
-    function copyStagePrompt() {
-      const text = document.getElementById('stage_prompt_text').innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        playSfx('copy');
-        showToast('已複製提示詞！可直接至 AI 貼上使用');
+    // 渲染題號導航
+    function renderNav() {
+      const navContainer = document.getElementById('qNav');
+      navContainer.innerHTML = '';
+      QUESTIONS.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `q-tab-btn ${idx === currentQIndex ? 'active' : ''} ${q.revealed ? 'revealed' : ''}`;
+        btn.innerText = idx + 1;
+        btn.onclick = () => switchQuestion(idx);
+        navContainer.appendChild(btn);
       });
     }
 
-    function copyPromptBeforeNavigate(event) {
-      const text = document.getElementById('stage_prompt_text').innerText;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text);
-      }
-      playSfx('copy');
-      showToast('已為您複製提示詞並開啟 AI！');
+    // 切換題目
+    function switchQuestion(idx) {
+      currentQIndex = idx;
+      isRevealed = QUESTIONS[currentQIndex].revealed || false;
+      renderNav();
+      renderQuestion();
+      broadcastState();
     }
 
-    // 翻轉卡片
-    function toggleSlideFlip(event) {
-      if (event) event.stopPropagation();
-      const innerCard = document.getElementById('slideCardInner');
-      isFlipped = !isFlipped;
-      if (isFlipped) {
-        innerCard.classList.add('slide-card-flipped');
-      } else {
-        innerCard.classList.remove('slide-card-flipped');
-      }
-      playSfx('flip');
-    }
+    // 渲染當前題目
+    function renderQuestion() {
+      const q = QUESTIONS[currentQIndex];
+      
+      // 大螢幕端更新
+      document.getElementById('qBadge').innerText = q.badge;
+      document.getElementById('qTitle').innerText = q.title;
+      document.getElementById('qDesc').innerText = q.desc;
 
-    // 下一張 / 上一張
-    function nextSlide() {
-      if (currentIndex < filteredCards.length - 1) {
-        currentIndex++;
-        isFlipped = false;
-        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
-        playSfx('slide');
-        renderMainStage();
-      }
-    }
+      const grid = document.getElementById('optionsGrid');
+      grid.innerHTML = '';
 
-    function prevSlide() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        isFlipped = false;
-        document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
-        playSfx('slide');
-        renderMainStage();
-      }
-    }
+      const totalVotes = q.options.reduce((sum, opt) => sum + opt.votes, 0);
+      document.getElementById('voteTotalNum').innerText = totalVotes;
 
-    // 渲染底部縮圖列
-    function renderThumbnails() {
-      const strip = document.getElementById('thumbnailStrip');
-      strip.innerHTML = '';
+      q.options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = `option-card card-${opt.key} ${isRevealed ? 'revealed' : ''}`;
+        
+        // 算百分比
+        const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
 
-      filteredCards.forEach((card, idx) => {
-        const thumb = document.createElement('div');
-        const isSel = selectedIds.has(card.id);
-        let borderBgClass = 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300';
-        if (isSel) {
-          borderBgClass = idx === currentIndex
-            ? 'border-amber-500 bg-amber-100 dark:bg-amber-950/90 shadow-md scale-[1.03] ring-2 ring-amber-400'
-            : 'border-amber-400 bg-amber-50/80 dark:bg-amber-950/50 opacity-90 hover:opacity-100';
-        } else if (idx === currentIndex) {
-          borderBgClass = 'border-indigo-600 bg-indigo-50/90 dark:bg-indigo-950/60 shadow-md scale-[1.02]';
-        }
-        thumb.className = `thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${borderBgClass}`;
-        thumb.setAttribute('data-idx', idx);
-        thumb.onmouseenter = () => playSfx('hover');
-        thumb.onclick = () => {
-          currentIndex = idx;
-          isFlipped = false;
-          document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
-          playSfx('slide');
-          renderMainStage();
+        card.innerHTML = `
+          <div class="vote-bar-fill" style="width: ${isRevealed ? percent : 0}%"></div>
+          <div class="opt-header">
+            <span class="opt-key">${opt.key}</span>
+            <span class="vote-stat">${opt.votes} 票 (${percent}%)</span>
+          </div>
+          <div class="opt-text">${opt.text}</div>
+        `;
+
+        // 點擊模擬投票
+        card.onclick = () => {
+          if (!isRevealed && currentRole === 'host') {
+            opt.votes++;
+            updateHostStats();
+          }
         };
 
-        thumb.innerHTML = `
-          <div class="flex items-center justify-between text-[11px] font-black mb-1">
-            <span class="flex items-center gap-1">
-              <span>${card.emoji}</span>
-              <span class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">#${card.code}</span>
-            </span>
-            <span class="text-[10px] text-slate-400 font-bold flex items-center gap-1">
-              ${isSel ? '<span class="px-1 rounded bg-amber-400 text-slate-950 font-black text-[9px]">已選</span>' : ''}
-              <span>${card.categoryName}</span>
-            </span>
-          </div>
-          <p class="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1">
-            ${card.title}
-          </p>
+        grid.appendChild(card);
+      });
+
+      // 解析卡片與按鈕狀態
+      const analysisCard = document.getElementById('analysisCard');
+      const btnRevealText = document.getElementById('btnRevealText');
+      const stateSummary = document.getElementById('stateSummary');
+
+      if (isRevealed) {
+        analysisCard.classList.add('show');
+        document.getElementById('analysisContent').innerHTML = q.analysis;
+        document.getElementById('antidoteBadge').innerHTML = `<i class="fa-solid fa-quote-left"></i> 今晚家長心法：${q.antidote}`;
+        btnRevealText.innerText = '隱藏開票結果';
+        stateSummary.innerText = '已開票揭曉';
+        stateSummary.style.color = 'var(--color-b)';
+        stateSummary.style.background = '#EBF4F0';
+      } else {
+        analysisCard.classList.remove('show');
+        btnRevealText.innerText = '立即開票揭曉';
+        stateSummary.innerText = '作答收票中';
+        stateSummary.style.color = 'var(--accent-brown)';
+        stateSummary.style.background = '#F7F1E8';
+      }
+
+      // 手機端更新
+      document.getElementById('pBadge').innerText = q.badge;
+      document.getElementById('pTitle').innerText = q.title;
+      document.getElementById('pDesc').innerText = q.desc;
+
+      const pOptionsContainer = document.getElementById('playerOptions');
+      pOptionsContainer.innerHTML = '';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = `btn-player-opt opt-${opt.key} ${mySelectedChoice === opt.key ? 'active' : ''}`;
+        btn.innerHTML = `
+          <span style="font-size:1.4rem; background:rgba(255,255,255,0.25); width:36px; height:36px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center;">${opt.key}</span>
+          <span>${opt.text}</span>
         `;
-
-        strip.appendChild(thumb);
+        btn.onclick = () => submitPlayerVote(opt.key);
+        pOptionsContainer.appendChild(btn);
       });
     }
 
-    // 更新縮圖選取
-    function updateThumbnailSelection() {
-      document.querySelectorAll('.thumbnail-item').forEach((el, idx) => {
-        if (idx === currentIndex) {
-          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-indigo-600 bg-indigo-50/90 dark:bg-indigo-950/60 shadow-md scale-[1.02] opacity-100';
-          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        } else {
-          el.className = 'thumbnail-item shrink-0 w-44 sm:w-52 p-2.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 opacity-75 hover:opacity-100 hover:border-slate-300';
-        }
+    // 提交手機投票
+    function submitPlayerVote(choice) {
+      mySelectedChoice = choice;
+      renderQuestion();
+      document.getElementById('playerStatus').innerHTML = `
+        <span style="color:var(--color-b); font-size:1.1rem; font-weight:900;"><i class="fa-solid fa-circle-check"></i> 投票成功！已選擇 [${choice}]</span><br>
+        <small style="color:var(--text-muted)">請抬頭看大螢幕即時長條圖！</small>
+      `;
+
+      // 廣播給大螢幕
+      channel.postMessage({
+        type: 'VOTE_SUBMIT',
+        qIndex: currentQIndex,
+        choice: choice
       });
+
+      // 本地數據同步增加
+      const opt = QUESTIONS[currentQIndex].options.find(o => o.key === choice);
+      if (opt) opt.votes++;
     }
 
-    // 渲染網格模式
-    function renderGridCards() {
-      const container = document.getElementById('gridCardsContainer');
-      const countEl = document.getElementById('gridCountText');
-      countEl.innerText = filteredCards.length;
-      container.innerHTML = '';
+    // 開票/隱藏切換
+    function toggleReveal() {
+      isRevealed = !isRevealed;
+      QUESTIONS[currentQIndex].revealed = isRevealed;
+      renderNav();
+      renderQuestion();
+      broadcastState();
 
-      filteredCards.forEach((card) => {
-        const cardEl = document.createElement('div');
-        const isSel = selectedIds.has(card.id);
-        const baseClass = isSel 
-          ? 'card-selected-yellow p-5 rounded-3xl border-2 shadow-lg flex flex-col justify-between space-y-3.5 transition transform hover:-translate-y-1'
-          : 'p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-md flex flex-col justify-between space-y-3.5 hover:border-indigo-400 transition transform hover:-translate-y-1';
-        
-        cardEl.className = baseClass;
-        cardEl.onmouseenter = () => playSfx('hover');
-
-        cardEl.innerHTML = `
-          <div>
-            <!-- 卡片頂部：分類標籤 ＋ 勾選按鈕 (可直接點擊變黃) -->
-            <div class="flex items-center justify-between gap-2 mb-2.5">
-              <span class="flex items-center gap-1.5">
-                <span class="text-xl">${card.emoji}</span>
-                <span class="px-2.5 py-0.5 text-xs font-black rounded-lg border ${isSel ? 'bg-amber-500 text-slate-950 border-amber-600' : card.accentTag}">
-                  #${card.code} ${card.stageName ? card.stageName + ' · ' : ''}${card.categoryName}
-                </span>
-              </span>
-              <!-- 勾選切換按鈕 -->
-              <button onclick="toggleCardSelected(${card.id}, event)" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black transition border ${isSel ? 'bg-amber-400 text-slate-950 border-amber-500 shadow' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-amber-400'}">
-                <i data-lucide="${isSel ? 'check-circle-2' : 'circle'}" class="w-3.5 h-3.5 text-amber-500 ${isSel ? 'text-slate-950' : ''}"></i>
-                <span>${isSel ? '本次精選' : '選入研習'}</span>
-              </button>
-            </div>
-
-            <h3 class="text-base font-black leading-snug mb-1.5 ${isSel ? 'text-slate-900 dark:text-amber-100 font-extrabold' : 'text-slate-900 dark:text-white'}">
-              ${card.title}
-            </h3>
-            <p class="text-xs leading-relaxed line-clamp-2 mb-2 ${isSel ? 'text-amber-900 dark:text-amber-200/90 font-medium' : 'text-slate-600 dark:text-slate-400'}">
-              ${card.scenario}
-            </p>
-          </div>
-
-          <div class="pt-3 border-t ${isSel ? 'border-amber-400/40 dark:border-amber-800/40' : 'border-slate-100 dark:border-slate-800'} flex items-center justify-between">
-            <button onclick="switchToSlideById(${card.id})" class="text-xs font-black ${isSel ? 'text-amber-950 dark:text-amber-300 font-black underline' : 'text-indigo-600 dark:text-indigo-400'} hover:underline flex items-center gap-1">
-              進入簡報舞台 ➔
-            </button>
-            <button onclick="copyDirectPrompt(${card.id})" class="px-3 py-1 rounded-lg ${isSel ? 'bg-amber-300/80 hover:bg-amber-300 text-slate-950' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600'} text-[11px] font-bold transition flex items-center gap-1">
-              <i data-lucide="copy" class="w-3 h-3"></i>
-              <span>複製</span>
-            </button>
-          </div>
-        `;
-        container.appendChild(cardEl);
-      });
-      lucide.createIcons();
-    }
-
-    function copyDirectPrompt(id) {
-      const card = cardData.find(c => c.id === id);
-      if (card) {
-        navigator.clipboard.writeText(card.prompt).then(() => {
-          playSfx('copy');
-          showToast('已複製卡片 #' + card.code + ' 提示詞！');
+      if (isRevealed) {
+        // 彩帶特效
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
         });
       }
     }
 
-    function switchToSlideById(id) {
-      const idx = filteredCards.findIndex(c => c.id === id);
-      if (idx !== -1) {
-        currentIndex = idx;
-        toggleViewMode('presentation');
-        renderMainStage();
+    // 重置當前題目票數
+    function resetCurrentVotes() {
+      if (confirm('確定要清空本題所有已投的票數嗎？')) {
+        QUESTIONS[currentQIndex].options.forEach(o => o.votes = 0);
+        isRevealed = false;
+        QUESTIONS[currentQIndex].revealed = false;
+        renderNav();
+        renderQuestion();
+        broadcastState();
       }
     }
 
-    // 視圖切換
-    function toggleViewMode(targetMode) {
-      viewMode = targetMode || (viewMode === 'presentation' ? 'grid' : 'presentation');
-      const presView = document.getElementById('presentationView');
-      const gridV = document.getElementById('gridView');
-      const modeText = document.getElementById('viewModeText');
-      const modeIcon = document.getElementById('viewModeIcon');
+    // 更新大螢幕即時數據
+    function updateHostStats() {
+      const q = QUESTIONS[currentQIndex];
+      const totalVotes = q.options.reduce((sum, opt) => sum + opt.votes, 0);
+      document.getElementById('voteTotalNum').innerText = totalVotes;
 
-      if (viewMode === 'presentation') {
-        presView.classList.remove('hidden');
-        gridV.classList.add('hidden');
-        modeText.innerText = '全覽網格';
-        modeIcon.setAttribute('data-lucide', 'grid');
-        renderMainStage();
-      } else {
-        presView.classList.add('hidden');
-        gridV.classList.remove('hidden');
-        modeText.innerText = '簡報模式';
-        modeIcon.setAttribute('data-lucide', 'presentation');
-        renderGridCards();
-      }
-      lucide.createIcons();
-    }
-
-    document.getElementById('btnViewMode').addEventListener('click', () => {
-      playSfx('slide');
-      toggleViewMode();
-    });
-
-    // 搜尋
-    function handleSearch() {
-      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-      searchQuery = q;
-      applyFilters();
-    }
-
-    function applyFilters() {
-      filteredCards = cardData.filter(card => {
-        let matchCat = false;
-        if (currentCategory === 'all') {
-          matchCat = true;
-        } else if (currentCategory === 'selected') {
-          matchCat = selectedIds.has(card.id);
-        } else if (currentCategory === 'elem') {
-          matchCat = card.stage === 'elem';
-        } else if (currentCategory === 'jh') {
-          matchCat = card.stage === 'jh';
-        } else if (currentCategory === 'prep') {
-          matchCat = card.category === 'prep' || card.category === 'exam' || card.category === 'media';
-        } else if (currentCategory === 'diff_grading') {
-          matchCat = card.category === 'diff' || card.category === 'grading';
-        } else if (currentCategory === 'admin') {
-          matchCat = card.category === 'admin';
-        } else if (currentCategory === 'guidance') {
-          matchCat = card.category === 'guidance';
-        } else if (currentCategory === 'efficiency') {
-          matchCat = card.category === 'efficiency';
-        } else {
-          matchCat = card.category === currentCategory;
-        }
-
-        const matchSearch = !searchQuery || 
-          card.title.toLowerCase().includes(searchQuery) ||
-          card.scenario.toLowerCase().includes(searchQuery) ||
-          card.prompt.toLowerCase().includes(searchQuery);
-        return matchCat && matchSearch;
+      const cards = document.querySelectorAll('#optionsGrid .option-card');
+      cards.forEach((card, idx) => {
+        const opt = q.options[idx];
+        const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+        const bar = card.querySelector('.vote-bar-fill');
+        const stat = card.querySelector('.vote-stat');
+        if (bar && isRevealed) bar.style.width = percent + '%';
+        if (stat) stat.innerText = `${opt.votes} 票 (${percent}%)`;
       });
-
-      currentIndex = 0;
-      isFlipped = false;
-      document.getElementById('slideCardInner').classList.remove('slide-card-flipped');
-      renderMainStage();
-      renderThumbnails();
-      if (viewMode === 'grid') renderGridCards();
     }
 
-    // 分類
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.getAttribute('data-category');
-        if (cat === 'selected' && selectedIds.size === 0) {
-          showToast('目前尚無勾選卡片！請先勾選想講授的卡片');
-          return;
-        }
-        currentCategory = cat;
-        syncFilterButtonsUI();
-        applyFilters();
-        playSfx('slide');
+    // 廣播狀態給所有連線端
+    function broadcastState() {
+      channel.postMessage({
+        type: 'STATE_CHANGE',
+        qIndex: currentQIndex,
+        isRevealed: isRevealed
       });
-    });
+    }
 
-    // 鍵盤
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
-
-      if (viewMode !== 'presentation') return;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
-        nextSlide();
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        prevSlide();
-      } else if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        toggleSlideFlip();
-      }
-    });
-
-    // 主題
-    document.getElementById('btnThemeToggle').addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      playSfx('flip');
-    });
-
-    // 音效開關
-    document.getElementById('btnSoundToggle').addEventListener('click', () => {
-      soundEnabled = !soundEnabled;
-      document.getElementById('soundText').innerText = soundEnabled ? '音效開' : '靜音';
-      const icon = document.getElementById('soundIcon');
-      if (soundEnabled) {
-        icon.setAttribute('data-lucide', 'volume-2');
-        playSfx('flip');
-      } else {
-        icon.setAttribute('data-lucide', 'volume-x');
-      }
-      lucide.createIcons();
-    });
-
-    // Toast
-    let toastTimer = null;
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toastMessage');
-      toastMsg.innerText = msg;
-      toast.classList.remove('hidden');
-      toast.classList.add('toast-slide');
+    // 設定 QR Code
+    function setupQrCode() {
+      const currentUrl = window.location.href.split('?')[0] + '?role=player';
+      document.getElementById('qrUrlText').innerText = currentUrl;
       
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 2400);
+      const qrBox = document.getElementById('qrCodeBig');
+      qrBox.innerHTML = '';
+      new QRCode(qrBox, {
+        text: currentUrl,
+        width: 220,
+        height: 220,
+        colorDark: "#2D2724",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
     }
 
-    // 初始化與授權檢查
-    window.addEventListener('DOMContentLoaded', () => {
-      try {
-        if (localStorage.getItem('puti_teacher60_authed') === 'true' || sessionStorage.getItem('puti_teacher60_authed') === 'true') {
-          const modal = document.getElementById('pinLockModal');
-          if (modal) modal.remove();
-        }
-      } catch(e) {}
+    function showQrModal() {
+      document.getElementById('qrModal').classList.add('active');
+    }
 
-      updateSelectedBadges();
-      renderMainStage();
-      renderThumbnails();
-      lucide.createIcons();
-    });
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.remove('active');
+    }
+
+    // 彩蛋：連點 3 下標題切換身份
+    function handleBrandClick() {
+      brandClickCount++;
+      if (brandClickCount >= 3) {
+        brandClickCount = 0;
+        toggleRole();
+      }
+    }
   </script>
 </body>
 </html>
