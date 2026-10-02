@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puti-AI | 考卷B卷(類似題)神助手</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+    body {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      background-color: #F8F9FA;
+    }
+
+    /* 書商考卷排版樣式：改用高相容性的 CSS Grid，徹底杜絕 html2pdf 與列印跑版重疊問題 */
+    .two-column-exam {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      column-gap: 1.5rem !important;
+      row-gap: 1.25rem !important;
+      align-items: start !important;
+    }
+
+    .paper-item {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+      background: white;
+    }
+
+    /* 列印與轉存 PDF 專用樣式 */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+      }
+      html, body {
+        background: white !important;
+        color: black !important;
+        font-family: 'Noto Sans TC', serif !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      /* 強制隱藏所有後台操作與模態框介面 */
+      .no-print, header, footer, #uploadSection, #viewTabs, #keyModal, #cropModal, #loadingIndicator, #diffView {
+        display: none !important;
+      }
+      /* 強制解除 hidden，顯示考卷本體 */
+      #paperView {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .exam-paper {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .paper-item {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+
+    .svg-container svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- 頂部導覽列 -->
+  <header class="bg-white/90 backdrop-blur border-b border-amber-100 sticky top-0 z-40 px-6 py-3.5 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-400 flex items-center justify-center text-white text-xl shadow-md shadow-amber-200">
+          <i class="ph-bold ph-files"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
+            Puti-AI | 考卷B卷(類似題)神助手
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium">SVG 精準配圖版</span>
+          </h1>
+          <p class="text-xs text-slate-500">拍照/截圖 A 卷單頁 ➔ 自動生成題型同構 B 卷 ➔ 數值與幾何 SVG 向量配圖 100% 精準對齊</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- 免 API Key 通用出題 Prompt 按鈕 -->
+        <button id="openPromptModalBtn" onclick="openPromptModal()" class="flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl px-3 py-1.5 text-xs shadow-sm transition gap-1.5">
+          <i class="ph-bold ph-magic-wand text-sm"></i>
+          <span>免 Key 通用 Prompt</span>
+        </button>
+
+        <!-- API Key 多組備援設定按鈕 -->
+        <button id="openKeyModalBtn" class="flex items-center bg-slate-100 hover:bg-slate-200 rounded-xl px-3 py-1.5 border border-slate-200 text-xs font-semibold text-slate-700 transition">
+          <i class="ph-bold ph-key text-amber-500 mr-1.5"></i>
+          <span id="keyStatusText">設定 API Key (0)</span>
+        </button>
+
+        <!-- 模型選擇 (動態由 Google API 載入) -->
+        <div class="relative flex items-center">
+          <select id="modelSelect" class="text-xs bg-slate-100 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none pr-7">
+            <option value="auto">✨ 自動偵測並使用最新模型 (推薦)</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+          </select>
+          <button id="refreshModelsBtn" title="強制向 Google 抓取最新可用模型" class="absolute right-1.5 text-slate-400 hover:text-amber-600 text-xs p-1">
+            <i class="ph-bold ph-arrows-clockwise"></i>
+          </button>
+        </div>
+
+        <!-- 申請免費 API Key 官方捷徑按鈕 -->
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-1 text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 font-semibold px-2.5 py-1.5 rounded-xl transition shadow-sm">
+          <i class="ph-bold ph-arrow-square-out text-amber-600"></i>
+          <span>免費申請 Key</span>
+        </a>
+
+        <!-- 範例體驗 Demo 下拉選單 -->
+        <div class="relative flex items-center">
+          <select id="demoSelect" class="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-semibold rounded-xl px-2.5 py-1.5 outline-none transition cursor-pointer">
+            <option value="">⚡ 載入跨學科示範範例...</option>
+            <option value="biology">🧬 生物科：解剖顯微鏡構造與酵素pH活性曲線</option>
+            <option value="math">🧮 數學科：幾何求面積與三角形求角</option>
+            <option value="science">🔬 自然科：串聯並聯電路與燈泡實驗</option>
+            <option value="social">🌍 社會科：等高線地形圖與等高距</option>
+            <option value="english">🔤 英語科：街道地圖導引與問路選句</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 多 Key 管理與動態機制設定 Modal (含申請教學) -->
+  <div id="keyModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-amber-100 space-y-4 animate-in fade-in zoom-in duration-150 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <i class="ph-bold ph-shield-check text-amber-500 text-lg"></i>
+          Gemini API Key 設定與申請教學
+        </h3>
+        <button id="closeKeyModalBtn" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <!-- 不想申請 Key？捷徑引導 -->
+      <div class="p-3 bg-blue-50/90 rounded-2xl border border-blue-200 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <div class="flex items-center gap-1.5 text-blue-950 font-medium">
+          <i class="ph-bold ph-lightbulb text-amber-500"></i>
+          <span>不想申請 API Key？只想在網頁版 ChatGPT / Claude 出題？</span>
+        </div>
+        <button type="button" onclick="keyModal.classList.add('hidden'); openPromptModal();" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1 transition shadow-xs">
+          <i class="ph-bold ph-copy"></i> 複製通用 Prompt
+        </button>
+      </div>
+
+      <!-- 官方申請入口與 30秒教學卡片 -->
+      <div class="bg-gradient-to-br from-amber-50 to-orange-50/60 rounded-2xl p-4 border border-amber-200 text-xs space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="font-bold text-amber-900 text-sm flex items-center gap-1.5">
+            <i class="ph-bold ph-sparkle text-amber-600"></i>
+            還沒有 API Key？免費申請超簡單（完全免費）
+          </div>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow transition">
+            <span>前往 Google AI Studio 申請</span>
+            <i class="ph-bold ph-arrow-square-out"></i>
+          </a>
+        </div>
+
+        <div class="space-y-1.5 text-slate-700 bg-white/80 p-3 rounded-xl border border-amber-200/60 leading-relaxed text-[11px]">
+          <p class="font-bold text-slate-800">📖 3 步驟 30 秒取得金鑰：</p>
+          <p><strong>步驟 1：</strong>點擊上方按鈕前往 Google AI Studio，登入您的 Google 帳號。</p>
+          <p><strong>步驟 2：</strong>點選藍色按鈕 <span class="bg-slate-100 text-blue-700 px-1.5 py-0.5 rounded font-mono font-bold">Create API key</span>（建立金鑰），選擇或新建專案。</p>
+          <p><strong>步驟 3：</strong>複製產生的金鑰（開頭為 <code class="text-amber-800 font-mono font-bold">AIzaSy...</code>），貼回下方輸入框即可！</p>
+          <div class="pt-1 text-slate-500 border-t border-slate-100 flex items-center justify-between">
+            <span>💡 個人帳號享有免費額度（每日約 1,500 次請求），老師日常備課出題完全免費！</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-600">
+        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed text-[11px]">
+          <strong>⚡ 自動動態切換：</strong>
+          支援輸入多組 Key（每行一把）。遇額度耗盡 (429) 或過期失效時，系統會<strong>自動無縫切換至下一把備用 Key</strong>，且連線時<strong>自動偵測最新可用模型</strong>！
+        </div>
+
+        <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 leading-relaxed text-[11px]">
+          <strong>📐 100% 精準配圖機制：</strong>
+          系統已徹底取消品質不穩定的 AI 假圖！考卷配圖一律採用<strong>「A 卷原題高畫質截圖」</strong>與<strong>「100% 精準黑白 SVG 向量圖」</strong>，並提供繁體中文生圖提示詞供老師自由複製到外部工具出圖。
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">輸入 Gemini API Key 清單（支援多組，每行一組）：</label>
+          <textarea id="apiKeyTextarea" rows="3" placeholder="AIzaSy...\nAIzaSy...\n(貼上您的一把或多把 Key)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-xs text-slate-800 outline-none focus:bg-white focus:border-amber-400 transition"></textarea>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <span id="keyCountBadge" class="text-[11px] text-slate-500 font-medium">目前已儲存 0 組 Key</span>
+          <div class="flex items-center gap-2">
+            <button id="clearKeysBtn" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 font-medium transition">清空</button>
+            <button id="saveKeysBtn" class="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition shadow-sm">儲存並同步模型</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 免 API Key 通用出題 Prompt 專屬彈窗 (Modal) -->
+  <div id="promptModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-blue-100 space-y-4 animate-in fade-in zoom-in duration-150 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-xs">
+            <i class="ph-bold ph-copy"></i>
+          </span>
+          免 API Key！通用出題 Prompt（貼給 ChatGPT / Claude / Gemini 網頁版）
+        </h3>
+        <button id="closePromptModalBtn" onclick="document.getElementById('promptModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <!-- 3 步驟 10 秒出題指南 -->
+      <div class="p-3.5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 text-xs space-y-1.5 text-slate-700">
+        <div class="font-bold text-blue-900 flex items-center justify-between flex-wrap gap-1 text-sm">
+          <span class="flex items-center gap-1.5">
+            <i class="ph-bold ph-lightbulb text-amber-500"></i>
+            老師不需申請任何金鑰！超簡單 3 步驟：
+          </span>
+          <span class="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+            <i class="ph-bold ph-translate"></i> 嚴格強制臺灣繁體中文 (好修改／零簡體)
+          </span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+          <div class="bg-white/80 p-2.5 rounded-xl border border-blue-100/80">
+            <strong class="text-blue-900">步驟 1. 複製繁中 Prompt</strong>
+            <p class="text-slate-500 mt-0.5">點擊下方按鈕一鍵複製神級出題提示詞。</p>
+          </div>
+          <div class="bg-white/80 p-2.5 rounded-xl border border-blue-100/80">
+            <strong class="text-blue-900">步驟 2. 開啟常用 AI</strong>
+            <p class="text-slate-500 mt-0.5">打開 ChatGPT、Claude 或 Gemini 網頁版。</p>
+          </div>
+          <div class="bg-white/80 p-2.5 rounded-xl border border-blue-100/80">
+            <strong class="text-blue-900">步驟 3. 貼上並傳考卷</strong>
+            <p class="text-slate-500 mt-0.5">上傳 A 卷照片並貼入提示詞，秒得繁中 B 卷！</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 學科切換快捷標籤與複製按鈕 -->
+      <div class="flex items-center justify-between flex-wrap gap-2 pt-1">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-xs font-bold text-slate-700">學科自選：</span>
+          <button type="button" onclick="setPromptSubject('general')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs" data-sub="general">全科通用</button>
+          <button type="button" onclick="setPromptSubject('math')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-sub="math">數學科</button>
+          <button type="button" onclick="setPromptSubject('science')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-sub="science">自然理化</button>
+          <button type="button" onclick="setPromptSubject('biology')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-sub="biology">生物科</button>
+          <button type="button" onclick="setPromptSubject('social')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-sub="social">社會科</button>
+          <button type="button" onclick="setPromptSubject('english')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-sub="english">英語科</button>
+          <button type="button" onclick="setPromptSubject('chinese')" class="prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-sub="chinese">國語文</button>
+        </div>
+        <button id="copyPromptModalBtn" onclick="copyUniversalPrompt()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow-sm">
+          <i class="ph-bold ph-copy"></i>
+          <span>一鍵複製 Prompt</span>
+        </button>
+      </div>
+
+      <!-- 提示詞文字框 -->
+      <div class="relative">
+        <textarea id="universalPromptTextarea" rows="11" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 font-mono text-xs text-slate-800 leading-relaxed outline-none focus:bg-white focus:border-blue-400 transition select-all whitespace-pre-wrap"></textarea>
+      </div>
+
+      <!-- 底部操作列與直達連結 -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-2 text-xs">
+        <div class="flex items-center gap-2 text-slate-500 text-[11px]">
+          <span>常用 AI 官網直達：</span>
+          <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-semibold flex items-center gap-0.5">ChatGPT <i class="ph-bold ph-arrow-square-out text-[10px]"></i></a>
+          <span>·</span>
+          <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-semibold flex items-center gap-0.5">Claude <i class="ph-bold ph-arrow-square-out text-[10px]"></i></a>
+          <span>·</span>
+          <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="text-amber-700 hover:underline font-semibold flex items-center gap-0.5">Gemini <i class="ph-bold ph-arrow-square-out text-[10px]"></i></a>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="document.getElementById('promptModal').classList.add('hidden')" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 font-semibold text-xs transition">關閉</button>
+          <button onclick="copyUniversalPrompt()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-md shadow-blue-200 flex items-center gap-1.5">
+            <i class="ph-bold ph-copy"></i>
+            <span>複製 Prompt</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A 卷原圖互動式框選裁切 Modal -->
+  <div id="cropModal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 shadow-2xl border border-amber-100 space-y-4 max-h-[95vh] flex flex-col animate-in fade-in zoom-in duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-shrink-0">
+        <div>
+          <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+            <i class="ph-bold ph-crop text-amber-500 text-lg"></i>
+            框選 A 卷原題配圖（滑鼠按住拖曳拉框）
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">在 A 卷大圖上用滑鼠框選出本題的配圖，確認後即可精確切出原題圖案並套用！</p>
+        </div>
+        <button id="closeCropModalBtn" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto bg-slate-100 rounded-2xl p-4 flex items-center justify-center relative select-none min-h-[380px]">
+        <div id="cropContainer" class="relative inline-block cursor-crosshair">
+          <img id="cropTargetImage" src="" class="max-h-[62vh] object-contain block pointer-events-none rounded shadow-sm border border-slate-300">
+          <div id="cropSelectionBox" class="absolute border-2 border-dashed border-red-500 bg-red-500/20 hidden pointer-events-none"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100 flex-shrink-0">
+        <span id="cropStatusText" class="text-xs text-slate-500">提示：請在圖片上按住滑鼠左鍵並拖曳出紅虛線框</span>
+        <div class="flex items-center gap-2">
+          <button id="cancelCropBtn" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 font-semibold text-xs transition">取消</button>
+          <button id="applyCropBtn" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+            <i class="ph-bold ph-check"></i> 完成裁切並套用
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主內容區 -->
+  <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-1">
+
+    <!-- 模式切換 Tabs (有題目時顯示) -->
+    <div id="viewTabs" class="hidden no-print flex items-center justify-between bg-white p-2 rounded-2xl shadow-sm border border-amber-50 mb-6">
+      <div class="flex items-center gap-2">
+        <button id="tabDiff" class="px-4 py-2 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm transition flex items-center gap-1.5">
+          <i class="ph-bold ph-git-diff"></i> A/B 卷對比審題
+        </button>
+        <button id="tabStudent" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+          <i class="ph-bold ph-exam"></i> 學生用 B 卷 (無答案)
+        </button>
+        <button id="tabTeacher" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+          <i class="ph-bold ph-check-circle"></i> 教師用 B 卷 (詳解)
+        </button>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- 排版模式切換 (書商雙欄 vs 單欄寬版) -->
+        <button id="toggleLayoutBtn" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+          <i class="ph-bold ph-columns text-amber-600"></i>
+          <span id="layoutText">書商雙欄考卷風</span>
+        </button>
+
+        <!-- 一鍵複製全卷配圖提示詞 (繁體中文，可直接貼至 AI 生圖) -->
+        <button id="copyAllPromptsBtn" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+          <i class="ph-bold ph-palette text-sm"></i>
+          <span>🎨 複製所有配圖提示詞</span>
+        </button>
+
+        <!-- 複製到 Word (含圖) -->
+        <button id="copyWordBtn" class="px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 text-xs font-semibold rounded-xl transition flex items-center gap-1">
+          <i class="ph-bold ph-copy"></i> 複製到 Word (含圖)
+        </button>
+
+        <!-- 下載 Word .doc 檔案 (含完整圖形) -->
+        <button id="downloadWordBtn" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+          <i class="ph-bold ph-file-doc text-sm"></i> 下載 Word 檔 (.doc)
+        </button>
+      </div>
+    </div>
+
+    <!-- 上傳與處理面板 (單張圖檔) -->
+    <section id="uploadSection" class="no-print bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-amber-100 mb-8 transition-all">
+      <!-- 免 API Key 快捷橫幅 -->
+      <div class="mb-6 p-4 bg-gradient-to-r from-blue-50 via-indigo-50/60 to-amber-50 rounded-2xl border border-blue-100 flex items-center justify-between flex-wrap gap-3 shadow-2xs">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md shadow-blue-200 flex-shrink-0">
+            <i class="ph-bold ph-magic-wand"></i>
+          </div>
+          <div>
+            <span class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+              不想申請 API Key？提供「一鍵複製通用出題 Prompt」！
+              <span class="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">免金鑰</span>
+            </span>
+            <p class="text-xs text-slate-600 mt-0.5">直接複製針對臺灣各教科書商調校的神級提示詞，貼給 ChatGPT、Claude 或 Gemini 網頁版，上傳考卷照片秒出 B 卷！</p>
+          </div>
+        </div>
+        <button onclick="openPromptModal()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-blue-200">
+          <i class="ph-bold ph-copy text-sm"></i>
+          <span>📋 一鍵複製通用 Prompt</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- 左側：拖曳與貼上區 -->
+        <div class="lg:col-span-7">
+          <div id="dropZone" class="border-2 border-dashed border-amber-300 hover:border-amber-500 bg-amber-50/40 hover:bg-amber-50/80 rounded-2xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[260px] relative overflow-hidden group">
+            <input type="file" id="fileInput" accept="image/*" class="hidden">
+            
+            <div id="uploadPrompt" class="flex flex-col items-center">
+              <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl mb-3 group-hover:scale-110 transition">
+                <i class="ph-bold ph-cloud-arrow-up"></i>
+              </div>
+              <h3 class="text-base font-bold text-slate-800 mb-1">上傳 A 卷單頁圖檔</h3>
+              <p class="text-xs text-slate-500 mb-3 max-w-sm">
+                支援點擊選取、拖曳圖檔，或直接在任何地方按 <kbd class="px-1.5 py-0.5 bg-white rounded border border-slate-300 font-mono text-[10px] text-amber-700 shadow-sm font-bold">Ctrl + V</kbd> 貼上截圖！
+              </p>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-200/60 text-amber-900 text-[11px] font-medium">
+                <i class="ph-fill ph-lightbulb"></i> 建議每次傳 1 張單頁或一個大題區塊，辨識最精準零漏題
+              </div>
+            </div>
+
+            <!-- 預覽圖區 -->
+            <div id="previewContainer" class="hidden w-full h-full flex flex-col items-center justify-center relative">
+              <img id="imagePreview" src="" alt="A卷截圖" class="max-h-64 object-contain rounded-lg shadow-sm border border-slate-200 mb-2">
+              <button id="removeImageBtn" class="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 shadow transition">
+                <i class="ph-bold ph-x"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側：控制參數與生成按鈕 -->
+        <div class="lg:col-span-5 flex flex-col justify-between h-full space-y-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+              <i class="ph-bold ph-sliders text-amber-500"></i> B 卷變形設定
+            </h2>
+            <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">📚 出題學科領域</label>
+                <select id="subjectSelect" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-700 font-medium outline-none">
+                  <option value="auto">🌟 自動偵測學科（AI 依上傳試卷智慧辨識）</option>
+                  <option value="math">🧮 數學科（幾何、數線、直角坐標、統計圖表）</option>
+                  <option value="science">🔬 自然科（實驗器材、電路圖、生物構造、地質月相、力學光學）</option>
+                  <option value="social">🌍 社會科（等高線地形、經緯地圖、氣候雨溫圖、供需曲線、年代線）</option>
+                  <option value="english">🔤 英語科（看圖選詞句、方向街道地圖、生活海報菜單）</option>
+                  <option value="chinese">📖 國語科（思維導圖、課文脈絡流程、字形造字演變、成語情境）</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">🎯 數值/情境變更策略</label>
+                <select id="numericStrategy" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-700 outline-none">
+                  <option value="friendly">數字漂亮/生活情境易懂（整除、標準常理數據）</option>
+                  <option value="challenging">稍微進階（包含複合計算、細節陷阱或深入探討）</option>
+                  <option value="simple">基礎扎根（數字較小、單一變因，適合補救教學）</option>
+                </select>
+              </div>
+
+              <div class="col-span-1 sm:col-span-2 p-3 bg-amber-50/90 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">📐</span>
+                  <div>
+                    <span class="font-bold">配圖原則：A 卷原題高畫質截圖 + 100% 精準黑白 SVG 向量圖</span>
+                    <p class="text-[11px] text-amber-700 mt-0.5">徹底取消模糊失真的 AI 假圖！考卷配圖保證 100% 與題意吻合，並可一鍵複製繁中提示詞至外部工具出圖。</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-lg text-[11px] flex items-center gap-1 shadow-2xs">
+                  <i class="ph-bold ph-check-circle"></i> 100% 正確原圖/SVG
+                </span>
+              </div>
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">📝 特別指定指示 (選填)</label>
+                <input type="text" id="customPrompt" placeholder="例如：生活情境改為校慶、自然科燈泡改為並聯、配圖要有可愛柴犬..." class="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-700 placeholder:text-slate-400 outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- 生成按鈕 -->
+          <button id="generateBtn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-base shadow-lg shadow-orange-200 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="ph-bold ph-sparkle text-xl"></i>
+            <span>分析 A 卷並生成 B 卷類似題</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 讀取載入中提示 -->
+    <div id="loadingIndicator" class="hidden no-print my-12 text-center">
+      <div class="inline-block p-4 bg-white rounded-3xl shadow-xl border border-amber-100 max-w-md w-full">
+        <div class="w-12 h-12 border-4 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <h4 class="text-sm font-bold text-slate-800 mb-1" id="loadingTitle">正在由 Gemini 視覺模型拆解 A 卷...</h4>
+        <p class="text-xs text-slate-500" id="loadingDesc">分析題目結構 ➔ 重構新題意 ➔ 計算精準數值 ➔ 繪製向量 SVG 配圖</p>
+      </div>
+    </div>
+
+    <!-- 模式 1：A/B 卷對比審題模式 -->
+    <div id="diffView" class="hidden space-y-6">
+      <div class="flex items-center justify-between no-print">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <i class="ph-bold ph-arrows-split text-amber-600"></i> 題目對照與配圖審查
+        </h3>
+        <span class="text-xs text-slate-500">點擊文字可直接在線編輯微調</span>
+      </div>
+
+      <div id="diffCardsContainer" class="space-y-6">
+        <!-- 動態渲染各題對比卡片 -->
+      </div>
+    </div>
+
+    <!-- 模式 2 & 3：正式考卷版面 (學生試題卷 / 教師解答卷) -->
+    <div id="paperView" class="hidden">
+      <div class="exam-paper bg-white rounded-2xl p-8 sm:p-12 shadow-sm border border-slate-200 max-w-4xl mx-auto">
+        <!-- 考卷抬頭 -->
+        <div class="border-b-2 border-slate-800 pb-4 mb-6 text-center">
+          <h2 id="paperSchoolName" class="text-2xl font-bold tracking-wider mb-2" contenteditable="true">屏東縣國民小學 113 學年度 數學科 平時評量卷 (B卷)</h2>
+          <div class="flex justify-between items-center text-sm font-medium text-slate-700 px-4 mt-4">
+            <div>
+              <span>年級：</span><span class="border-b border-slate-600 px-4" contenteditable="true">五年 班</span>
+            </div>
+            <div>
+              <span>座號：</span><span class="border-b border-slate-600 px-4" contenteditable="true">   </span>
+            </div>
+            <div>
+              <span>姓名：</span><span class="border-b border-slate-600 px-6" contenteditable="true">        </span>
+            </div>
+            <div id="scoreBox" class="border-2 border-slate-800 px-4 py-1 font-bold">
+              得分：_______
+            </div>
+          </div>
+        </div>
+
+        <!-- 考卷題目清單 -->
+        <div id="paperQuestionsContainer" class="space-y-8">
+          <!-- 題目渲染區 -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 底部版權宣告 -->
+  <footer class="bg-white border-t border-amber-100 py-6 px-4 text-center text-xs text-slate-500 no-print mt-12">
+    <div class="max-w-4xl mx-auto">
+      <p class="font-medium text-slate-700 leading-relaxed">
+        屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為，<a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank" rel="noopener noreferrer" class="text-amber-600 hover:text-orange-600 font-bold underline ml-0.5">更多 Puti-AI 教學工具</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- 應用主邏輯 -->
+  <script>
+    // 狀態管理
+    let currentImageBase64 = null;
+    let generatedData = null;
+    let currentMode = 'diff'; // diff | student | teacher
+
+    // DOM 元素
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const saveKeyBtn = document.getElementById('saveKeyBtn');
+    const modelSelect = document.getElementById('modelSelect');
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const previewContainer = document.getElementById('previewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    const loadDemoBtn = document.getElementById('loadDemoBtn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    const viewTabs = document.getElementById('viewTabs');
+    const tabDiff = document.getElementById('tabDiff');
+    const tabStudent = document.getElementById('tabStudent');
+    const tabTeacher = document.getElementById('tabTeacher');
+    const diffView = document.getElementById('diffView');
+    const paperView = document.getElementById('paperView');
+    const diffCardsContainer = document.getElementById('diffCardsContainer');
+    const copyAllPromptsBtn = document.getElementById('copyAllPromptsBtn');
+    const copyWordBtn = document.getElementById('copyWordBtn');
+    const downloadWordBtn = document.getElementById('downloadWordBtn');
+
+    // DOM 元素擴充 (多 Key 與動態機制)
+    const openKeyModalBtn = document.getElementById('openKeyModalBtn');
+    const closeKeyModalBtn = document.getElementById('closeKeyModalBtn');
+    const keyModal = document.getElementById('keyModal');
+    const apiKeyTextarea = document.getElementById('apiKeyTextarea');
+    const saveKeysBtn = document.getElementById('saveKeysBtn');
+    const clearKeysBtn = document.getElementById('clearKeysBtn');
+    const keyCountBadge = document.getElementById('keyCountBadge');
+    const keyStatusText = document.getElementById('keyStatusText');
+    const refreshModelsBtn = document.getElementById('refreshModelsBtn');
+
+    // 1. 初始化讀取多組 API Key 與動態模型
+    let apiKeys = loadApiKeys();
+    let availableModels = [];
+
+    function loadApiKeys() {
+      // 優先載入多 Key 陣列，向下相容舊的單 Key
+      const raw = localStorage.getItem('puti_gemini_api_keys') || localStorage.getItem('puti_gemini_api_key') || '';
+      const keys = raw.split(/[\n,;]+/).map(k => k.trim()).filter(k => k.length > 10);
+      updateKeyUI(keys);
+      return keys;
+    }
+
+    function saveApiKeys(keys) {
+      apiKeys = keys;
+      localStorage.setItem('puti_gemini_api_keys', keys.join('\n'));
+      if (keys.length > 0) localStorage.setItem('puti_gemini_api_key', keys[0]);
+      updateKeyUI(keys);
+    }
+
+    function updateKeyUI(keys) {
+      const count = keys.length;
+      keyStatusText.innerText = count > 0 ? `API Key 已就緒 (${count})` : '設定 API Key (0)';
+      keyCountBadge.innerText = `目前已儲存 ${count} 組 Key (遇額度耗盡自動無縫切換)`;
+      if (count > 0) {
+        keyStatusText.parentElement.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+        keyStatusText.parentElement.classList.remove('bg-slate-100', 'text-slate-700', 'border-slate-200');
+      } else {
+        keyStatusText.parentElement.classList.remove('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+        keyStatusText.parentElement.classList.add('bg-slate-100', 'text-slate-700', 'border-slate-200');
+      }
+    }
+
+    // Modal 開關
+    openKeyModalBtn.addEventListener('click', () => {
+      apiKeyTextarea.value = apiKeys.join('\n');
+      keyModal.classList.remove('hidden');
+    });
+    closeKeyModalBtn.addEventListener('click', () => keyModal.classList.add('hidden'));
+    keyModal.addEventListener('click', (e) => {
+      if (e.target === keyModal) keyModal.classList.add('hidden');
+    });
+
+    saveKeysBtn.addEventListener('click', async () => {
+      const lines = apiKeyTextarea.value.split(/[\n,;]+/).map(k => k.trim()).filter(k => k.length > 10);
+      const uniqueKeys = [...new Set(lines)];
+      saveApiKeys(uniqueKeys);
+      keyModal.classList.add('hidden');
+      if (uniqueKeys.length > 0) {
+        alert(`已成功儲存 ${uniqueKeys.length} 組 API Key！正在向 Google 同步最新模型清單...`);
+        await syncModelsFromGoogle(uniqueKeys[0]);
+      } else {
+        alert('已清空 API Key');
+      }
+    });
+
+    clearKeysBtn.addEventListener('click', () => {
+      apiKeyTextarea.value = '';
+      saveApiKeys([]);
+    });
+
+    // 2. 動態向 Google 官方拉取最新可用模型 (完全無上限，依版本號動態排序)
+    async function syncModelsFromGoogle(key) {
+      if (!key) return;
+      refreshModelsBtn.classList.add('animate-spin', 'text-amber-600');
+      try {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+        if (!resp.ok) throw new Error(`無法取得模型列表 (${resp.status})`);
+        const data = await resp.json();
+        
+        // 過濾支援 generateContent 的 gemini 視覺模型
+        const geminiModels = (data.models || [])
+          .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+          .filter(m => m.name.includes('gemini') && !m.name.includes('embedding') && !m.name.includes('aqa'))
+          .map(m => m.name.replace('models/', ''));
+
+        if (geminiModels.length > 0) {
+          // 通用語意化排序：純數值正規化提取版本 (3.0, 3.5, 4.0, 10.0 永遠排第一，絕不設上限！)
+          geminiModels.sort((a, b) => {
+            const getVersionScore = (name) => {
+              const match = name.match(/gemini-(\d+(\.\d+)?)/i);
+              const ver = match ? parseFloat(match[1]) : 1.0;
+              let s = ver * 1000; // 例如 3.0 => 3000, 2.5 => 2500, 2.0 => 2000
+              if (name.includes('flash')) s += 50; // flash 超快優先
+              if (name.includes('pro')) s += 30;
+              if (name.includes('preview') || name.includes('exp')) s -= 5;
+              return s;
+            };
+            return getVersionScore(b) - getVersionScore(a);
+          });
+
+          availableModels = geminiModels;
+          
+          // 重新填充下拉選單，並永遠保留自動選新與手動自訂選項
+          modelSelect.innerHTML = `<option value="auto">✨ 自動偵測並使用最新模型 (當前最頂級：${geminiModels[0]})</option>`;
+          geminiModels.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m;
+            opt.innerText = m + (m.includes('flash') ? ' (超快推薦)' : (m.includes('pro') ? ' (超強推理)' : ''));
+            modelSelect.appendChild(opt);
+          });
+          // 永遠提供自訂任意新模型入口 (防 Google 未來改名)
+          const customOpt = document.createElement('option');
+          customOpt.value = "__custom__";
+          customOpt.innerText = "✏️ 自訂/指定最新模型代號 (如 nano-banana, gemini-3.0)...";
+          modelSelect.appendChild(customOpt);
+
+          console.log('已動態同步 Google 最新模型清單 (無上限)：', geminiModels);
+        }
+      } catch (err) {
+        console.warn('動態同步模型失敗，保留預設清單：', err);
+      } finally {
+        refreshModelsBtn.classList.remove('animate-spin', 'text-amber-600');
+      }
+    }
+
+    // 自訂模型名稱監聽
+    let customModelName = '';
+    modelSelect.addEventListener('change', () => {
+      if (modelSelect.value === '__custom__') {
+        const input = prompt('請輸入 Google Gemini 最新模型代號 (例如 gemini-3.0-flash 或 nano-banana)：', customModelName || 'gemini-3.0-flash');
+        if (input && input.trim()) {
+          customModelName = input.trim();
+          let opt = modelSelect.querySelector('option[data-custom="true"]');
+          if (!opt) {
+            opt = document.createElement('option');
+            opt.setAttribute('data-custom', 'true');
+            modelSelect.insertBefore(opt, modelSelect.lastElementChild);
+          }
+          opt.value = customModelName;
+          opt.innerText = `🚀 自訂模型：${customModelName}`;
+          modelSelect.value = customModelName;
+        } else {
+          modelSelect.value = 'auto';
+        }
+      }
+    });
+
+    refreshModelsBtn.addEventListener('click', () => {
+      if (apiKeys.length === 0) {
+        alert('請先輸入 API Key 才能向 Google 查詢最新模型！');
+        openKeyModalBtn.click();
+        return;
+      }
+      syncModelsFromGoogle(apiKeys[0]);
+    });
+
+    // 頁面載入時若有 Key，自動悄悄向 Google 同步最新模型
+    if (apiKeys.length > 0) {
+      syncModelsFromGoogle(apiKeys[0]);
+    }
+
+    // 3. 剪貼簿貼上 (Ctrl+V) 全局監聽
+    window.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const blob = items[i].getAsFile();
+          handleImageFile(blob);
+          break;
+        }
+      }
+    });
+
+    // 4. 拖曳與上傳處理
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleImageFile(e.target.files[0]);
+      }
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-amber-500', 'bg-amber-100/50');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-amber-500', 'bg-amber-100/50');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-amber-500', 'bg-amber-100/50');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleImageFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    function handleImageFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('請上傳圖檔（JPG、PNG、WebP 等）');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        currentImageBase64 = e.target.result;
+        imagePreview.src = currentImageBase64;
+        uploadPrompt.classList.add('hidden');
+        previewContainer.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    removeImageBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentImageBase64 = null;
+      imagePreview.src = '';
+      uploadPrompt.classList.remove('hidden');
+      previewContainer.classList.add('hidden');
+      fileInput.value = '';
+    });
+
+    // 5. 跨學科內建模擬 Demo 數據庫 (生物、數學、自然、社會、英語)
+    const DEMO_DATA_MAP = {
+      biology: {
+        exam_title: "國中生物科複習卷 單元一～三：細胞、養分、運輸 (B卷)",
+        questions: [
+          {
+            id: "1",
+            type: "單一選擇題",
+            knowledge_point: "解剖顯微鏡構造名稱與功能辨識",
+            original_text: "如右圖，關於各部位的構造名稱，下列何者正確？ (A)甲：眼距調整器 (B)乙：焦距調整器 (C)丙：目鏡 (D)戊：調節輪",
+            new_question: "如右圖所示為雙筒解剖顯微鏡構造圖，小明欲調整兩眼視野使之重疊成單一立體影像，請問他應該調整圖中的哪一個部位？",
+            options: [
+              "(A) 甲：眼距調整器",
+              "(B) 乙：眼焦調整器（屈光度調整環）",
+              "(C) 丙：雙筒目鏡",
+              "(D) 丁：焦距調整輪"
+            ],
+            answer: "(A) 甲：眼距調整器",
+            solution: "1. 解剖顯微鏡各構造標號：甲為【眼距調整器】，用來調整兩眼目鏡之間的距離，使雙眼視野重疊成單一圓形視野；乙為【眼焦調整器】，用於校正兩眼視力落差；丙為【目鏡】；丁為【焦距調整輪】。\n2. 欲使雙眼視野重疊，應調整甲。\n答：選 (A)",
+            has_figure: true,
+            figure_type: "svg",
+            labels: [
+              { id: "甲", name: "眼距調整器" },
+              { id: "乙", name: "眼焦調整器" },
+              { id: "丙", name: "雙筒目鏡" },
+              { id: "丁", name: "焦距調整輪" }
+            ],
+            image_prompt: "臺灣教科書黑白試卷線稿風格，雙筒解剖顯微鏡結構示意圖，清楚展現雙筒目鏡、眼焦調整器、眼距調整器、焦距調整輪與載物台，純白背景，乾淨清晰黑色細線輪廓，無任何陰影，無灰階，無彩色，教材手繪黑白插圖。",
+            figure_svg: `<svg viewBox="0 0 320 230" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2 font-sans">
+              <!-- 底座與載物台 -->
+              <rect x="70" y="195" width="180" height="18" rx="4" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <ellipse cx="160" cy="195" rx="35" ry="8" fill="#f8fafc" stroke="#000" stroke-width="1.5"/>
+              <!-- 鏡臂與立柱 -->
+              <rect x="150" y="110" width="20" height="85" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <rect x="130" y="100" width="60" height="35" rx="3" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <!-- 丁：焦距調整輪 -->
+              <circle cx="195" cy="118" r="14" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <circle cx="195" cy="118" r="7" fill="#000"/>
+              <!-- 雙筒稜鏡身 -->
+              <polygon points="120,95 200,95 185,60 135,60" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <!-- 甲：眼距調整轉軸 -->
+              <ellipse cx="160" cy="62" rx="12" ry="5" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <!-- 雙筒目鏡筒 -->
+              <rect x="132" y="30" width="16" height="30" transform="rotate(-6 140 45)" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <rect x="172" y="30" width="16" height="30" transform="rotate(6 180 45)" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <!-- 丙：目鏡頂端環 -->
+              <ellipse cx="138" cy="28" rx="10" ry="4" fill="#000"/>
+              <ellipse cx="182" cy="28" rx="10" ry="4" fill="#000"/>
+              <!-- 乙：眼焦調整器 (左目鏡環刻度) -->
+              <rect x="129" y="44" width="18" height="6" fill="#000"/>
+              <!-- 物鏡 -->
+              <rect x="145" y="135" width="30" height="18" rx="2" fill="#ffffff" stroke="#000" stroke-width="2"/>
+              <!-- 標號與引線 -->
+              <!-- 甲 引線 -->
+              <line x1="160" y1="62" x2="250" y2="55" stroke="#000" stroke-width="1.5" stroke-dasharray="2,2"/>
+              <circle cx="265" cy="55" r="10" fill="#000"/>
+              <text x="265" y="59" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">甲</text>
+              <!-- 乙 引線 -->
+              <line x1="130" y1="47" x2="55" y2="47" stroke="#000" stroke-width="1.5" stroke-dasharray="2,2"/>
+              <circle cx="40" cy="47" r="10" fill="#000"/>
+              <text x="40" y="51" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">乙</text>
+              <!-- 丙 引線 -->
+              <line x1="182" y1="26" x2="250" y2="26" stroke="#000" stroke-width="1.5" stroke-dasharray="2,2"/>
+              <circle cx="265" cy="26" r="10" fill="#000"/>
+              <text x="265" y="30" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">丙</text>
+              <!-- 丁 引線 -->
+              <line x1="209" y1="118" x2="250" y2="118" stroke="#000" stroke-width="1.5" stroke-dasharray="2,2"/>
+              <circle cx="265" cy="118" r="10" fill="#000"/>
+              <text x="265" y="122" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">丁</text>
+            </svg>`
+          },
+          {
+            id: "2",
+            type: "圖表讀圖題",
+            knowledge_point: "酵素活性與酸鹼性 (pH值) 的關係曲線判讀",
+            original_text: "右圖是數種酵素之活性與酸鹼性（pH值）的關係圖，已知pH值越大表示鹼性越強、酸性越弱，則圖中何者最可能代表胃液中的消化酵素？ (A)甲 (B)乙 (C)丙 (D)丁",
+            new_question: "如下圖為人體內四種酵素（甲、乙、丙、丁）在不同 pH 值下的活性曲線圖。若人體小腸內的環境約為弱鹼性（pH 7.5 ~ 8.5），則圖中哪一種酵素最適合在人體小腸中發揮最大催化活性？",
+            options: [
+              "(A) 甲（最適 pH ≈ 2）",
+              "(B) 乙（最適 pH ≈ 6.5）",
+              "(C) 丙（最適 pH ≈ 8）",
+              "(D) 丁（最適 pH ≈ 10）"
+            ],
+            answer: "(C) 丙（最適 pH ≈ 8）",
+            solution: "1. 小腸液呈弱鹼性，pH 約為 7.5 ~ 8.5（如胰蛋白酶、腸澱粉酶）。\n2. 觀察曲線圖高峰：甲的高峰在 pH ≈ 2（強酸，代表胃蛋白酶）；乙的高峰在 pH ≈ 6.5；丙的高峰在 pH ≈ 8（弱鹼性，符合小腸環境）；丁的高峰在 pH ≈ 10。\n答：選 (C)",
+            has_figure: true,
+            figure_type: "svg",
+            image_prompt: "臺灣教科書黑白試卷圖表風格，不同 pH 值下四種酵素活性曲線圖（甲、乙、丙、丁），橫軸標註 pH 值刻度 0 到 14，縱軸為酵素活性，曲線清楚平滑，純白背景，清晰黑色坐標與刻度標示，無灰階，無彩色。",
+            figure_svg: `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2 font-sans">
+              <line x1="40" y1="160" x2="300" y2="160" stroke="#000" stroke-width="2"/>
+              <line x1="40" y1="160" x2="40" y2="25" stroke="#000" stroke-width="2"/>
+              <polygon points="300,160 293,156 293,164" fill="#000"/>
+              <polygon points="40,25 36,32 44,32" fill="#000"/>
+              <text x="295" y="178" font-size="11" font-weight="bold" fill="#000" text-anchor="end">pH值</text>
+              <text x="25" y="20" font-size="11" font-weight="bold" fill="#000">酵素活性</text>
+              <text x="40" y="174" font-size="10" text-anchor="middle">0</text>
+              <line x1="75" y1="160" x2="75" y2="164" stroke="#000"/>
+              <text x="75" y="174" font-size="10" text-anchor="middle">2</text>
+              <line x1="110" y1="160" x2="110" y2="164" stroke="#000"/>
+              <text x="110" y="174" font-size="10" text-anchor="middle">4</text>
+              <line x1="145" y1="160" x2="145" y2="164" stroke="#000"/>
+              <text x="145" y="174" font-size="10" text-anchor="middle">6</text>
+              <line x1="180" y1="160" x2="180" y2="164" stroke="#000"/>
+              <text x="180" y="174" font-size="10" text-anchor="middle">8</text>
+              <line x1="215" y1="160" x2="215" y2="164" stroke="#000"/>
+              <text x="215" y="174" font-size="10" text-anchor="middle">10</text>
+              <line x1="250" y1="160" x2="250" y2="164" stroke="#000"/>
+              <text x="250" y="174" font-size="10" text-anchor="middle">12</text>
+              <line x1="285" y1="160" x2="285" y2="164" stroke="#000"/>
+              <text x="285" y="174" font-size="10" text-anchor="middle">14</text>
+              <path d="M 45 160 Q 75 40 105 160" fill="none" stroke="#000" stroke-width="2.5"/>
+              <text x="75" y="35" font-size="13" font-weight="bold" fill="#000" text-anchor="middle">甲</text>
+              <path d="M 115 160 Q 155 70 190 160" fill="none" stroke="#000" stroke-width="2"/>
+              <text x="155" y="65" font-size="13" font-weight="bold" fill="#000" text-anchor="middle">乙</text>
+              <path d="M 145 160 Q 180 50 215 160" fill="none" stroke="#000" stroke-width="2.5"/>
+              <text x="180" y="45" font-size="13" font-weight="bold" fill="#000" text-anchor="middle">丙</text>
+              <path d="M 185 160 Q 215 35 245 160" fill="none" stroke="#000" stroke-width="2"/>
+              <text x="215" y="30" font-size="13" font-weight="bold" fill="#000" text-anchor="middle">丁</text>
+            </svg>`
+          }
+        ]
+      },
+      math: {
+        exam_title: "國小五年級數學科 面積與幾何角度評量 (B卷)",
+        questions: [
+          {
+            id: "1",
+            type: "計算應用題",
+            knowledge_point: "平行四邊形面積計算（底乘高）",
+            original_text: "【A卷原題】一塊平行四邊形的花圃，底邊長 12 公尺，高是 8 公尺，請問這塊花圃的面積是多少平方公尺？",
+            new_question: "一塊平行四邊形的草坪，底邊長為 15 公尺，對應的高是 6 公尺。請問這塊草坪的面積是多少平方公尺？",
+            options: [],
+            answer: "90 平方公尺",
+            solution: "平行四邊形面積 = 底 × 高\n算式：15 × 6 = 90 (平方公尺)\n答：90 平方公尺",
+            has_figure: true,
+            image_prompt: "臺灣教科書黑白試卷線稿風格，平行四邊形面積計算示意圖，清楚標示底長 15m 與高 6m 之虛線垂直高，純白背景，乾淨清晰黑色細線輪廓，無陰影，無灰階，無彩色，教材黑白插圖。",
+            figure_svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2">
+              <polygon points="50,130 230,130 270,40 90,40" fill="#f8fafc" stroke="#1e293b" stroke-width="2.5" stroke-linejoin="round"/>
+              <line x1="90" y1="40" x2="90" y2="130" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4"/>
+              <rect x="90" y="116" width="14" height="14" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="102" y="90" font-size="14" font-weight="bold" fill="#ef4444">高 6m</text>
+              <line x1="50" y1="150" x2="230" y2="150" stroke="#1e293b" stroke-width="1.5"/>
+              <polygon points="50,150 56,147 56,153" fill="#1e293b"/>
+              <polygon points="230,150 224,147 224,153" fill="#1e293b"/>
+              <text x="125" y="168" font-size="14" font-weight="bold" fill="#1e293b" text-anchor="middle">底 15m</text>
+            </svg>`
+          },
+          {
+            id: "2",
+            type: "幾何求角題",
+            knowledge_point: "直角三角形銳角互餘關係",
+            original_text: "【A卷原題】如圖，直角三角形中一個銳角為 35°，求另一個銳角 ∠A 的度數是多少？",
+            new_question: "如圖，有一個直角三角形，其中一個銳角的度數是 28°。請問另一個銳角 ∠A 的度數是多少度？",
+            options: ["(1) 52°", "(2) 62°", "(3) 72°", "(4) 152°"],
+            answer: "(2) 62°",
+            solution: "直角三角形兩銳角互餘：90° - 28° = 62°\n答：選 (2) 62°",
+            has_figure: true,
+            image_prompt: "臺灣教科書黑白試卷線稿風格，直角三角形幾何圖形，頂角標記為 A，直角標記為 B，另一個銳角標記為 28°，純白背景，乾淨黑色細線，無陰影，教材黑白幾何插圖。",
+            figure_svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2">
+              <polygon points="60,140 260,140 60,30" fill="#f8fafc" stroke="#1e293b" stroke-width="2.5" stroke-linejoin="round"/>
+              <rect x="60" y="122" width="18" height="18" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+              <text x="45" y="30" font-size="14" font-weight="bold" fill="#1e293b">A</text>
+              <text x="45" y="150" font-size="14" font-weight="bold" fill="#1e293b">B</text>
+              <text x="270" y="150" font-size="14" font-weight="bold" fill="#1e293b">C</text>
+              <path d="M 230 140 A 30 30 0 0 0 236 126" fill="none" stroke="#2563eb" stroke-width="2"/>
+              <text x="200" y="132" font-size="13" font-weight="bold" fill="#2563eb">28°</text>
+              <path d="M 60 55 A 25 25 0 0 0 74 50" fill="none" stroke="#ef4444" stroke-width="2"/>
+              <text x="75" y="65" font-size="13" font-weight="bold" fill="#ef4444">∠A = ?</text>
+            </svg>`
+          }
+        ]
+      },
+      science: {
+        exam_title: "國小六年級自然與生活科技 電路與電磁評量 (B卷)",
+        questions: [
+          {
+            id: "1",
+            type: "實驗判讀題",
+            knowledge_point: "燈泡並聯與串聯電路之亮暗與通斷電分析",
+            original_text: "【A卷原題】如圖一所示為兩顆燈泡串聯電路，若取下燈泡甲，燈泡乙是否會亮？",
+            new_question: "如圖所示，小華將兩顆相同的燈泡與一顆乾電池接成【並聯電路】。當開關閉合後，若將「燈泡甲」取下，請問「燈泡乙」會發生什麼變化？",
+            options: [
+              "(1) 燈泡乙熄滅",
+              "(2) 燈泡乙依然正常發亮，亮度不變",
+              "(3) 燈泡乙變得比原本亮兩倍",
+              "(4) 電池立刻發生短路發燙"
+            ],
+            answer: "(2) 燈泡乙依然正常發亮，亮度不變",
+            solution: "在並聯電路中，各支路彼此獨立工作，擁有相同的端電壓。取下燈泡甲後，燈泡乙所在的支路依然形成完整通路，因此仍正常發光且亮度不變。\n答：選 (2)",
+            has_figure: true,
+            image_prompt: "臺灣教科書黑白試卷線稿風格，國小自然科學電路實驗示意圖，包含一顆 1.5V 乾電池、閉合開關 S，以及並聯的兩顆燈泡（標示為燈泡甲、燈泡乙），純白背景，乾淨清晰黑色線條，教材黑白電路圖。",
+            figure_svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2">
+              <!-- 電池 -->
+              <rect x="40" y="70" width="30" height="40" fill="#f1f5f9" stroke="#1e293b" stroke-width="2"/>
+              <line x1="45" y1="65" x2="45" y2="70" stroke="#1e293b" stroke-width="2"/>
+              <text x="48" y="95" font-size="12" font-weight="bold" fill="#1e293b">1.5V</text>
+              <text x="48" y="60" font-size="12" font-weight="bold" fill="#ef4444">+</text>
+              <!-- 導線主幹 -->
+              <path d="M 55 65 L 55 30 L 140 30" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <path d="M 55 110 L 55 150 L 140 150" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <!-- 並聯支路 1 (燈泡甲) -->
+              <path d="M 140 30 L 170 30 L 170 60" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <circle cx="170" cy="75" r="15" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+              <path d="M 160 68 L 180 82 M 160 82 L 180 68" stroke="#ca8a04" stroke-width="2"/>
+              <text x="195" y="80" font-size="12" font-weight="bold" fill="#1e293b">燈泡甲</text>
+              <path d="M 170 90 L 170 150 L 140 150" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <!-- 並聯支路 2 (燈泡乙) -->
+              <path d="M 140 30 L 250 30 L 250 60" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <circle cx="250" cy="75" r="15" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+              <path d="M 240 68 L 260 82 M 240 82 L 260 68" stroke="#ca8a04" stroke-width="2"/>
+              <text x="275" y="80" font-size="12" font-weight="bold" fill="#1e293b">燈泡乙</text>
+              <path d="M 250 90 L 250 150 L 170 150" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <!-- 開關 S -->
+              <circle cx="95" cy="30" r="3" fill="#1e293b"/>
+              <circle cx="125" cy="30" r="3" fill="#1e293b"/>
+              <line x1="95" y1="30" x2="122" y2="22" stroke="#1e293b" stroke-width="2.5"/>
+              <text x="105" y="18" font-size="11" font-weight="bold" fill="#1e293b">開關 S</text>
+            </svg>`
+          }
+        ]
+      },
+      social: {
+        exam_title: "國小五年級社會科 臺灣地形與等高線判讀 (B卷)",
+        questions: [
+          {
+            id: "1",
+            type: "圖表讀圖題",
+            knowledge_point: "等高線地形圖、等高距與山頂地貌判讀",
+            original_text: "【A卷原題】如下圖等高線圖，甲地的海拔高度是多少公尺？乙處是山脊還是山谷？",
+            new_question: "如下圖為某地區的等高線地形圖。請依據圖示判讀，圖中相鄰兩條等高線相差的【等高距】是多少公尺？山頂最高峰甲點的高度範圍最可能落在何處？",
+            options: [
+              "(1) 等高距 50 公尺；甲點高度大於 300 公尺",
+              "(2) 等高距 100 公尺；甲點高度介於 300 ~ 400 公尺之間",
+              "(3) 等高距 100 公尺；甲點高度小於 200 公尺",
+              "(4) 等高距 200 公尺；甲點高度正好是 500 公尺"
+            ],
+            answer: "(2) 等高距 100 公尺；甲點高度介於 300 ~ 400 公尺之間",
+            solution: "1. 觀察圖中等高線數值標示為 100m, 200m, 300m，相鄰兩線差值為 200 - 100 = 100 公尺，故等高距為 100m。\n2. 甲點位於最內圈 300m 等高線以內且為閉合山頂，故高度大於 300m 且未達 400m。\n答：選 (2)",
+            has_figure: true,
+            image_prompt: "臺灣教科書黑白試卷圖表風格，國小社會科等高線地形圖，同心封閉等高線標註 100m、200m、300m，中心最高峰標示為甲點，純白背景，清晰黑色細線，教材讀圖黑白插圖。",
+            figure_svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2">
+              <!-- 外圈 100m -->
+              <ellipse cx="160" cy="90" rx="140" ry="75" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+              <text x="40" y="95" font-size="11" font-weight="bold" fill="#15803d">100m</text>
+              <!-- 中圈 200m -->
+              <ellipse cx="165" cy="88" rx="95" ry="50" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+              <text x="85" y="92" font-size="11" font-weight="bold" fill="#15803d">200m</text>
+              <!-- 內圈 300m -->
+              <ellipse cx="170" cy="85" rx="50" ry="28" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
+              <text x="135" y="88" font-size="11" font-weight="bold" fill="#15803d">300m</text>
+              <!-- 山頂標記點 甲 -->
+              <polygon points="175,70 171,78 179,78" fill="#dc2626"/>
+              <circle cx="175" cy="80" r="3" fill="#dc2626"/>
+              <text x="183" y="82" font-size="13" font-weight="bold" fill="#dc2626">▲ 甲(山頂)</text>
+              <!-- 方位標 -->
+              <line x1="280" y1="40" x2="280" y2="20" stroke="#1e293b" stroke-width="1.5"/>
+              <polygon points="280,16 277,23 283,23" fill="#1e293b"/>
+              <text x="277" y="12" font-size="10" font-weight="bold" fill="#1e293b">N</text>
+            </svg>`
+          }
+        ]
+      },
+      english: {
+        exam_title: "國小六年級英語科 Directions and Places 評量 (B卷)",
+        questions: [
+          {
+            id: "1",
+            type: "看圖選詞題 (Directions)",
+            knowledge_point: "詢問方向與街道位置指引 (Turn left/right, next to, opposite)",
+            original_text: "【A卷原題】Look at the map. Where is the bookstore? It is next to the bank.",
+            new_question: "Look at the map below. A tourist is at the \"Start (★)\" point on Main Street. He wants to go to the **Library**. Which direction is correct?",
+            options: [
+              "(A) Go straight and turn left. The library is next to the School.",
+              "(B) Go straight and turn right. The library is opposite the Park.",
+              "(C) Turn left immediately. It is behind the Police Station.",
+              "(D) Go straight. The library is inside the Supermarket."
+            ],
+            answer: "(B) Go straight and turn right. The library is opposite the Park.",
+            solution: "從 Main Street 的起點 (★) 沿著箭頭直走 (Go straight)，在第二個路口右轉 (turn right)，圖書館 (Library) 就位在公園 (Park) 的對面 (opposite the Park)。\n答：選 (B)",
+            has_figure: true,
+            image_prompt: "臺灣教科書黑白試卷地圖風格，國小英語街道指引地圖，標示 School、Park、Library、Hospital 與 Main Street 街道，純白背景，乾淨黑色細線，教材黑白插圖。",
+            figure_svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" class="w-64 border border-slate-200 bg-white rounded-lg p-2">
+              <!-- 街道網格 -->
+              <rect x="20" y="20" width="75" height="50" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" rx="4"/>
+              <text x="35" y="50" font-size="11" font-weight="bold" fill="#334155">School</text>
+              <rect x="115" y="20" width="85" height="50" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" rx="4"/>
+              <text x="135" y="50" font-size="11" font-weight="bold" fill="#334155">Park 🌳</text>
+              <rect x="115" y="110" width="85" height="50" fill="#eff6ff" stroke="#2563eb" stroke-width="2" rx="4"/>
+              <text x="135" y="140" font-size="11" font-weight="bold" fill="#1d4ed8">Library 📚</text>
+              <rect x="220" y="20" width="80" height="50" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" rx="4"/>
+              <text x="235" y="50" font-size="11" font-weight="bold" fill="#334155">Hospital</text>
+              <!-- 馬路 Main Street -->
+              <line x1="10" y1="90" x2="310" y2="90" stroke="#94a3b8" stroke-width="18"/>
+              <line x1="10" y1="90" x2="310" y2="90" stroke="#ffffff" stroke-width="2" stroke-dasharray="8,8"/>
+              <text x="230" y="94" font-size="9" font-weight="bold" fill="#ffffff">Main St.</text>
+              <!-- 起點 -->
+              <circle cx="30" cy="90" r="8" fill="#f59e0b"/>
+              <text x="26" y="93" font-size="10" font-weight="bold" fill="#ffffff">★</text>
+              <text x="15" y="112" font-size="10" font-weight="bold" fill="#d97706">Start</text>
+              <!-- 行走指引箭頭 -->
+              <path d="M 38 90 L 155 90 L 155 106" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="3,2"/>
+              <polygon points="155,110 152,103 158,103" fill="#dc2626"/>
+            </svg>`
+          }
+        ]
+      }
+    };
+
+    // 示範範例下拉切換監聽
+    const demoSelect = document.getElementById('demoSelect');
+    demoSelect.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (!val || !DEMO_DATA_MAP[val]) return;
+      generatedData = DEMO_DATA_MAP[val];
+      renderAllViews();
+      viewTabs.classList.remove('hidden');
+      switchMode('diff');
+      // 自動同步學科選單
+      if (document.getElementById('subjectSelect')) {
+        document.getElementById('subjectSelect').value = val;
+      }
+      alert(`已載入【${generatedData.exam_title}】範例與精準 SVG 向量圖！`);
+    });
+
+
+
+    // 自動根據邊界框裁切圖片 (Canvas Bounding Box Crop)
+    async function cropImageFromBox(base64Image, box) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const [ymin, xmin, ymax, xmax] = box;
+          const x = (xmin / 1000) * img.naturalWidth;
+          const y = (ymin / 1000) * img.naturalHeight;
+          const w = ((xmax - xmin) / 1000) * img.naturalWidth;
+          const h = ((ymax - ymin) / 1000) * img.naturalHeight;
+          
+          if (w < 15 || h < 15) {
+            resolve(null);
+            return;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(w);
+          canvas.height = Math.round(h);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, x, y, w, h, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/png'));
+        };
+        img.onerror = () => resolve(null);
+        img.src = base64Image;
+      });
+    }
+
+    // 互動式框選裁切器狀態
+    let activeCropIndex = null;
+    let isDrawingCrop = false;
+    let cropStartX = 0, cropStartY = 0;
+    let cropEndX = 0, cropEndY = 0;
+
+    const cropModal = document.getElementById('cropModal');
+    const cropContainer = document.getElementById('cropContainer');
+    const cropTargetImage = document.getElementById('cropTargetImage');
+    const cropSelectionBox = document.getElementById('cropSelectionBox');
+    const applyCropBtn = document.getElementById('applyCropBtn');
+    const cropStatusText = document.getElementById('cropStatusText');
+    const closeCropModalBtn = document.getElementById('closeCropModalBtn');
+    const cancelCropBtn = document.getElementById('cancelCropBtn');
+
+    // 開啟裁切 Modal
+    window.openCropModal = function(idx) {
+      if (!currentImageBase64) {
+        alert('尚未上傳 A 卷原圖！請先在頂部上傳 A 卷試卷圖檔。');
+        return;
+      }
+      activeCropIndex = idx;
+      cropTargetImage.src = currentImageBase64;
+      cropSelectionBox.classList.add('hidden');
+      applyCropBtn.disabled = true;
+      cropStatusText.innerText = `正在為 第 ${idx + 1} 題 框選 A 卷配圖：請在圖片上按住滑鼠左鍵並拖曳拉框`;
+      cropModal.classList.remove('hidden');
+    };
+
+    closeCropModalBtn.addEventListener('click', () => cropModal.classList.add('hidden'));
+    cancelCropBtn.addEventListener('click', () => cropModal.classList.add('hidden'));
+
+    // 滑鼠事件監聽：在 cropContainer 上拉框
+    cropContainer.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const rect = cropContainer.getBoundingClientRect();
+      cropStartX = e.clientX - rect.left;
+      cropStartY = e.clientY - rect.top;
+      cropEndX = cropStartX;
+      cropEndY = cropStartY;
+      isDrawingCrop = true;
+
+      cropSelectionBox.style.left = `${cropStartX}px`;
+      cropSelectionBox.style.top = `${cropStartY}px`;
+      cropSelectionBox.style.width = '0px';
+      cropSelectionBox.style.height = '0px';
+      cropSelectionBox.classList.remove('hidden');
+      applyCropBtn.disabled = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDrawingCrop) return;
+      const rect = cropContainer.getBoundingClientRect();
+      cropEndX = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      cropEndY = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+
+      const left = Math.min(cropStartX, cropEndX);
+      const top = Math.min(cropStartY, cropEndY);
+      const width = Math.abs(cropEndX - cropStartX);
+      const height = Math.abs(cropEndY - cropStartY);
+
+      cropSelectionBox.style.left = `${left}px`;
+      cropSelectionBox.style.top = `${top}px`;
+      cropSelectionBox.style.width = `${width}px`;
+      cropSelectionBox.style.height = `${height}px`;
+
+      if (width > 15 && height > 15) {
+        applyCropBtn.disabled = false;
+        cropStatusText.innerText = `選取範圍：${Math.round(width)} × ${Math.round(height)} 像素（可放開滑鼠確認）`;
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDrawingCrop) return;
+      isDrawingCrop = false;
+      const width = Math.abs(cropEndX - cropStartX);
+      const height = Math.abs(cropEndY - cropStartY);
+      if (width > 15 && height > 15) {
+        applyCropBtn.disabled = false;
+      }
+    });
+
+    // 確認裁切套用
+    applyCropBtn.addEventListener('click', () => {
+      if (activeCropIndex === null || !generatedData?.questions?.[activeCropIndex]) return;
+      const q = generatedData.questions[activeCropIndex];
+
+      const img = cropTargetImage;
+      const displayW = img.clientWidth;
+      const displayH = img.clientHeight;
+      const naturalW = img.naturalWidth;
+      const naturalH = img.naturalHeight;
+
+      if (!displayW || !displayH || !naturalW || !naturalH) return;
+
+      const scaleX = naturalW / displayW;
+      const scaleY = naturalH / displayH;
+
+      const boxLeft = Math.min(cropStartX, cropEndX) * scaleX;
+      const boxTop = Math.min(cropStartY, cropEndY) * scaleY;
+      const boxWidth = Math.abs(cropEndX - cropStartX) * scaleX;
+      const boxHeight = Math.abs(cropEndY - cropStartY) * scaleY;
+
+      // 建立 Canvas 精準切出所選範圍
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(10, Math.round(boxWidth));
+      canvas.height = Math.max(10, Math.round(boxHeight));
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, boxLeft, boxTop, boxWidth, boxHeight, 0, 0, canvas.width, canvas.height);
+
+      q.image_url = canvas.toDataURL('image/png');
+      q.is_from_a_exam = true;
+      q.has_figure = true;
+      
+      cropModal.classList.add('hidden');
+      renderAllViews();
+    });
+
+    // 相容性保留舊函數別名
+    window.useOriginalAImage = function(idx) {
+      openCropModal(idx);
+    };
+
+    // 核心生成按鈕事件
+    generateBtn.addEventListener('click', async () => {
+      if (apiKeys.length === 0) {
+        alert('請先在右上角設定至少一組 Gemini API Key！');
+        openKeyModalBtn.click();
+        return;
+      }
+      if (!currentImageBase64) {
+        alert('請先上傳、拖入或用 Ctrl+V 貼上 A 卷圖檔！');
+        return;
+      }
+
+      const selectedModel = modelSelect.value;
+      const subject = document.getElementById('subjectSelect').value;
+      const strategy = document.getElementById('numericStrategy').value;
+      const customPrompt = document.getElementById('customPrompt').value.trim();
+
+      // UI 轉為載入狀態
+      loadingIndicator.classList.remove('hidden');
+      generateBtn.disabled = true;
+
+      try {
+        document.getElementById('loadingTitle').innerText = '正在使用 Gemini 視覺多模態拆解試卷...';
+        const result = await executeWithDynamicFallback(currentImageBase64, selectedModel, subject, strategy, customPrompt);
+        
+        // 配圖處理：純淨雙軌（1. 優先自動裁切 A 卷原圖 2. 精準黑白 SVG 向量圖）
+        document.getElementById('loadingTitle').innerText = '正在處理試卷配圖 (精確比對 A 卷原圖與 SVG 向量圖)...';
+        for (let i = 0; i < (result.questions || []).length; i++) {
+          const q = result.questions[i];
+          if (q.has_figure) {
+            // 1. 若 AI 有回傳原題圖片座標框，直接高畫質自動裁切 A 卷配圖 (100% 準確真實教材圖！)
+            if (q.crop_box && q.crop_box.length === 4 && currentImageBase64) {
+              const cropped = await cropImageFromBox(currentImageBase64, q.crop_box);
+              if (cropped) {
+                q.image_url = cropped;
+                q.is_from_a_exam = true;
+              }
+            }
+          }
+        }
+
+        generatedData = result;
+        renderAllViews();
+        viewTabs.classList.remove('hidden');
+        switchMode('diff');
+      } catch (err) {
+        console.error(err);
+        alert('生成失敗：' + err.message);
+      } finally {
+        loadingIndicator.classList.add('hidden');
+        generateBtn.disabled = false;
+      }
+    });
+
+    // 動態雙重容錯執行器 (Key 輪替 + 模型降級 + 跨學科支持)
+    async function executeWithDynamicFallback(base64Image, chosenModel, subject, strategy, customPrompt) {
+      let modelCandidates = [];
+      if (chosenModel !== 'auto') {
+        modelCandidates.push(chosenModel);
+      }
+      const fallbackDefaults = availableModels.length > 0 ? availableModels : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'];
+      fallbackDefaults.forEach(m => {
+        if (!modelCandidates.includes(m)) modelCandidates.push(m);
+      });
+
+      let lastError = null;
+
+      for (let kIdx = 0; kIdx < apiKeys.length; kIdx++) {
+        const currentKey = apiKeys[kIdx];
+        
+        for (let mIdx = 0; mIdx < modelCandidates.length; mIdx++) {
+          const targetModel = modelCandidates[mIdx];
+          
+          try {
+            document.getElementById('loadingTitle').innerText = `正在使用模型 [${targetModel}] (Key #${kIdx + 1}) 分析跨學科題目...`;
+            const result = await callGeminiVision(currentKey, targetModel, base64Image, subject, strategy, customPrompt);
+            return result; // 成功回傳！
+          } catch (err) {
+            console.warn(`嘗試 Key #${kIdx + 1} 與模型 [${targetModel}] 失敗:`, err.message);
+            lastError = err;
+
+            if (err.message.includes('404') || err.message.includes('not found') || err.message.includes('503')) {
+              continue;
+            }
+            if (err.message.includes('429') || err.message.includes('quota') || err.message.includes('400') || err.message.includes('403') || err.message.includes('API_KEY_INVALID')) {
+              break;
+            }
+          }
+        }
+      }
+
+      throw new Error(`所有 Key 或模型皆嘗試失敗，最後錯誤訊息: ${lastError?.message || '未知錯誤'}`);
+    }
+
+    async function callGeminiVision(apiKey, model, base64Image, subject, strategy, customPrompt) {
+      const match = base64Image.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+      if (!match) throw new Error('圖片格式無效');
+      const mimeType = match[1];
+      const data = match[2];
+
+      const subjectGuides = {
+        math: "【數學科專屬】：幾何圖形（邊長、高、角度弧、直角記號）、數線刻度輸出精準 SVG 向量圖碼；若是應用題請優先精確標出 A 卷原圖裁切框 crop_box，並輸出詳細繁中生圖提示詞。",
+        science: "【自然與生活科技專屬】：電路圖、坐標曲線請輸出精準 SVG 向量圖碼；生物細胞構造、動植物生態、實驗器材請務必輸出 crop_box 自動裁切 A 卷原圖，並輸出詳細繁中生圖提示詞。",
+        social: "【社會領域專屬】：等高線地形圖、雨溫圖輸出精準 SVG 向量圖碼；歷史人物、古代建築文物、地圖請輸出 crop_box 自動裁切 A 卷原圖，並輸出詳細繁中生圖提示詞。",
+        english: "【英語科專屬】：街道方向地圖輸出精準 SVG 向量圖碼；看圖選詞/句（人物動作、動物、情境）請務必輸出 crop_box 自動裁切 A 卷原圖，並輸出詳細繁中生圖提示詞！",
+        chinese: "【國語文專屬】：課文結構心智圖輸出 SVG；故事插畫、寓言情境請輸出 crop_box 自動裁切 A 卷原圖，並輸出詳細繁中生圖提示詞！",
+        auto: "【自動跨學科辨識】：自動判斷學科。數理幾何/刻度圖表輸出精確黑白 SVG 向量圖，其餘所有生活情境、生物、英語看圖、語文插畫請務必輸出精確 crop_box 裁切 A 卷原圖，並輸出詳細繁中生圖提示詞！"
+      };
+
+      const systemPrompt = `你是一位頂尖的臺灣中小學【全學科 (生物/理化/自然/數學/社會/英語/國語)】命題出題審題專家，精通各大教科書商（康軒、南一、翰林）的試卷版面與題型設計。
+現在使用者提供了一張「A卷（書商題庫試卷或單頁練習題單）」的圖片。
+指定學科背景：${subjectGuides[subject] || subjectGuides.auto}
+
+【出題核心原則與任務】：
+1. 逐一辨識出該頁圖片中的每一道題目（包含題號、題型、考查觀念、原題文字與配圖細節）。
+2. 為每一道題目生成完全對稱的「B卷（同等難度、題意同構、新情境、新數字/新變因的類似題）」。
+3. 數值/情境變形要求：${strategy === 'friendly' ? '數字漂亮/情境易懂（整除、標準常理數據）' : (strategy === 'challenging' ? '稍微進階（包含複合計算、細節陷阱或深入探討）' : '基礎補救（數字較小、單一變因）')}。
+${customPrompt ? `4. 使用者自訂要求：${customPrompt}` : ''}
+
+5. 【重要！配圖與數據/圖表精準對齊原則（嚴格比對 A 卷原圖）】：
+   - 【原則 A：數據曲線、刻度、表格、幾何、電路圖 ➜ 必須輸出 SVG】：
+     * 若 A 卷原題含有【坐標曲線圖（如酵素活性-pH值關係曲線、雨溫圖、速度-時間圖）、刻度數線、幾何圖形、電路圖、實驗器材刻度（如量筒凹液面）、對照實驗表格】：
+     * 絕對嚴禁使用模糊的 AI 擴散生圖！必須將 figure_type 設為 "svg"，並在 figure_svg 輸出精確的黑白考卷風 SVG 向量圖碼！
+     * 在 SVG 中，必須完整繪出：
+       a. 帶有刻度與數字的坐標軸（例如橫軸 0, 2, 4, 6, 8, 10, 12, 14 pH值，縱軸 酵素活性）
+       b. 曲線與直線，並清晰標出標號【甲、乙、丙、丁】
+       c. SVG 尺寸寬高約 280x200，採用純黑線條（stroke="#000" stroke-width="2" fill="none"），背景純白。
+   - 【原則 B：儀器構造圖（如顯微鏡構造、解剖鏡、動植物細胞、人體器官、實驗器材）】：
+     * 若題目考查特定部位名稱或功能（例如問：圖中標號「甲、乙、丙、丁」何者為眼距調整器？何者為粗調節輪？）：
+     * 必須在 labels 欄位精確列出該題考查的所有部位標號及其名稱：
+       例："labels": [{"id": "甲", "name": "眼距調整器", "x": 60, "y": 20}, {"id": "乙", "name": "眼焦調整器", "x": 75, "y": 30}]
+     * image_prompt 提示詞【必須為繁體中文，嚴禁生成寫實照片/3D圖】！必須輸出極其精準、方便教師複製到各大 AI 生圖工具的繁體中文黑白線稿提示詞：
+       範例："臺灣教科書黑白試卷線稿風格，雙筒解剖顯微鏡結構示意圖，清楚展現雙筒目鏡、眼焦調節環、眼距調整器、焦距調整輪與載物台，純白背景，乾淨清晰黑色細線輪廓，無陰影，無灰階，無色彩，教材手繪黑白插圖。"
+   - 【原則 C：生活情境、故事插畫、生物生態（如綠豆萌芽、昆蟲觸角、小狗跑步、幾何圖形）】：
+     * figure_type 設為 "image"，image_prompt 輸出純白底、黑色輪廓線稿風格的繁體中文生圖提示詞。
+   - 【原則 D：A 卷原題配圖座標裁切框 (crop_box)】：
+     * 若 A 卷原題在該題旁邊有任何配圖、插圖、儀器構造或圖表（如顯微鏡構造、物鏡長短、酵素曲線）：
+     * 務必在 crop_box 欄位輸出該配圖在整張 A 卷圖片中的精確位置 [ymin, xmin, ymax, xmax]（以 0 到 1000 表示比例，例如 [440, 800, 580, 930]）。系統會自動從 A 卷高畫質裁切該圖！
+   - 若原題無配圖，has_figure 設為 false，crop_box 留空陣列，image_prompt 與 figure_svg 填空字串。
+
+請務必嚴格輸出合法的 JSON 格式，無任何多餘文字：
+{
+  "exam_title": "試卷名稱與單元名稱 (B卷)",
+  "questions": [
+    {
+      "id": "題號 (如 1, 2, 3)",
+      "type": "題型 (選擇題、填充題、計算題、應用題、實驗題)",
+      "knowledge_point": "考察觀念/單元核心指標",
+      "original_text": "A卷原題完整文字",
+      "new_question": "B卷類似題全新題目 (若考部位，請用 甲、乙、丙、丁 標號)",
+      "options": ["(A) 選項1", "(B) 選項2", "(C) 選項3", "(D) 選項4"] (非選擇題則留空陣列),
+      "answer": "正確答案 (如 (B))",
+      "solution": "詳細解析與各標號對應部位說明",
+      "has_figure": true/false,
+      "figure_type": "svg" 或 "image",
+      "crop_box": [ymin, xmin, ymax, xmax],
+      "labels": [
+        {"id": "甲", "name": "構造名稱", "x": 50, "y": 20},
+        {"id": "乙", "name": "構造名稱", "x": 65, "y": 35}
+      ],
+      "image_prompt": "題目配圖之詳細繁體中文生圖提示詞（規範：臺灣教科書黑白試卷線稿風格，[詳細物體構造/生物/實驗器材/情境]，純白背景，乾淨黑色輪廓線，無陰影，無灰階，無彩色，高對比教材插圖）",
+      "figure_svg": "<svg ...>...</svg>"
+    }
+  ]
+}`;
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: systemPrompt },
+              {
+                inline_data: {
+                  mime_type: mimeType,
+                  data: data
+                }
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          response_mime_type: "application/json",
+          temperature: 0.2
+        }
+      };
+
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resp.ok) {
+        const errText = await resp.text();
+        throw new Error(`API 錯誤 (${resp.status}): ${errText}`);
+      }
+
+      const json = await resp.json();
+      const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawText) throw new Error('模型未回傳有效內容');
+
+      const cleanJson = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      return JSON.parse(cleanJson);
+    }
+
+    // 7. 渲染所有檢視視角 (支援真實 AI 生圖與精準 SVG 雙軌)
+    function renderAllViews() {
+      if (!generatedData || !generatedData.questions) return;
+
+      // 渲染 A/B 卷對比審查卡片
+      diffCardsContainer.innerHTML = '';
+      generatedData.questions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl p-6 shadow-sm border border-slate-200 transition hover:shadow-md";
+        
+        // 配圖標籤徽章
+        let badgeHtml = '';
+        if (q.has_figure) {
+          if (q.image_url) {
+            badgeHtml = `<span class="text-[11px] px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold flex items-center gap-1">🍌 Nano Banana 真實 AI 生圖</span>`;
+          } else if (q.figure_svg) {
+            badgeHtml = `<span class="text-[11px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold flex items-center gap-1">📐 精準 SVG 向量圖</span>`;
+          }
+        }
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-sm">
+                ${q.id || (idx + 1)}
+              </span>
+              <span class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 font-semibold text-slate-700">${q.type || '題目'}</span>
+              <span class="text-xs text-slate-400">觀念：${q.knowledge_point || '核心素養'}</span>
+            </div>
+            ${badgeHtml}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 左欄：A 卷原題 -->
+            <div class="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/80">
+              <div class="text-xs font-bold text-slate-500 mb-2 flex items-center gap-1.5">
+                <i class="ph-bold ph-file-text text-slate-400"></i> A 卷原始題目
+              </div>
+              <div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(q.original_text || '')}</div>
+            </div>
+
+            <!-- 右欄：B 卷類似題 (核心產出) -->
+            <div class="bg-amber-50/40 rounded-2xl p-4 border border-amber-200">
+              <div class="text-xs font-bold text-amber-700 mb-2 flex items-center gap-1.5">
+                <i class="ph-bold ph-sparkle text-amber-500"></i> B 卷全新類似題 (點擊可直接修改)
+              </div>
+              <div class="text-sm text-slate-900 font-medium leading-relaxed whitespace-pre-wrap outline-none p-1 rounded hover:bg-white/60 focus:bg-white focus:ring-1 focus:ring-amber-400" contenteditable="true" onblur="updateQuestionText(${idx}, this.innerText)">${escapeHtml(q.new_question || '')}</div>
+              
+              ${q.options && q.options.length > 0 ? `
+                <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-amber-100">
+                  ${q.options.map(opt => `<div class="text-xs text-slate-700 bg-white/80 p-2 rounded-lg border border-amber-100">${escapeHtml(opt)}</div>`).join('')}
+                </div>
+              ` : ''}
+
+              <!-- 配圖區塊：真實 AI 生圖 OR SVG -->
+              ${q.has_figure ? `
+                <div class="mt-4 pt-3 border-t border-amber-200">
+                  ${q.image_url ? `
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between flex-wrap gap-2">
+                        <span class="text-xs font-bold text-emerald-900 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <i class="ph-bold ph-check-circle text-emerald-600"></i> A 卷原題高畫質截圖 (100% 真實)
+                        </span>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                          <button onclick="openCropModal(${idx})" title="在 A 卷原圖上重新拉框截取此題配圖" class="text-[11px] px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-bold transition flex items-center gap-1 shadow-xs">
+                            <i class="ph-bold ph-crop"></i> ✂️ 重新框選配圖
+                          </button>
+                          <a href="${q.image_url}" target="_blank" download="B卷_第${idx+1}題_配圖.png" class="text-[11px] text-amber-700 hover:underline">下載</a>
+                        </div>
+                      </div>
+                      
+                      <!-- 圖片容器 (A 卷原題截圖保留純淨原圖) -->
+                      <div class="relative flex justify-center bg-white p-2 rounded-xl border border-slate-200 shadow-inner overflow-hidden max-w-sm mx-auto">
+                        <img id="img-diff-${idx}" src="${q.image_url}" alt="B卷配圖" class="max-h-56 object-contain rounded-lg">
+                      </div>
+
+                      ${q.labels && q.labels.length > 0 ? `
+                        <div class="text-[11px] text-slate-600 bg-amber-50/70 p-2 rounded-lg border border-amber-100 flex items-center gap-2 flex-wrap">
+                          <span class="font-bold text-amber-800">🏷️ 部位標號對應：</span>
+                          ${q.labels.map(l => `<span class="bg-white px-1.5 py-0.5 rounded border border-amber-200 font-medium"><strong>${escapeHtml(l.id)}</strong>: ${escapeHtml(l.name)}</span>`).join('')}
+                        </div>
+                      ` : ''}
+
+                      <!-- 繁體中文生圖提示詞專區（含一鍵複製） -->
+                      <div class="mt-2.5 p-3 bg-amber-50/90 rounded-xl border border-amber-200 text-xs space-y-1.5">
+                        <div class="flex items-center justify-between">
+                          <span class="font-bold text-amber-900 flex items-center gap-1">
+                            <i class="ph-bold ph-palette text-amber-600"></i>
+                            【第 ${idx + 1} 題】配圖生圖提示詞（繁體中文）：
+                          </span>
+                          <button onclick="copySinglePrompt(${idx})" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold text-[11px] flex items-center gap-1 transition shadow-xs">
+                            <i class="ph-bold ph-copy"></i> 複製提示詞
+                          </button>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-amber-200/70 text-slate-700 font-mono text-[11px] select-all whitespace-pre-wrap break-words leading-relaxed">
+                          ${escapeHtml(q.image_prompt || '臺灣教科書黑白試卷線稿風格，純白背景，乾淨黑色輪廓細線，無陰影，無灰階，無彩色，教材黑白插圖。')}
+                        </div>
+                        <div class="text-[10px] text-amber-700 flex items-center gap-1">
+                          <i class="ph-bold ph-lightbulb"></i> 若欲自行使用外部 AI (如 ChatGPT/Recraft) 生圖，可直接複製上方提示詞。
+                        </div>
+                      </div>
+                    </div>
+                  ` : (q.figure_svg ? `
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-emerald-800 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          📐 100% 精準黑白考卷 SVG 向量圖 (刻度/坐標/標號完全精確)
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <button onclick="openCropModal(${idx})" class="text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-semibold flex items-center gap-1">
+                            <i class="ph-bold ph-crop"></i> 改為框選A卷配圖
+                          </button>
+                          <button onclick="downloadSvg(${idx})" class="text-[11px] text-amber-600 hover:text-amber-700 underline font-semibold">下載 SVG</button>
+                        </div>
+                      </div>
+                      <div class="svg-container flex justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-inner">
+                        ${q.figure_svg}
+                      </div>
+                      <!-- 提示詞供備用複製 -->
+                      <div class="mt-2 p-2.5 bg-amber-50/80 rounded-xl border border-amber-200 text-xs space-y-1">
+                        <div class="flex items-center justify-between">
+                          <span class="font-bold text-amber-900 text-[11px]">🎨【第 ${idx + 1} 題】生圖提示詞（備用）：</span>
+                          <button onclick="copySinglePrompt(${idx})" class="px-2 py-0.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold flex items-center gap-1">
+                            <i class="ph-bold ph-copy"></i> 複製
+                          </button>
+                        </div>
+                        <div class="bg-white p-1.5 rounded border border-amber-200/70 text-slate-700 font-mono text-[10px] select-all leading-relaxed break-words">
+                          ${escapeHtml(q.image_prompt || '臺灣教科書黑白試卷風格，純白背景，乾淨黑色輪廓線，教材插圖。')}
+                        </div>
+                      </div>
+                    </div>
+                  ` : `
+                    <!-- 題目有配圖但尚未框選：引導手動框選原圖 -->
+                    <div class="space-y-2 p-4 bg-amber-50/70 border border-dashed border-amber-300 rounded-2xl text-center">
+                      <div class="text-xs font-bold text-amber-900 flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-image text-amber-600 text-base"></i> 此題在 A 卷有配圖
+                      </div>
+                      <p class="text-[11px] text-slate-600">已取消失真 AI 生圖，請直接點擊下方手動框選 A 卷清晰原圖：</p>
+                      <div class="flex justify-center gap-2 pt-1">
+                        <button onclick="openCropModal(${idx})" class="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                          <i class="ph-bold ph-crop"></i> ✂️ 立即框選 A 卷原題配圖
+                        </button>
+                      </div>
+                      <div class="mt-2 text-left pt-2 border-t border-amber-200/60">
+                        <div class="flex items-center justify-between text-[11px] text-amber-900 font-bold mb-1">
+                          <span>🎨 繁體中文生圖提示詞（可複製至外部 AI 生圖）：</span>
+                          <button onclick="copySinglePrompt(${idx})" class="px-2 py-0.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold flex items-center gap-1">
+                            <i class="ph-bold ph-copy"></i> 複製提示詞
+                          </button>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-amber-200 text-slate-700 font-mono text-[10px] select-all leading-relaxed break-words">
+                          ${escapeHtml(q.image_prompt || '臺灣教科書黑白試卷線稿風格，純白背景，乾淨黑色輪廓細線，無陰影，無灰階，無彩色，教材黑白插圖。')}
+                        </div>
+                      </div>
+                    </div>
+                  `)}
+                </div>
+              ` : `
+                <div class="mt-3 pt-2 border-t border-dashed border-slate-200 flex justify-end">
+                  <button onclick="openCropModal(${idx})" class="text-[11px] text-slate-500 hover:text-amber-700 hover:underline flex items-center gap-1">
+                    <i class="ph-bold ph-crop"></i> ✂️ 此題在 A 卷其實有圖？點此手動框選
+                  </button>
+                </div>
+              `}
+
+              <!-- 答案與解析折疊 -->
+              <div class="mt-4 pt-3 border-t border-amber-200">
+                <details class="group">
+                  <summary class="text-xs font-bold text-amber-800 cursor-pointer list-none flex items-center justify-between">
+                    <span>💡 參考答案與解題步驟</span>
+                    <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
+                  </summary>
+                  <div class="mt-2 text-xs text-slate-600 bg-white p-3 rounded-xl border border-amber-100 space-y-1 leading-relaxed whitespace-pre-wrap">
+<strong class="text-emerald-700">【答案】</strong>${escapeHtml(q.answer || '')}
+<strong class="text-slate-700">【解析】</strong>${escapeHtml(q.solution || '')}
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+        `;
+        diffCardsContainer.appendChild(card);
+      });
+
+      // 渲染考卷試題卷 (學生用/教師用共享，包含真實圖片或 SVG)
+      paperQuestionsContainer.innerHTML = '';
+      generatedData.questions.forEach((q, idx) => {
+        const item = document.createElement('div');
+        item.className = "paper-item border-b border-slate-200 pb-6 last:border-none";
+        
+        let figureHtml = '';
+        if (q.has_figure) {
+          if (q.image_url) {
+            figureHtml = `
+              <div class="relative inline-block w-full text-center">
+                <img src="${q.image_url}" alt="配圖" class="w-full h-auto object-contain rounded">
+                ${(!q.is_from_a_exam && q.show_labels && q.labels && q.labels.length > 0) ? `
+                  <div class="absolute inset-0 pointer-events-none">
+                    ${q.labels.map(lbl => `
+                      <div class="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center font-mono font-bold text-[11px] bg-slate-900 text-white w-4 h-4 rounded-full border border-white shadow-xs" style="left: ${lbl.x || 50}%; top: ${lbl.y || 50}%;">
+                        <span>${escapeHtml(lbl.id)}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          } else if (q.figure_svg) {
+            figureHtml = `<div class="svg-container w-full">${q.figure_svg}</div>`;
+          }
+        }
+
+        const isChoice = q.options && q.options.length > 0;
+        item.className = "paper-item p-3 border border-slate-200 rounded-xl bg-white space-y-2";
+        item.innerHTML = `
+          <!-- 題目題幹 -->
+          <div class="flex items-start gap-1.5 leading-relaxed text-sm text-slate-900 font-medium">
+            ${isChoice ? `<span class="font-mono font-bold text-slate-800 tracking-wider">(&nbsp;&nbsp;&nbsp;&nbsp;)</span>` : ''}
+            <span class="font-bold text-slate-900">${q.id || (idx + 1)}.</span>
+            <span class="flex-1">${escapeHtml(q.new_question || '')}</span>
+          </div>
+
+          <!-- 配圖 (居中清晰展示，邊框精美，尺寸自適應) -->
+          ${figureHtml ? `
+            <div class="my-2 flex justify-center">
+              <div class="max-w-[220px] w-full bg-white p-1 rounded-lg border border-slate-200 shadow-xs">
+                ${figureHtml}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 選擇題選項 (自適應排版，絕不擁擠折字) -->
+          ${isChoice ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 text-xs text-slate-800 pl-3 pt-1 font-normal">
+              ${q.options.map(opt => `<div>${escapeHtml(opt)}</div>`).join('')}
+            </div>
+          ` : ''}
+
+          <!-- 解答與解析 (僅教師卷顯示) -->
+          <div class="teacher-solution hidden mt-2 p-2 bg-amber-50 rounded-lg border border-amber-200 text-xs text-slate-700 leading-relaxed">
+            <span class="font-bold text-amber-800">【解答】</span> ${escapeHtml(q.answer || '')}<br>
+            <span class="font-bold text-slate-800">【解析】</span> <span class="whitespace-pre-wrap">${escapeHtml(q.solution || '')}</span>
+            ${q.image_prompt ? `<div class="mt-1 pt-1 border-t border-amber-200 text-[11px] text-amber-900"><span class="font-bold">🎨【配圖生圖提示詞】</span>${escapeHtml(q.image_prompt)}</div>` : ''}
+          </div>
+        `;
+        paperQuestionsContainer.appendChild(item);
+      });
+    }
+
+    // 更新問題文字
+    window.updateQuestionText = function(index, newText) {
+      if (generatedData && generatedData.questions && generatedData.questions[index]) {
+        generatedData.questions[index].new_question = newText;
+      }
+    };
+
+    // 單獨下載 SVG 檔案
+    window.downloadSvg = function(index) {
+      if (!generatedData?.questions?.[index]?.figure_svg) return;
+      const svgCode = generatedData.questions[index].figure_svg;
+      const blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `B卷_第${index + 1}題_精準配圖.svg`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    // 8. 書商考卷排版與雙欄切換狀態
+    let isTwoColumnLayout = true; // 預設使用書商經典雙欄排版
+    const toggleLayoutBtn = document.getElementById('toggleLayoutBtn');
+    const layoutText = document.getElementById('layoutText');
+
+    toggleLayoutBtn.addEventListener('click', () => {
+      isTwoColumnLayout = !isTwoColumnLayout;
+      if (isTwoColumnLayout) {
+        paperQuestionsContainer.classList.add('two-column-exam');
+        layoutText.innerText = '書商雙欄考卷風 (目前)';
+        toggleLayoutBtn.classList.add('bg-amber-100', 'text-amber-800');
+        toggleLayoutBtn.classList.remove('bg-slate-100', 'text-slate-700');
+      } else {
+        paperQuestionsContainer.classList.remove('two-column-exam');
+        layoutText.innerText = '標準單欄寬版 (目前)';
+        toggleLayoutBtn.classList.remove('bg-amber-100', 'text-amber-800');
+        toggleLayoutBtn.classList.add('bg-slate-100', 'text-slate-700');
+      }
+    });
+
+    // 8. 切換檢視模式 (A/B審查 vs 學生卷 vs 教師解答卷)
+    function switchMode(mode) {
+      currentMode = mode;
+      [tabDiff, tabStudent, tabTeacher].forEach(btn => {
+        btn.className = "px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5";
+      });
+
+      const solutions = document.querySelectorAll('.teacher-solution');
+
+      if (mode === 'diff') {
+        tabDiff.className = "px-4 py-2 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm transition flex items-center gap-1.5";
+        diffView.classList.remove('hidden');
+        paperView.classList.add('hidden');
+      } else if (mode === 'student') {
+        tabStudent.className = "px-4 py-2 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm transition flex items-center gap-1.5";
+        diffView.classList.add('hidden');
+        paperView.classList.remove('hidden');
+        solutions.forEach(s => s.classList.add('hidden'));
+        const examTitle = generatedData?.exam_title || '平時評量卷 (B卷)';
+        document.getElementById('paperSchoolName').innerText = `屏東縣國民小學 113 學年度 ${examTitle}`;
+        if (isTwoColumnLayout) paperQuestionsContainer.classList.add('two-column-exam');
+      } else if (mode === 'teacher') {
+        tabTeacher.className = "px-4 py-2 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm transition flex items-center gap-1.5";
+        diffView.classList.add('hidden');
+        paperView.classList.remove('hidden');
+        solutions.forEach(s => s.classList.remove('hidden'));
+        const examTitle = generatedData?.exam_title || '評量詳解 (B卷)';
+        document.getElementById('paperSchoolName').innerText = `【教師解答卷】國民小學 113 學年度 ${examTitle}`;
+        if (isTwoColumnLayout) paperQuestionsContainer.classList.add('two-column-exam');
+      }
+    }
+
+    tabDiff.addEventListener('click', () => switchMode('diff'));
+    tabStudent.addEventListener('click', () => switchMode('student'));
+    tabTeacher.addEventListener('click', () => switchMode('teacher'));
+
+    // 9. 一鍵複製全卷所有配圖的繁體中文生圖提示詞
+    copyAllPromptsBtn.addEventListener('click', () => {
+      if (!generatedData || !generatedData.questions || generatedData.questions.length === 0) {
+        alert('請先生成或載入 B 卷試題！');
+        return;
+      }
+
+      // 篩選出所有有配圖或需要配圖的題目
+      const figureQuestions = generatedData.questions
+        .map((q, idx) => ({ ...q, originalIndex: idx + 1 }))
+        .filter(q => q.has_figure || (q.image_prompt && q.image_prompt.trim().length > 0) || q.figure_svg);
+
+      if (figureQuestions.length === 0) {
+        alert('此份試卷目前沒有需要配圖的題目！');
+        return;
+      }
+
+      const examTitle = generatedData.exam_title || 'B卷評量試卷';
+      let copyText = `========================================\n`;
+      copyText += `【${examTitle}】配圖 AI 生圖提示詞清單\n`;
+      copyText += `適用工具：ChatGPT (DALL-E 3)、Midjourney、Recraft、即夢、Gemini 等\n`;
+      copyText += `========================================\n\n`;
+
+      figureQuestions.forEach(q => {
+        const qSummary = (q.new_question || q.original_text || '').replace(/\n+/g, ' ').slice(0, 50);
+        const prompt = q.image_prompt || '臺灣教科書黑白試卷線稿風格，純白背景，乾淨黑色輪廓細線，無陰影，無灰階，無彩色，教材黑白插圖。';
+        copyText += `【第 ${q.originalIndex} 題】（${q.type || '題目'}）\n`;
+        copyText += `題目摘要：${qSummary}...\n`;
+        if (q.labels && q.labels.length > 0) {
+          copyText += `標號構造：${q.labels.map(l => `${l.id}: ${l.name}`).join('、')}\n`;
+        }
+        copyText += `🎨 繁體中文生圖提示詞：\n${prompt}\n`;
+        copyText += `----------------------------------------\n\n`;
+      });
+
+      navigator.clipboard.writeText(copyText).then(() => {
+        alert(`🎉 成功複製！已將全卷共 ${figureQuestions.length} 題的「題號與繁體中文生圖提示詞」複製到剪貼簿！\n\n您可以直接貼至您慣用的 AI 生圖工具（如 ChatGPT、Midjourney、Recraft 等）進行出圖。`);
+      }).catch(err => {
+        console.error('複製失敗:', err);
+        const ta = document.createElement('textarea');
+        ta.value = copyText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert(`🎉 成功複製！已將全卷共 ${figureQuestions.length} 題的配圖提示詞複製到剪貼簿！`);
+      });
+    });
+
+    // 單題複製繁體中文生圖提示詞
+    window.copySinglePrompt = function(idx) {
+      if (!generatedData || !generatedData.questions || !generatedData.questions[idx]) return;
+      const q = generatedData.questions[idx];
+      const prompt = q.image_prompt || '臺灣教科書黑白試卷線稿風格，純白背景，乾淨黑色輪廓線，無陰影，無灰階，無彩色，教材黑白插圖。';
+      const text = `【第 ${idx + 1} 題配圖生圖提示詞】\n${prompt}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        alert(`✅ 已複製第 ${idx + 1} 題的繁體中文生圖提示詞！\n\n提示詞內容：\n${prompt}`);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert(`✅ 已複製第 ${idx + 1} 題的繁體中文生圖提示詞！`);
+      });
+    };
+
+    // 將 SVG 轉為 Base64 PNG (供 Word 內嵌圖片)
+    async function convertSvgToPngDataUrl(svgString) {
+      return new Promise((resolve) => {
+        try {
+          const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(300, img.naturalWidth || 320);
+            canvas.height = Math.max(180, img.naturalHeight || 200);
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            resolve(canvas.toDataURL('image/png'));
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+          };
+          img.src = url;
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    // 將遠端圖片轉為 Base64 (供 Word 內嵌)
+    async function fetchImageAsBase64(url) {
+      if (!url) return null;
+      if (url.startsWith('data:')) return url;
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = () => resolve(url);
+          reader.readAsDataURL(blob);
+        });
+      } catch (e) {
+        return url;
+      }
+    }
+
+    // 產生包含所有內嵌圖片的 Word 相容 HTML 文件
+    async function generateWordHtmlDocument() {
+      if (!generatedData || !generatedData.questions) return null;
+      const title = generatedData.exam_title || '評量試卷 (B卷)';
+      
+      let html = `<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${escapeHtml(title)}</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  body { font-family: "微軟正黑體", "Noto Sans TC", "Calibri", sans-serif; font-size: 11pt; line-height: 1.5; color: #000; margin: 20mm; }
+  h1 { font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 6pt; }
+  .header-table { width: 100%; border-bottom: 2pt solid #000; padding-bottom: 6pt; margin-bottom: 16pt; }
+  .header-table td { font-size: 10.5pt; font-weight: bold; }
+  .q-item { margin-bottom: 16pt; page-break-inside: avoid; }
+  .q-title { font-size: 11pt; font-weight: bold; margin-bottom: 4pt; }
+  .q-options { margin-left: 18pt; margin-top: 4pt; font-size: 10.5pt; }
+  .q-options div { margin-bottom: 3pt; }
+  .q-img-wrap { text-align: center; margin: 8pt 0; }
+  .q-img { max-width: 240pt; max-height: 180pt; border: 1pt solid #ddd; }
+  .ans-box { background-color: #f8fafc; border: 1pt solid #cbd5e1; padding: 6pt 10pt; margin-top: 6pt; font-size: 10pt; line-height: 1.5; }
+</style>
+</head>
+<body>
+<h1>${escapeHtml(title)}</h1>
+<table class="header-table" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="25%">班級：________</td>
+    <td width="25%">座號：____</td>
+    <td width="25%">姓名：________</td>
+    <td width="25%" align="right">得分：________</td>
+  </tr>
+</table>
+`;
+
+      // 遍歷題目並準備所有配圖
+      for (let idx = 0; idx < generatedData.questions.length; idx++) {
+        const q = generatedData.questions[idx];
+        const isChoice = q.options && q.options.length > 0;
+        
+        let imgTag = '';
+        if (q.has_figure) {
+          let imgSrc = null;
+          if (q.image_url) {
+            imgSrc = await fetchImageAsBase64(q.image_url);
+          } else if (q.figure_svg) {
+            imgSrc = await convertSvgToPngDataUrl(q.figure_svg);
+          }
+          if (imgSrc) {
+            imgTag = `<div class="q-img-wrap"><img class="q-img" src="${imgSrc}" alt="題目配圖" /></div>`;
+          }
+        }
+
+        html += `
+<div class="q-item">
+  <div class="q-title">${isChoice ? '(&nbsp;&nbsp;&nbsp;&nbsp;) ' : ''}${idx + 1}. ${escapeHtml(q.new_question)}</div>
+  ${imgTag}
+  ${isChoice ? `
+    <div class="q-options">
+      ${q.options.map(opt => `<div>${escapeHtml(opt)}</div>`).join('')}
+    </div>
+  ` : ''}
+</div>`;
+      }
+
+      // 參考答案與解析區塊
+      html += `
+<br/><br/>
+<div style="page-break-before: always;"></div>
+<h2 style="font-size: 14pt; font-weight: bold; text-align: center; border-bottom: 1.5pt solid #333; padding-bottom: 6pt;">【參考答案與詳細解析】</h2>
+`;
+      for (let idx = 0; idx < generatedData.questions.length; idx++) {
+        const q = generatedData.questions[idx];
+        html += `
+<div class="q-item">
+  <div><strong>第 ${idx + 1} 題：</strong> 正確答案：<strong style="color: #b91c1c;">${escapeHtml(q.answer || '')}</strong></div>
+  <div class="ans-box"><strong>【解析】</strong><br/>${escapeHtml(q.solution || '')}</div>
+</div>`;
+      }
+
+      html += `</body></html>`;
+      return html;
+    }
+
+    // 複製到 Word (剪貼簿富文本，包含所有內嵌圖片)
+    copyWordBtn.addEventListener('click', async () => {
+      if (!generatedData || !generatedData.questions) {
+        alert('請先生成或載入 B 卷試題！');
+        return;
+      }
+      
+      const originalText = copyWordBtn.innerHTML;
+      copyWordBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> 處理圖片中...';
+
+      try {
+        const docHtml = await generateWordHtmlDocument();
+        if (!docHtml) throw new Error('無法生成試卷文件');
+
+        // 純文字後備格式
+        let plainText = `【${generatedData.exam_title || '評量試卷 B卷'}】\n\n`;
+        generatedData.questions.forEach((q, idx) => {
+          plainText += `${idx + 1}. ${q.new_question}\n`;
+          if (q.options && q.options.length > 0) {
+            plainText += `   ${q.options.join('   ')}\n`;
+          }
+          plainText += `\n`;
+        });
+
+        // 寫入剪貼簿 (同時包含富文本 HTML 與純文字)
+        const blobHtml = new Blob([docHtml], { type: 'text/html' });
+        const blobText = new Blob([plainText], { type: 'text/plain' });
+        
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': blobHtml,
+            'text/plain': blobText
+          })
+        ]);
+
+        alert('✅ 已複製試卷（包含所有圖片與排版）到剪貼簿！\n請直接切換至 Word 並按 Ctrl + V 貼上即可！');
+      } catch (err) {
+        console.error('複製失敗:', err);
+        alert('剪貼簿複製受限，請直接點擊旁邊的「下載 Word 檔 (.doc)」一鍵存檔！');
+      } finally {
+        copyWordBtn.innerHTML = originalText;
+      }
+    });
+
+    // 直接下載 Word 檔案 (.doc 檔，所有圖片已 Base64 內嵌)
+    downloadWordBtn.addEventListener('click', async () => {
+      if (!generatedData || !generatedData.questions) {
+        alert('請先生成或載入 B 卷試題！');
+        return;
+      }
+
+      const originalText = downloadWordBtn.innerHTML;
+      downloadWordBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> 產生 Word 檔...';
+
+      try {
+        const docHtml = await generateWordHtmlDocument();
+        if (!docHtml) throw new Error('無法生成 Word 文件');
+
+        const title = generatedData.exam_title || 'B卷評量試卷';
+        const blob = new Blob(['\ufeff' + docHtml], { type: 'application/msword;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${title}.doc`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('下載 Word 失敗:', err);
+        alert('下載 Word 失敗：' + err.message);
+      } finally {
+        downloadWordBtn.innerHTML = originalText;
+      }
+    });
+
+    // 工具函數
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    // ==========================================
+    // 免 API Key 通用出題 Prompt 資料庫與交互邏輯
+    // ==========================================
+    const PROMPT_TEMPLATES = {
+      general: `你是一位深諳臺灣教育部課綱的資深中小學命題與審題名師。我將會上傳一張「A卷考卷照片（或題目文字）」，請你為我打造一份完全同構的【B卷（平行類似題測驗卷）】。
+
+【語言強制規範（極重要）】
+★ 全程必須「100% 使用臺灣繁體中文 (Traditional Chinese, zh-TW)」，嚴禁任何簡體字或中國大陸用語。
+★ 專有名詞必須嚴格符合臺灣教育部國中小審訂標準名詞（如：「質數」非「素數」、「列印」非「打印」、「資訊」非「信息」、「單元」非「模塊」等），確保臺灣老師複製後不需手動繁簡轉換，即可直接編輯修改與排版！
+
+【命題最高指導原則】
+1. 核心指標同構：每題必須精準鎖定 A 卷原題的「學習指標」與「核心考點」，難易度、認知階層（記憶/理解/應用/分析）保持一致。
+2. 題目完全換新：更換人名、時間、臺灣生活情境與具體數據，絕不抄襲原題文字，但解題思維路徑必須完全對應。
+3. 嚴謹常理校驗：所有數值、時事或科學條件必須合乎臺灣學童生活常理（如人數不能為小數、年齡不可為負數、超商物價符合行情等）。
+4. 圖表配圖處理：若原題含有圖表、幾何圖或示意圖，請在該題下方提供：
+   - 【圖表文字描述】：詳細描述圖中所有標示與關鍵條件。
+   - 【AI 生圖提示詞（臺灣繁體中文）】：精確描述「黑白簡約考試線條圖、白底無雜訊」的生圖指令，方便我一鍵複製到生圖 AI 繪製。
+5. 輸出排版規範：
+   - 階段一：【B卷 學生測驗卷】（清楚標記題號、括號、題目、選項 ABCD，排版整潔利於直接印製或貼入 Word）。
+   - 階段二：【教師版 參考答案與詳盡解析】（列出各題正確答案，並提供步驟化解析與常犯盲點提示）。
+
+請確認已完全理解上述「臺灣繁體中文」與命題規範，待我上傳考卷照片或提供題目後，請直接產出繁體中文 B 卷試題與答案解析！`,
+
+      math: `你是一位深諳臺灣教育部課綱（康軒/南一/翰林版）的國中小數學命題輔導團名師。我將上傳「A卷數學考卷照片（或題目）」，請為我命製一份完全同構的【數學 B卷 平行類題】。
+
+【語言強制規範（極重要）】
+★ 全程必須「100% 使用臺灣繁體中文 (Traditional Chinese, zh-TW)」，絕不可出現任何簡體字。
+★ 數學名詞一律採用臺灣教育部審訂標準術語（如：「質數」非「素數」、「因數/倍數」非「約數/倍數」、「正方體/長方體」非「立方體/長方體」、「方程式」非「方程」、「聯立」非「方程組」、「截距/斜率/對角線」等），確保臺灣數學老師能一鍵複製並直接修改題幹數值！
+
+【數學命題最高規範】
+1. 題型與解題架構完全同構：
+   - 代數題：更換係數與常數，保證計算過程工整，最終答案避免繁複無意義的無窮循環小數或怪異分數。
+   - 幾何題：保持相同幾何性質與定理考點（如相似形、平行截比例線段、圓周角、畢氏定理等），更換角度或邊長數據。
+   - 應用題：替換貼近臺灣學童生活經驗之情境（如園遊會、超商打折、搭乘捷運、夜市採買），嚴格遵守生活常理。
+2. 幾何配圖防呆與提示詞：
+   - 針對幾何或圖形題，提供清晰的【圖形結構文字規格】。
+   - 同時附上【黑白線條幾何圖生圖 Prompt（臺灣繁中）】，要求「臺灣國中小教科書黑白向量線稿風、標註頂點字母與長度角度、白底高對比、無多餘雜訊」。
+3. 輸出結構要求：
+   - 【學生測驗卷】：題號、配分、題目文字、選擇題選項排列整齊。
+   - 【詳細解答卷】：每題均附「正確答案」、「公式與完整列式計算過程」以及「學生最易陷阱錯誤分析」。
+
+請確認已完全理解，待我傳上考卷題目後，以純正臺灣繁體中文即刻開始出題！`,
+
+      science: `你是一位資深的臺灣國中小自然與國高中理化科首席命題名師。我將上傳「A卷自然/理化考卷照片」，請為我命製一份完全同構的【B卷 平行概念測驗卷】。
+
+【語言強制規範（極重要）】
+★ 全程必須「100% 使用臺灣繁體中文 (Traditional Chinese, zh-TW)」，嚴禁簡體字與非臺灣用語。
+★ 科學術語嚴格遵守臺灣教育部國中小自然科學審訂詞彙（如：「氧化/還原」、「酸鹼中和」、「莫耳濃度」非「摩爾濃度」、「歐姆定律」、「連通管原理」、「大氣壓力」非「大氣壓強」、「浮力/密度」等），方便臺灣教師直接微調出題！
+
+【理化命題規範】
+1. 概念同構與變因對調：
+   - 保留原題考查之物理/化學核心概念（如力與運動、浮力、電路歐姆定律、酸鹼中和、反應速率與平衡等）。
+   - 可改變實驗操縱變因、觀察變因，或替換同族化學元素/反應物，考查學生舉一反三之觀念理解。
+2. 數據與物理常數精準：
+   - 計算題（如加速度、密度、功與能、莫耳濃度）數值設計必須易於整除或符合理化常理。
+3. 實驗裝置圖與示意圖：
+   - 若有實驗裝置圖（如天平、量筒、滑輪組、電路圖），請明確列出【實驗圖表描述】與【黑白實驗線條圖生圖 Prompt（繁體中文）】。
+4. 輸出結構：
+   - 一、【B卷 學生測驗卷】（格式清晰，臺灣繁體中文，可直接排版印刷）
+   - 二、【教師解析卷】（附各題標準答案、關鍵觀念剖析、推導步驟與常見迷思概念澄清）
+
+請確認理解，待我傳送題目後，以純正臺灣繁體中文立即輸出！`,
+
+      biology: `你是一位精通臺灣國中小自然（生物篇）與高中生物學的命題專家。我將上傳「A卷生物考卷照片」，請為我生成完全對標核心素養的【B卷 平行類似題】。
+
+【語言強制規範（極重要）】
+★ 全程必須「100% 使用臺灣繁體中文 (Traditional Chinese, zh-TW)」，嚴禁簡體字。
+★ 生物專有名詞一律依照臺灣教育部課綱（如：「粒線體」非「線粒體」、「高基氏體」非「高爾基體」、「族群」非「種群」、「食物網」非「食物鏈/食物網」、「光合作用/呼吸作用」等），確保臺灣生物老師完全不需校改詞彙！
+
+【生物命題規範】
+1. 生命科學概念同構：
+   - 鎖定相同生物學觀念（如細胞構造、顯微鏡操作、光合與呼吸作用、人體消化循環神經系統、遺傳孟德爾法則、生態系能量流動）。
+   - 替換生物物種（如由水稻換成玉米、人體胃液換成唾液酵素）、替換圖表變因，檢驗觀念本質而非死記硬背。
+2. 探究與實驗素養題：
+   - 著重實驗設計、對照組與實驗組設定、曲線圖或數據表格判讀。
+3. 生物解剖與構造配圖：
+   - 若原題含解剖圖、器官圖或細胞圖，提供【結構標記說明】與【教科書等級黑白輪廓圖生圖 Prompt（臺灣繁體中文）】。
+4. 輸出結構：
+   - 【B卷 學生作答卷】（臺灣繁體中文）
+   - 【完整參考答案與素養導向解析】（臺灣繁體中文）
+
+請確認已準備好，待我傳入題目照片後開始！`,
+
+      social: `你是一位深諳臺灣中小學社會領域課綱（歷史、地理、公民）的資深命題輔導團輔導員。我將上傳「A卷社會科考卷照片」，請為我命製【B卷 核心素養平行類題】。
+
+【語言強制規範（極重要）】
+★ 全程必須「100% 使用臺灣繁體中文 (Traditional Chinese, zh-TW)」，嚴禁簡體字。
+★ 人名、地名、歷史事件與法律專有名詞，必須嚴格依照臺灣教育部審訂課本標準（如：「荷西時期」、「鄭氏時期」、「清領時期」、「日治時期」非「日據」、「公民權」、「五權憲法」、「行政院/立法院」、「機會成本」等），方便臺灣社會科老師輕鬆編輯！
+
+【社會科命題規範】
+1. 素養情境同構化：
+   - 地理：保持相同地圖判讀、等高線、經緯度、氣候圖或產業轉型概念，更換地區、洋流、風向或案例背景（以臺灣地理與世界地理為範疇）。
+   - 歷史：保持相同歷史因果邏輯、重要制度、改革背景或史料研讀考點，替換相應時期之相關史料、日記節錄或平行歷史事件。
+   - 公民：維持相同憲法、人權、民刑法、經濟學供需曲線或政府體制概念，改寫成貼近當代臺灣之公共議題或生活時事。
+2. 避免偏頗與死背：著重圖表資料解讀與批判思考，非冷僻年代數字死記。
+3. 輸出結構：
+   - 【學生測驗卷】（臺灣繁體中文，附情境題幹、圖表描述或生圖提示詞）
+   - 【教師詳解卷】（臺灣繁體中文，附標準答案、各選項正誤判斷依據與延伸思維）
+
+請確認已準備好，待我傳入題目後立即出題！`,
+
+      english: `你是一位精通臺灣國中小英語科（1200字/2000字常用單字與文法指標）及會考學測命題的英文名師。我將上傳「A卷英語考卷照片」，請為我命製一份完全同構的【B卷 英語平行測驗卷】。
+
+【語言強制規範（極重要）】
+★ 考題本身為英文，但所有【中文翻譯、文法解析、易混淆選項辨析與說明】，必須「100% 全程使用臺灣繁體中文 (Traditional Chinese, zh-TW)」，嚴禁任何簡體中文或中國大陸文法術語。
+★ 確保臺灣英文老師能直接複製解析印給學生閱讀，方便老師修改補充！
+
+【英語科命題規範】
+1. 文法句型與語意同構：
+   - 嚴格鎖定原題所測驗之文法焦點（如：動名詞vs不定詞、關係代名詞、完成式、被動態、假設語氣等）。
+   - 更換主詞、動詞與語境單字，但難度係數與字彙量級完全平行臺灣教育部英語課綱。
+2. 克漏字與閱讀測驗：
+   - 若包含長篇閱讀或對話，請改寫一篇字數相當、同等Lexile閱讀難度、情境不同但題目考點（主旨題、細節題、代名詞指涉、字義推論）完全對齊的新短文。
+3. 輸出結構：
+   - Part I: B-Form Student Test Paper (With complete questions, dialogue/reading passages, and options ABCD).
+   - Part II: Teacher's Answer Key & Detailed Explanations (含道地臺灣繁體中文翻譯、文法重點解析、易混淆選項剖析).
+
+Ready to accept my exam photo or text!`,
+
+      chinese: `你是一位專精臺灣中小學國語文（字音字形、成語典故、修辭技巧、文言文閱測與白話文閱讀）的資深國文名師。我將上傳「A卷國文考卷照片」，請為我生成完全同構的【B卷 語文素養平行測驗卷】。
+
+【語言與字形強制規範（極重要）】
+★ 全程「100% 嚴格使用臺灣教育部標準繁體國字與審訂音 (zh-TW)」，嚴禁任何簡體字。
+★ 字音字形、注音符號（ㄅㄆㄇㄈ）、形近字辨析、成語及修辭名詞（如：「轉化」、「借代」、「映襯」、「互文」等）必須完全對標臺灣國語課本，確保臺灣國文老師直接複製即能印製使用與修訂！
+
+【國文科命題規範】
+1. 語文考點完全對齊：
+   - 形音義：替換同等難度之常見易錯國字、一字多音或形近字。
+   - 成語修辭：若原題考互文、借代、轉化等，請改以不同成語或句子出題，但測驗相同修辭格。
+   - 文言文：若原題為先秦兩漢或唐宋散文，請選取難度相仿、篇幅相當之同主題文言短文（如寓言、人物列傳），設計同構之字詞釋義與主旨提問。
+   - 白話閱測：改編或挑選同等主題（科普散文、哲理寓意、抒情隨筆），維持相同推論層次題目。
+2. 輸出結構：
+   - 【B卷 學生測驗卷】（標準臺灣繁體國字，排版工整）
+   - 【教師解答卷】（附完整語譯、詞義解釋、修辭判別與題目詳盡解析）
+
+請確認理解，待我傳送題目後立即開展繁體中文命題！`
+    };
+
+    let currentPromptSubject = 'general';
+
+    // 開啟通用 Prompt 彈窗
+    window.openPromptModal = function() {
+      const modal = document.getElementById('promptModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setPromptSubject(currentPromptSubject || 'general');
+      }
+    };
+
+    // 切換學科
+    window.setPromptSubject = function(sub) {
+      if (!PROMPT_TEMPLATES[sub]) sub = 'general';
+      currentPromptSubject = sub;
+      
+      const textarea = document.getElementById('universalPromptTextarea');
+      if (textarea) {
+        textarea.value = PROMPT_TEMPLATES[sub];
+      }
+
+      // 切換按鈕標籤高亮
+      document.querySelectorAll('.prompt-tab').forEach(btn => {
+        const isCurrent = btn.getAttribute('data-sub') === sub;
+        if (isCurrent) {
+          btn.className = 'prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs';
+        } else {
+          btn.className = 'prompt-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200';
+        }
+      });
+    };
+
+    // 一鍵複製通用 Prompt
+    window.copyUniversalPrompt = async function() {
+      const textarea = document.getElementById('universalPromptTextarea');
+      if (!textarea) return;
+      
+      const text = textarea.value;
+      const copyBtn = document.getElementById('copyPromptModalBtn');
+      const origHtml = copyBtn ? copyBtn.innerHTML : '';
+
+      try {
+        await navigator.clipboard.writeText(text);
+        if (copyBtn) {
+          copyBtn.innerHTML = '<i class="ph-bold ph-check"></i><span>✅ 已複製！可直接貼給 AI</span>';
+          copyBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+          copyBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+          setTimeout(() => {
+            copyBtn.innerHTML = origHtml;
+            copyBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+            copyBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+          }, 2000);
+        }
+      } catch (err) {
+        // 後備方案
+        textarea.select();
+        document.execCommand('copy');
+        alert('✅ 已複製通用出題 Prompt！請直接貼到 ChatGPT / Claude / Gemini 網頁版對話框。');
+      }
+    };
+  </script>
+</body>
+</html>

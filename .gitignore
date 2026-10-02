@@ -17,3 +17,6 @@ dog_photos_0822/
 # Python 快取
 __pycache__/
 *.pyc
+
+# 備份目錄
+backup_v1_stable/
