@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- PeerJS (WebRTC P2P 跨網穿透直連引擎，保證手機秒連電腦) -->
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- MQTT.js (全球標準 Pub/Sub 跨網即時通訊，100% 穿透手機與電腦) -->
+  <script src="https://unpkg.com/mqtt@5.3.4/dist/mqtt.min.js"></script>
 
   <style>
     :root {
@@ -779,8 +779,10 @@
       }
     ];
 
-    // 固定的主控端房號 ID（確保全球唯一且易識別）
-    const HOST_PEER_ID = 'puti-huinong-host-20261003';
+    // 專屬公共 MQTT WebSocket 頻道（使用全球最大免費公開 MQTT Broker: broker.emqx.io）
+    const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt';
+    const TOPIC_VOTE = 'puti/huinong/20261003/vote';
+    const TOPIC_STATE = 'puti/huinong/20261003/state';
 
     // 本地跨標籤廣播頻道（作為本地備用通道）
     const channel = new BroadcastChannel('puti_kahoot_channel');
@@ -790,11 +792,7 @@
     let currentRole = 'host'; // 'host' | 'player'
     let mySelectedChoice = null;
     let brandClickCount = 0;
-
-    // WebRTC Peer 實例與連線池
-    let peer = null;
-    let hostConn = null; // 手機端連向主控端的連線
-    let clientConns = []; // 主控端持有的所有手機連線
+    let mqttClient = null;
 
     // 初始化讀取網址參數
     window.addEventListener('DOMContentLoaded', () => {
@@ -809,9 +807,9 @@
       renderNav();
       renderQuestion();
       setupQrCode();
-      initPeerP2P();
+      initMqtt();
 
-      // 接收跨視窗廣播訊息
+      // 本地同主機廣播接收
       channel.onmessage = (event) => {
         const data = event.data;
         if (data.type === 'VOTE_SUBMIT') {
@@ -825,89 +823,48 @@
       };
     });
 
-    // 初始化 WebRTC P2P 直連引擎
-    function initPeerP2P() {
-      if (currentRole === 'host') {
-        // 大螢幕主控端：建立固定 Host 節點
-        peer = new Peer(HOST_PEER_ID);
-        
-        peer.on('open', (id) => {
-          console.log('✅ 大螢幕主控端 P2P 服務已啟動，房號 ID:', id);
-        });
+    // 初始化 MQTT 雲端即時長連線
+    function initMqtt() {
+      const clientId = 'client_' + Math.random().toString(16).substr(2, 8);
+      console.log('正在連線 MQTT 雲端中繼站...', MQTT_BROKER);
 
-        // 監聽所有手機發起的連線
-        peer.on('connection', (conn) => {
-          clientConns.push(conn);
-          console.log('📱 有新手機連入大螢幕！目前連線數:', clientConns.length);
-
-          // 一連上立刻將目前題目同步給手機
-          conn.on('open', () => {
-            conn.send({
-              type: 'SYNC_STATE',
-              qIndex: currentQIndex,
-              isRevealed: isRevealed
-            });
-          });
-
-          // 接收手機傳來的投票
-          conn.on('data', (data) => {
-            if (data.type === 'VOTE_SUBMIT') {
-              handleIncomingVote(data.qIndex, data.choice);
-            }
-          });
-
-          conn.on('close', () => {
-            clientConns = clientConns.filter(c => c !== conn);
-          });
-        });
-
-        peer.on('error', (err) => {
-          console.warn('PeerJS Host Error:', err);
-          // 若固定 ID 被佔用則自動重試
-          if (err.type === 'unavailable-id') {
-            peer.destroy();
-            peer = new Peer(HOST_PEER_ID + '_' + Math.floor(Math.random()*1000));
-          }
-        });
-
-      } else {
-        // 手機作答端：主動直連大螢幕 Host
-        peer = new Peer();
-
-        peer.on('open', (myId) => {
-          console.log('📱 手機端 P2P 啟動成功，我的 ID:', myId);
-          connectToHost();
-        });
-
-        peer.on('error', (err) => {
-          console.warn('PeerJS Player Error:', err);
-        });
-      }
-    }
-
-    // 手機端連線大螢幕
-    function connectToHost() {
-      if (!peer) return;
-      hostConn = peer.connect(HOST_PEER_ID, { reliable: true });
-
-      hostConn.on('open', () => {
-        console.log('🚀 手機與大螢幕直連成功！');
-        document.getElementById('playerStatus').innerHTML = `
-          <span style="color:var(--color-b); font-weight:900;"><i class="fa-solid fa-link"></i> 已成功連線大螢幕！請點選下方選項投票</span>
-        `;
+      mqttClient = mqtt.connect(MQTT_BROKER, {
+        clientId: clientId,
+        clean: true,
+        connectTimeout: 5000,
+        reconnectPeriod: 2000
       });
 
-      hostConn.on('data', (data) => {
-        if (data.type === 'SYNC_STATE') {
-          currentQIndex = data.qIndex;
-          isRevealed = data.isRevealed;
-          renderQuestion();
+      mqttClient.on('connect', () => {
+        console.log('✅ MQTT 雲端長連線成功！');
+        if (currentRole === 'player') {
+          document.getElementById('playerStatus').innerHTML = `
+            <span style="color:var(--color-b); font-weight:900;"><i class="fa-solid fa-cloud-bolt"></i> 雲端即時連線就緒！請點選下方選項投票</span>
+          `;
+          // 手機訂閱狀態廣播
+          mqttClient.subscribe(TOPIC_STATE);
+        } else {
+          // 大螢幕主控端訂閱所有投票訊息
+          mqttClient.subscribe(TOPIC_VOTE);
         }
       });
 
-      hostConn.on('close', () => {
-        console.log('連線中斷，正在自動重新連線...');
-        setTimeout(connectToHost, 2000);
+      mqttClient.on('message', (topic, message) => {
+        try {
+          const data = JSON.parse(message.toString());
+          if (topic === TOPIC_VOTE) {
+            console.log('📥 收到手機雲端投票:', data);
+            handleIncomingVote(data.qIndex, data.choice);
+          } else if (topic === TOPIC_STATE && currentRole === 'player') {
+            currentQIndex = data.qIndex;
+            isRevealed = data.isRevealed;
+            renderQuestion();
+          }
+        } catch(e) {}
+      });
+
+      mqttClient.on('error', (err) => {
+        console.warn('MQTT 連線異常:', err);
       });
     }
 
@@ -920,15 +877,6 @@
           if (currentRole === 'host') updateHostStats();
         }
       }
-    }
-
-    // 廣播給所有手機同步狀態
-    function broadcastToPlayers(data) {
-      clientConns.forEach(conn => {
-        if (conn && conn.open) {
-          conn.send(data);
-        }
-      });
     }
 
     // 角色切換
@@ -1092,16 +1040,15 @@
       renderQuestion();
       document.getElementById('playerStatus').innerHTML = `
         <span style="color:var(--color-b); font-size:1.1rem; font-weight:900;"><i class="fa-solid fa-circle-check"></i> 投票成功！已選擇 [${choice}]</span><br>
-        <small style="color:var(--text-muted)">已直接傳送到大螢幕，請抬頭看即時長條圖！</small>
+        <small style="color:var(--text-muted)">已透過雲端即時傳送到大螢幕！</small>
       `;
 
-      // 1. 若在手機端，透過 WebRTC P2P 直連直接發送給大螢幕 Host
-      if (hostConn && hostConn.open) {
-        hostConn.send({
-          type: 'VOTE_SUBMIT',
+      // 1. 🔥 透過 MQTT 雲端長連線將投票直接發布到大螢幕
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(TOPIC_VOTE, JSON.stringify({
           qIndex: currentQIndex,
           choice: choice
-        });
+        }));
       }
 
       // 2. 本地廣播（同台電腦分頁備用）
@@ -1111,7 +1058,7 @@
         choice: choice
       });
 
-      // 3. 本地累加
+      // 3. 本地累加（若直接在 host 上測試）
       const opt = QUESTIONS[currentQIndex].options.find(o => o.key === choice);
       if (opt && currentRole === 'host') {
         opt.votes++;
@@ -1126,13 +1073,6 @@
       renderNav();
       renderQuestion();
       broadcastState();
-
-      // 同步給所有手機
-      broadcastToPlayers({
-        type: 'SYNC_STATE',
-        qIndex: currentQIndex,
-        isRevealed: isRevealed
-      });
 
       if (isRevealed) {
         // 彩帶特效
@@ -1153,13 +1093,40 @@
         renderNav();
         renderQuestion();
         broadcastState();
-
-        broadcastToPlayers({
-          type: 'SYNC_STATE',
-          qIndex: currentQIndex,
-          isRevealed: false
-        });
       }
+    }
+
+    // 更新大螢幕即時數據
+    function updateHostStats() {
+      const q = QUESTIONS[currentQIndex];
+      const totalVotes = q.options.reduce((sum, opt) => sum + opt.votes, 0);
+      document.getElementById('voteTotalNum').innerText = totalVotes;
+
+      const cards = document.querySelectorAll('#optionsGrid .option-card');
+      cards.forEach((card, idx) => {
+        const opt = q.options[idx];
+        const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+        const bar = card.querySelector('.vote-bar-fill');
+        const stat = card.querySelector('.vote-stat');
+        if (bar && isRevealed) bar.style.width = percent + '%';
+        if (stat) stat.innerText = `${opt.votes} 票 (${percent}%)`;
+      });
+    }
+
+    // 廣播狀態給所有連線端
+    function broadcastState() {
+      if (mqttClient && mqttClient.connected && currentRole === 'host') {
+        mqttClient.publish(TOPIC_STATE, JSON.stringify({
+          qIndex: currentQIndex,
+          isRevealed: isRevealed
+        }));
+      }
+
+      channel.postMessage({
+        type: 'STATE_CHANGE',
+        qIndex: currentQIndex,
+        isRevealed: isRevealed
+      });
     }
 
     // 更新大螢幕即時數據
