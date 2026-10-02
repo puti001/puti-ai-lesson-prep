@@ -432,7 +432,45 @@
         </div>
       </section>
 
-      <!-- Slide 3｜教育部政策趨勢 -->
+      <!-- Slide 3｜第 29 場：因緣難得，惠農相聚 -->
+      <section data-transition="zoom">
+        <div class="slide-card" style="text-align: center; padding: 32px 38px;">
+          <span class="badge-tag"><i class="fa-solid fa-hand-holding-heart"></i> 特別的因緣・最深的感謝</span>
+          
+          <div style="margin: 12px 0 8px; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <div style="background: linear-gradient(135deg, #FFF9F5, #FBF3E8); border: 3px solid var(--danger); border-radius: 24px; padding: 10px 36px; box-shadow: 0 8px 24px rgba(224, 122, 95, 0.22); display: inline-flex; align-items: baseline; gap: 12px;">
+              <span style="font-size: 1.6rem; font-weight: 900; color: var(--text-dark);">今天就是全台</span>
+              <span style="font-size: 5rem; font-weight: 900; color: var(--danger); line-height: 1; font-family: 'Zen Maru Gothic', sans-serif; text-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);">第 29 場</span>
+              <span style="font-size: 1.6rem; font-weight: 900; color: var(--text-dark);">分享！</span>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.7rem; color: var(--primary); font-weight: 900; margin: 10px 0 16px;">
+            走過全台 28 所校園，今天最珍貴的緣分在「惠農國小」！
+          </h3>
+
+          <div class="grid-3" style="gap: 14px; margin-bottom: 16px;">
+            <div class="box-card" style="border-top: 6px solid var(--primary); text-align: left; padding: 14px 16px;">
+              <h4 style="color: var(--primary); font-size: 1.12rem; margin-bottom: 5px;"><i class="fa-solid fa-sparkles"></i> 1. 珍惜難得因緣</h4>
+              <p style="font-size: 0.95rem; line-height: 1.55; color: #4A423C;">繼暑假 AI 夏令營後，今天再次回到惠農。能與各位爸爸媽媽相聚一堂，是非常殊勝的因緣！</p>
+            </div>
+            <div class="box-card" style="border-top: 6px solid var(--danger); text-align: left; padding: 14px 16px;">
+              <h4 style="color: var(--danger); font-size: 1.12rem; margin-bottom: 5px;"><i class="fa-solid fa-comments"></i> 2. 懇請熱情互動</h4>
+              <p style="font-size: 0.95rem; line-height: 1.55; color: #4A423C;">今天完全不講枯燥理論！等一下的即時手機投票與互動，懇請大家拿起手機熱烈配合！</p>
+            </div>
+            <div class="box-card" style="border-top: 6px solid var(--success); text-align: left; padding: 14px 16px;">
+              <h4 style="color: var(--success); font-size: 1.12rem; margin-bottom: 5px;"><i class="fa-solid fa-face-laugh-beam"></i> 3. 輕鬆愉快滿載</h4>
+              <p style="font-size: 0.95rem; line-height: 1.55; color: #4A423C;">60 分鐘我們一起輕鬆聊客廳、聊孩子，保證讓每位家長帶走最實用的 AI 伴學定心丸！</p>
+            </div>
+          </div>
+
+          <div class="quote-box" style="font-size: 1.2rem; margin: 0; padding: 10px 20px; border-left: none; border-top: 4px solid var(--primary); border-bottom: 4px solid var(--primary);">
+            「台上老師知無不言、傾囊相授；台下爸媽熱情互動、結個好緣——今天，我們一起當孩子最強的隊友！」
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 4｜教育部政策趨勢 -->
       <section data-transition="slide">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-bullhorn"></i> 國家教育大趨勢</span>
@@ -1079,7 +1117,7 @@
     Reveal.on('slidechanged', event => {
       if (event.indexh === 1) {
         playExpAnimation(true); // 每次進本頁都自動重新播放！
-      } else if (event.indexh === 3) {
+      } else if (event.indexh === 4) {
         renderVoteQrCode();
       } else if (event.indexh >= 17) {
         renderCardQrCode();
