@@ -639,14 +639,18 @@
       margin: 0.04
     });
 
-    // 簡報最後一頁 QR Code 自動生成
+    // 簡報最後一頁 QR Code 自動生成（精準指向錦囊卡領取頁面 card.html）
     window.addEventListener('load', () => {
       const qrBox = document.getElementById('slideQrCode');
       if (qrBox) {
+        // 取得基礎網址並指向 card.html
+        let baseUrl = window.location.href.split('?')[0];
+        baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1) + 'card.html';
+        
         new QRCode(qrBox, {
-          text: window.location.href.split('?')[0],
-          width: 160,
-          height: 160,
+          text: baseUrl,
+          width: 170,
+          height: 170,
           colorDark: "#2D2724",
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H
