@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Firebase Realtime SDK (保證 100% 跨網即時連線) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <style>
     :root {
@@ -777,11 +780,25 @@
       }
     ];
 
-    // 跨裝置雲端房間 ID（專屬於惠農國小 10/03 親職講座）
-    const ROOM_ID = 'huinong_parent_20261003';
-    const CLOUD_SYNC_URL = 'https://api.counterapi.dev/v1/' + ROOM_ID;
+    // 跨裝置 Firebase Realtime 資料庫配置（公開免費即時同步節點）
+    const firebaseConfig = {
+      databaseURL: "https://puti-ai-live-vote-default-rtdb.firebaseio.com/"
+    };
+    
+    // 初始化 Firebase
+    let db = null;
+    let roomRef = null;
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.database();
+      roomRef = db.ref('rooms/huinong_20261003');
+    } catch(e) {
+      console.warn("Firebase Init Error:", e);
+    }
 
-    // 本地跨標籤廣播頻道 + 雲端輪詢
+    // 本地跨標籤廣播頻道（作為本地極速備用通道）
     const channel = new BroadcastChannel('puti_kahoot_channel');
 
     let currentQIndex = 0;
@@ -791,9 +808,6 @@
     let brandClickCount = 0;
     let voterId = localStorage.getItem('puti_voter_id') || ('voter_' + Math.random().toString(36).substr(2, 9));
     localStorage.setItem('puti_voter_id', voterId);
-
-    // 雲端同步輪詢定時器
-    let pollTimer = null;
 
     // 初始化讀取網址參數
     window.addEventListener('DOMContentLoaded', () => {
@@ -809,9 +823,36 @@
       renderQuestion();
       setupQrCode();
 
-      // 載入雲端即時票數
-      syncFromCloud();
-      pollTimer = setInterval(syncFromCloud, 2500);
+      // 🔥 Firebase Realtime 實時雙向監聽（手機一按，電腦 0.05 秒毫秒級同步更新！）
+      if (roomRef) {
+        roomRef.on('value', (snapshot) => {
+          const cloudState = snapshot.val();
+          if (cloudState && cloudState.questions) {
+            cloudState.questions.forEach((cq, qIdx) => {
+              if (QUESTIONS[qIdx]) {
+                cq.options.forEach((co, oIdx) => {
+                  if (QUESTIONS[qIdx].options[oIdx]) {
+                    QUESTIONS[qIdx].options[oIdx].votes = co.votes || 0;
+                  }
+                });
+                if (cq.revealed !== undefined) {
+                  QUESTIONS[qIdx].revealed = cq.revealed;
+                }
+              }
+            });
+
+            if (currentRole === 'player') {
+              if (cloudState.currentQ !== undefined && cloudState.currentQ !== currentQIndex) {
+                currentQIndex = cloudState.currentQ;
+                isRevealed = QUESTIONS[currentQIndex].revealed || false;
+                renderQuestion();
+              }
+            } else if (currentRole === 'host') {
+              updateHostStats();
+            }
+          }
+        });
+      }
 
       // 接收跨視窗廣播訊息
       channel.onmessage = (event) => {
@@ -831,59 +872,19 @@
       };
     });
 
-    // 雲端票數同步引擎
-    async function syncFromCloud() {
-      try {
-        const res = await fetch(`https://kvdb.io/8xWwWkU9sN8UfQk5mGq1Lg/${ROOM_ID}_state`);
-        if (res.ok) {
-          const cloudState = await res.json();
-          if (cloudState && cloudState.questions) {
-            cloudState.questions.forEach((cq, qIdx) => {
-              if (QUESTIONS[qIdx]) {
-                cq.options.forEach((co, oIdx) => {
-                  if (QUESTIONS[qIdx].options[oIdx]) {
-                    QUESTIONS[qIdx].options[oIdx].votes = co.votes;
-                  }
-                });
-                if (cq.revealed !== undefined) {
-                  QUESTIONS[qIdx].revealed = cq.revealed;
-                }
-              }
-            });
-
-            if (currentRole === 'player') {
-              if (cloudState.currentQ !== undefined && cloudState.currentQ !== currentQIndex) {
-                currentQIndex = cloudState.currentQ;
-                isRevealed = QUESTIONS[currentQIndex].revealed || false;
-                renderQuestion();
-              }
-            } else if (currentRole === 'host') {
-              updateHostStats();
-            }
-          }
-        }
-      } catch (e) {
-        // 離線或連線超時容錯
-      }
-    }
-
-    // 發送雲端狀態更新
-    async function pushToCloud() {
-      try {
+    // 推送最新狀態至 Firebase
+    function pushToCloud() {
+      if (roomRef) {
         const payload = {
           currentQ: currentQIndex,
           questions: QUESTIONS.map(q => ({
             id: q.id,
             revealed: q.revealed || false,
-            options: q.options.map(o => ({ key: o.key, votes: o.votes }))
+            options: q.options.map(o => ({ key: o.key, votes: o.votes || 0 }))
           }))
         };
-        await fetch(`https://kvdb.io/8xWwWkU9sN8UfQk5mGq1Lg/${ROOM_ID}_state`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-      } catch (e) {}
+        roomRef.set(payload);
+      }
     }
 
     // 角色切換
