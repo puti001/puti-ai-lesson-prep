@@ -235,12 +235,12 @@
       z-index: 9999;
       display: none;
     }
-    /* 28 場經歷特製震撼動畫樣式 */
+    /* 28 場經歷特製震撼動畫樣式（支援實體照片縮圖） */
     .exp-wall-container {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 10px;
+      gap: 8px;
+      margin-top: 6px;
     }
     .exp-stats-bar {
       display: flex;
@@ -248,8 +248,8 @@
       align-items: center;
       background: linear-gradient(135deg, #FFFDF9, #F5EDE0);
       border: 2px solid var(--accent);
-      border-radius: 16px;
-      padding: 8px 22px;
+      border-radius: 14px;
+      padding: 6px 20px;
       box-shadow: 0 4px 16px rgba(124, 77, 37, 0.08);
     }
     .exp-counter-box {
@@ -265,7 +265,7 @@
       text-shadow: 0 2px 8px rgba(224, 122, 95, 0.3);
       line-height: 1;
       display: inline-block;
-      transition: transform 0.15s ease-out;
+      transition: transform 0.12s ease-out;
     }
     .exp-counter-label {
       font-size: 1.15rem;
@@ -275,58 +275,93 @@
     .exp-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-      max-height: 380px;
+      gap: 6px;
+      max-height: 430px;
       perspective: 1000px;
-      padding: 4px;
+      padding: 2px;
     }
     .exp-tag-card {
       background: #FFFFFF;
       border: 1.5px solid #EADBCE;
-      border-radius: 9px;
-      padding: 5px 8px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: #3D352E;
+      border-radius: 8px;
+      padding: 3px 6px;
       display: flex;
       align-items: center;
-      gap: 5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      gap: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
       opacity: 0;
-      transform: scale(3.5) translateZ(80px);
-      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: scale(3.2) translateZ(80px);
+      transition: all 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
+      height: 46px;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .exp-tag-card.active {
       opacity: 1;
       transform: scale(1) translateZ(0);
       pointer-events: auto;
     }
+    .exp-card-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 5px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid #E0D4C5;
+      background: #F0EDE8;
+    }
+    .exp-card-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .exp-card-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
     .exp-tag-card .exp-idx {
       background: var(--primary);
       color: #FFF;
-      border-radius: 5px;
-      padding: 1px 5px;
-      font-size: 0.68rem;
+      border-radius: 4px;
+      padding: 1px 4px;
+      font-size: 0.65rem;
       font-weight: 900;
-      flex-shrink: 0;
+      line-height: 1;
+    }
+    .exp-date {
+      font-size: 0.65rem;
+      color: #888;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .exp-school {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #2D2724;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.15;
     }
     .exp-tag-card.highlight {
       border: 2px solid var(--danger);
-      background: #FFF5F2;
-      box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
-      transform: scale(1.05) translateZ(0);
+      background: #FFF4F0;
+      box-shadow: 0 4px 14px rgba(224, 122, 95, 0.4);
       z-index: 5;
     }
     .exp-tag-card.highlight .exp-idx {
       background: var(--danger);
     }
-    .exp-tag-card .exp-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1;
-      text-align: left;
+    .exp-tag-card.highlight .exp-school {
+      color: var(--danger);
+      font-weight: 900;
     }
     .btn-replay-exp {
       background: var(--primary);
@@ -931,40 +966,39 @@
       }
     }
 
-    // 28 場經歷完整資料清單
+    // 28 場經歷完整資料清單（附全套實體現場照片路徑）
     const LECTURES_DATA = [
-      { id: 1, text: "2024/12/14 聯發科技 AI DAY" },
-      { id: 2, text: "2025/02/19 塔樓國小教師進修" },
-      { id: 3, text: "2025/02/26 玉田國小教師進修" },
-      { id: 4, text: "2025/04/16 崇文國小教師進修" },
-      { id: 5, text: "2025/05/14 來義高中教師進修" },
-      { id: 6, text: "2025/06/18 崇文國小教師進修" },
-      { id: 7, text: "2025/08/05 塔樓國小資訊增能" },
-      { id: 8, text: "2025/10/01 崇文國小教師進修" },
-      { id: 9, text: "2025/10/22 琉球國小教師進修" },
-      { id: 10, text: "2025/11/05 後庄國小教師進修" },
-      { id: 11, text: "2025/11/15 岡山高中AI增能研習" },
-      { id: 12, text: "2025/11/19 崇文國小教師進修" },
-      { id: 13, text: "2026/03/04 勝利國小教師進修" },
-      { id: 14, text: "2026/03/11 新園國小教師進修" },
-      { id: 15, text: "2026/03/25 嘉誠國小教師進修" },
-      { id: 16, text: "2026/04/01 九芎國小教師進修" },
-      { id: 17, text: "2026/04/15 新園國小教師進修" },
-      { id: 18, text: "2026/05/15 翠屏國中(上午場)" },
-      { id: 19, text: "2026/05/15 翠屏國中(下午場)" },
-      { id: 20, text: "2026/07/04 佛光山人間社AI實作班" },
-      { id: 21, text: "2026/07/07 塔樓國小資訊夏令營" },
-      { id: 22, text: "2026/07/22 後庄國小資訊夏令營" },
-      { id: 23, text: "2026/07/28 惠農國小AI夏令營 ⭐", highlight: true },
-      { id: 24, text: "2026/08/27 四張犁國中教師研習" },
-      { id: 25, text: "2026/08/28 白河商工教師研習" },
-      { id: 26, text: "2026/09/09 建華國小教師進修" },
-      { id: 27, text: "2026/09/22 玉里高中師生共學" },
-      { id: 28, text: "2026/09/30 志航國小教師進修" }
+      { id: 1, date: "2024.12.14", school: "聯發科技 AI DAY 創新教學", photo: "lectures/exp_1.jpg" },
+      { id: 2, date: "2025.02.19", school: "塔樓國小 週三教師進修", photo: "lectures/exp_2.jpg" },
+      { id: 3, date: "2025.02.26", school: "玉田國小 週三教師進修", photo: "lectures/exp_3.jpg" },
+      { id: 4, date: "2025.04.16", school: "崇文國小 週三教師進修", photo: "lectures/exp_4.jpg" },
+      { id: 5, date: "2025.05.14", school: "來義高中 週三教師進修", photo: "lectures/exp_5.jpg" },
+      { id: 6, date: "2025.06.18", school: "崇文國小 週三教師進修", photo: "lectures/exp_6.jpg" },
+      { id: 7, date: "2025.08.05", school: "塔樓國小 資訊增能研習", photo: "lectures/exp_7.jpg" },
+      { id: 8, date: "2025.10.01", school: "崇文國小 週三教師進修", photo: "lectures/exp_8.jpg" },
+      { id: 9, date: "2025.10.22", school: "琉球國小 週三教師進修", photo: "lectures/exp_9.jpg" },
+      { id: 10, date: "2025.11.05", school: "後庄國小 週三教師進修", photo: "lectures/exp_10.jpg" },
+      { id: 11, date: "2025.11.15", school: "岡山高中 AI增能研習", photo: "lectures/exp_11.jpg" },
+      { id: 12, date: "2025.11.19", school: "崇文國小 週三教師進修", photo: "lectures/exp_12.jpg" },
+      { id: 13, date: "2026.03.04", school: "勝利國小 週三教師進修", photo: "lectures/exp_13.jpg" },
+      { id: 14, date: "2026.03.11", school: "新園國小 週三教師進修", photo: "lectures/exp_14.jpg" },
+      { id: 15, date: "2026.03.25", school: "嘉誠國小 週三教師進修", photo: "lectures/exp_15.jpg" },
+      { id: 16, date: "2026.04.01", school: "九芎國小 週三教師進修", photo: "lectures/exp_16.jpg" },
+      { id: 17, date: "2026.04.15", school: "新園國小 週三教師進修", photo: "lectures/exp_17.jpg" },
+      { id: 18, date: "2026.05.15", school: "翠屏國中 (上午場研習)", photo: "lectures/exp_18.jpg" },
+      { id: 19, date: "2026.05.15", school: "翠屏國中 (下午場研習)", photo: "lectures/exp_19.jpg" },
+      { id: 20, date: "2026.07.04", school: "佛光山人間社 記者AI實作", photo: "lectures/exp_20.jpg" },
+      { id: 21, date: "2026.07.07", school: "塔樓國小 資訊夏令營(4天)", photo: "lectures/exp_21.jpg" },
+      { id: 22, date: "2026.07.22", school: "後庄國小 資訊夏令營(3天)", photo: "lectures/exp_22.jpg" },
+      { id: 23, date: "2026.07.28", school: "惠農國小 AI夏令營(3天) ⭐", photo: "lectures/exp_23.jpg", highlight: true },
+      { id: 24, date: "2026.08.27", school: "四張犁國中 教師研習", photo: "lectures/exp_24.jpg" },
+      { id: 25, date: "2026.08.28", school: "白河商工 教師研習", photo: "lectures/exp_25.jpg" },
+      { id: 26, date: "2026.09.09", school: "建華國小 週三教師進修", photo: "lectures/exp_26.jpg" },
+      { id: 27, date: "2026.09.22", school: "玉里高中 師生AI共學", photo: "lectures/exp_27.jpg" },
+      { id: 28, date: "2026.09.30", school: "志航國小 週三教師進修", photo: "lectures/exp_28.jpg" }
     ];
 
-    let expAnimRunning = false;
-    let expAnimPlayed = false;
+    let expAnimTimer = null;
 
     function buildExpGrid() {
       const grid = document.getElementById('expGrid');
@@ -975,19 +1009,24 @@
         card.className = `exp-tag-card ${item.highlight ? 'highlight' : ''}`;
         card.id = `exp-card-${item.id}`;
         card.innerHTML = `
-          <span class="exp-idx">#${item.id < 10 ? '0' + item.id : item.id}</span>
-          <span class="exp-text" title="${item.text}">${item.text}</span>
+          <img src="${item.photo}" alt="${item.school}" class="exp-card-thumb" onerror="this.style.display='none'">
+          <div class="exp-card-info">
+            <div class="exp-card-header">
+              <span class="exp-idx">#${item.id < 10 ? '0' + item.id : item.id}</span>
+              <span class="exp-date">${item.date}</span>
+            </div>
+            <div class="exp-school" title="${item.school}">${item.school}</div>
+          </div>
         `;
         grid.appendChild(card);
       });
     }
 
     function playExpAnimation(force = false) {
-      if (expAnimRunning) return;
-      if (expAnimPlayed && !force) return;
-      expAnimRunning = true;
-      expAnimPlayed = true;
-
+      if (expAnimTimer) {
+        clearInterval(expAnimTimer);
+        expAnimTimer = null;
+      }
       buildExpGrid();
       const counterEl = document.getElementById('expCounter');
       if (counterEl) {
@@ -997,9 +1036,9 @@
 
       let count = 0;
       const total = LECTURES_DATA.length;
-      const interval = 50; // 每 50ms 急速飛入一張
+      const interval = 45; // 每 45ms 急速飛入一張
 
-      const timer = setInterval(() => {
+      expAnimTimer = setInterval(() => {
         count++;
         const card = document.getElementById(`exp-card-${count}`);
         if (card) {
@@ -1008,22 +1047,21 @@
         if (counterEl) {
           counterEl.textContent = count;
           counterEl.style.transform = 'scale(1.25)';
-          setTimeout(() => { if (counterEl) counterEl.style.transform = 'scale(1)'; }, 35);
+          setTimeout(() => { if (counterEl) counterEl.style.transform = 'scale(1)'; }, 30);
         }
 
         if (count >= total) {
-          clearInterval(timer);
-          expAnimRunning = false;
+          clearInterval(expAnimTimer);
+          expAnimTimer = null;
           if (counterEl) {
             counterEl.style.transform = 'scale(1.35)';
-            counterEl.style.color = '#E07A5F';
             setTimeout(() => { if (counterEl) counterEl.style.transform = 'scale(1)'; }, 250);
           }
           // 彩帶震撼結尾
           if (typeof confetti === 'function') {
             confetti({
-              particleCount: 60,
-              spread: 80,
+              particleCount: 50,
+              spread: 70,
               origin: { y: 0.6 }
             });
           }
@@ -1040,7 +1078,7 @@
 
     Reveal.on('slidechanged', event => {
       if (event.indexh === 1) {
-        playExpAnimation();
+        playExpAnimation(true); // 每次進本頁都自動重新播放！
       } else if (event.indexh === 3) {
         renderVoteQrCode();
       } else if (event.indexh >= 17) {
