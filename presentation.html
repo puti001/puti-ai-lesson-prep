@@ -279,20 +279,24 @@
         </div>
       </section>
 
-      <!-- Slide 3｜現場互動投票入口 -->
+      <!-- Slide 3｜現場互動投票入口（大尺寸 QR Code 乾淨掃描頁） -->
       <section data-transition="fade">
-        <div class="slide-card" style="text-align: center;">
+        <div class="slide-card" style="text-align: center; padding: 40px 30px;">
           <span class="badge-tag"><i class="fa-solid fa-bolt"></i> 現場即時互動思辨</span>
-          <h2 class="slide-title" style="margin-bottom: 12px !important;">全場爸媽即時票選：4 個真心話小調查！</h2>
-          <p class="lead-text" style="color: var(--text-muted);">請大家拿出手機掃描大螢幕 QR Code，免下載、免登入，即時看全場統計！</p>
+          <h2 class="slide-title" style="margin-bottom: 8px !important; font-size: 2.2rem !important;">全場爸媽即時票選：4 個真心話小調查！</h2>
+          <p class="lead-text" style="color: var(--text-muted); font-size: 1.25rem;">請大家拿出手機掃描大螢幕 QR Code，免下載、免登入立即作答！</p>
           
-          <div class="poll-trigger-card">
-            <div class="iframe-container" style="height: 380px;">
-              <iframe src="index.html?role=host"></iframe>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 25px 0; flex-wrap: wrap;">
+            <div style="background: #FFF; padding: 18px; border-radius: 20px; border: 3px solid var(--accent); box-shadow: 0 10px 28px rgba(124, 77, 37, 0.12);">
+              <div id="voteQrCode"></div>
             </div>
-            <div style="margin-top: 15px;">
-              <a href="index.html?role=host" target="_blank" class="btn-launch-poll">
-                <i class="fa-solid fa-expand"></i> 全螢幕獨立開啟互動系統
+            <div style="text-align: left; max-width: 380px;">
+              <div class="box-card" style="border-left: 6px solid var(--primary); margin-bottom: 12px;">
+                <h4 style="margin-bottom:6px;"><i class="fa-solid fa-mobile-screen-button"></i> 手機掃描立即進場</h4>
+                <p style="font-size: 1.05rem;">現場實時統計，看看全場大人的真實使用數據！</p>
+              </div>
+              <a href="index.html?role=host" target="_blank" class="btn-launch-poll" style="font-size: 1.15rem; padding: 12px 24px;">
+                <i class="fa-solid fa-chart-column"></i> 開啟大螢幕開票看板
               </a>
             </div>
           </div>
@@ -639,6 +643,28 @@
       margin: 0.04
     });
 
+    // Slide 3 投票 QR Code（指向 index.html?role=player）
+    function renderVoteQrCode() {
+      const qrBox = document.getElementById('voteQrCode');
+      if (qrBox) {
+        qrBox.innerHTML = '';
+        const origin = window.location.origin;
+        const pathname = window.location.pathname;
+        let dir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+        if (!dir.endsWith('/')) dir += '/';
+        const voteUrl = origin + dir + 'index.html?role=player';
+
+        new QRCode(qrBox, {
+          text: voteUrl,
+          width: 220,
+          height: 220,
+          colorDark: "#2D2724",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+    }
+
     // 簡報最後一頁 QR Code 自動生成（精準指向錦囊卡領取頁面 card.html）
     function renderCardQrCode() {
       const qrBox = document.getElementById('slideQrCode');
@@ -666,10 +692,15 @@
     }
 
     // 初始化與頁面切換時觸發
-    window.addEventListener('load', renderCardQrCode);
+    window.addEventListener('load', () => {
+      renderVoteQrCode();
+      renderCardQrCode();
+    });
+
     Reveal.on('slidechanged', event => {
-      // 翻到最後一頁時再次確認繪製
-      if (event.indexh >= 16) {
+      if (event.indexh === 2) {
+        renderVoteQrCode();
+      } else if (event.indexh >= 16) {
         renderCardQrCode();
       }
     });
