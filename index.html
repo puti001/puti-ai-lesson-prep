@@ -834,16 +834,38 @@
       if (role === 'host') {
         hostView.style.display = 'flex';
         playerView.style.display = 'none';
+        roleBadge.style.display = 'inline-flex';
+        btnSwitch.style.display = 'inline-flex';
         roleBadge.innerHTML = '<i class="fa-solid fa-tv"></i> 大螢幕主控端';
-        btnSwitch.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 切換手機作答端';
+        btnSwitch.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 切換作答預覽';
       } else {
         hostView.style.display = 'none';
         playerView.style.display = 'flex';
-        roleBadge.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 手機作答端';
-        btnSwitch.innerHTML = '<i class="fa-solid fa-tv"></i> 切換大螢幕主控';
+        // 家長手機端：強制隱藏所有切換與管理控制項
+        roleBadge.style.display = 'none';
+        btnSwitch.style.display = 'none';
         mySelectedChoice = null;
       }
       renderQuestion();
+    }
+
+    // 彩蛋後門：講者連點 3 下標題並輸入密碼切換主控
+    function handleBrandClick() {
+      brandClickCount++;
+      if (brandClickCount >= 3) {
+        brandClickCount = 0;
+        if (currentRole === 'player') {
+          const pwd = prompt('請輸入講者管理密碼：');
+          if (pwd === 'puti') {
+            setRole('host');
+            alert('已解鎖切換至大螢幕主控端！');
+          } else if (pwd !== null) {
+            alert('密碼錯誤');
+          }
+        } else {
+          setRole('player');
+        }
+      }
     }
 
     // 渲染題號導航
