@@ -202,18 +202,18 @@
       border: none;
     }
 
-    /* 底部作者與控制列 */
+    /* 底部作者與控制列（預留右側空間給 Reveal 箭頭） */
     .footer-bar {
       position: fixed;
-      bottom: 12px;
+      bottom: 8px;
       left: 20px;
-      right: 20px;
+      right: 120px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
-      z-index: 50;
+      z-index: 20;
       pointer-events: none;
     }
 
@@ -258,22 +258,22 @@
         </div>
       </section>
 
-      <!-- Slide 2｜教育部 117 億政策 -->
+      <!-- Slide 2｜教育部政策趨勢 -->
       <section data-transition="slide">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-bullhorn"></i> 國家教育大趨勢</span>
-          <h2 class="slide-title">教育部砸下 117 億，AI 進入每一間教室！</h2>
+          <h2 class="slide-title">教育部推動中小學 AI 學習環境</h2>
           <div class="lead-text">
             <p>📌 教育部正式啟動<b>「AI人才方舟計畫」</b>（預算 117.55 億元 / 2026~2029年）</p>
           </div>
           <div class="grid-2">
             <div class="box-card" style="border-left: 6px solid var(--primary);">
-              <h4><i class="fa-solid fa-robot"></i> 國小全面導入 AI 助教與家教</h4>
-              <p>以前是「生生用平板」，現在全面進化為<b>「生生有 AI」</b>。中小學生將全面學會與 AI 協作。</p>
+              <h4><i class="fa-solid fa-robot"></i> 逐步導入 AI 智慧輔助學習</h4>
+              <p>從「生生用平板」推進到<b>「生生學 AI」</b>，培養中小學生在安全規範下與 AI 協作思考的能力。</p>
             </div>
             <div class="box-card" style="border-left: 6px solid var(--danger);">
-              <h4><i class="fa-solid fa-triangle-exclamation"></i> 這不是「要不要」的選擇題</h4>
-              <p>AI 已經進到孩子的書包與生活。我們今天不是來討論要不要用，而是<b>「如何教孩子用對」！</b></p>
+              <h4><i class="fa-solid fa-compass"></i> 這不是「用不用」的選擇題</h4>
+              <p>AI 已經逐步進入孩子的生活與學習。我們今天不是來全面禁止，而是<b>「陪孩子學會用對方法」！</b></p>
             </div>
           </div>
         </div>
@@ -295,41 +295,44 @@
                 <h4 style="margin-bottom:6px;"><i class="fa-solid fa-mobile-screen-button"></i> 手機掃描立即進場</h4>
                 <p style="font-size: 1.05rem;">現場實時統計，看看全場大人的真實使用數據！</p>
               </div>
-              <a href="index.html?role=host" target="_blank" class="btn-launch-poll" style="font-size: 1.15rem; padding: 12px 24px;">
+              <a href="index.html?role=host" target="_blank" class="btn-launch-poll" style="font-size: 1.15rem; padding: 12px 24px; display:inline-block; margin-bottom: 8px;">
                 <i class="fa-solid fa-chart-column"></i> 開啟大螢幕開票看板
               </a>
+              <div style="font-size:0.9rem; color:#888;">
+                手機瀏覽者亦可：<a href="index.html?role=player" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">點此直接進作答端</a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Slide 7｜調查結果揭曉 -->
+      <!-- Slide 4｜調查結果反思 -->
       <section data-transition="slide">
         <div class="slide-card">
-          <span class="badge-tag"><i class="fa-solid fa-chart-pie"></i> 調查結果揭曉</span>
-          <h2 class="slide-title">剛才的調查，透露了什麼客廳真相？</h2>
+          <span class="badge-tag"><i class="fa-solid fa-chart-pie"></i> 現場互動反思</span>
+          <h2 class="slide-title">從剛才的票選，我們看見了什麼？</h2>
           <div class="lead-text">
             <ul style="line-height: 2; margin-left: 20px;">
-              <li>大人每天用手機好幾小時 <span class="highlight">卻不知道孩子用了多久</span></li>
-              <li>自己對 AI 還很陌生 <span class="highlight">但孩子可能早就天天在用</span></li>
-              <li>我們以為孩子沒在用 <span class="highlight">其實我們根本不確定</span></li>
+              <li>大人每天離不開手機 <span class="highlight">其實我們也理解孩子被螢幕吸引的心情</span></li>
+              <li>我們以為孩子沒在用 AI <span class="highlight">但新科技正在悄悄進入孩子的書包</span></li>
+              <li>大人對 AI 感到陌生 <span class="highlight">正需要親師攜手，摸索出引導好方法</span></li>
             </ul>
           </div>
           <div class="quote-box" style="font-size: 1.35rem; margin-top: 20px;">
-            「今天不是來檢討誰愛滑手機，因為我自己下班也會滑。但這四個問題的落差，就是我們今天要面對的核心。」
+            「今天不是來檢討誰愛滑手機，因為我自己下班也會滑。重點是：我們如何理解孩子的世界，並成為他的好隊友！」
           </div>
         </div>
       </section>
 
-      <!-- Slide 8｜震撼新聞影片：當手機成癮擊潰孩子情緒 -->
+      <!-- Slide 5｜震撼新聞影片：當手機成癮擊潰孩子情緒 -->
       <section data-transition="zoom">
         <div class="slide-card" style="text-align: center; padding: 35px 40px;">
-          <span class="badge-tag"><i class="fa-solid fa-video"></i> 真實社會新聞案例</span>
+          <span class="badge-tag"><i class="fa-solid fa-video"></i> 真實社會案例反思</span>
           <h2 class="slide-title" style="margin-bottom: 12px !important; font-size: 2.1rem !important;">
-            當手機成癮，擊潰了孩子的情緒控制系統……
+            當手機成癮，孩子的情緒控制系統亮紅燈……
           </h2>
           <p class="lead-text" style="color: var(--text-muted); font-size: 1.15rem; margin-bottom: 16px;">
-            奶奶買好吃的哄孫子交出手機少玩遊戲，結果男孩當街對奶奶拳腳相加
+            奶奶買點心哄孫子交出手機少玩遊戲，結果男孩當街情緒失控對長輩拳腳相加
           </p>
 
           <!-- 內嵌高清直式影片播放器 -->
@@ -339,38 +342,41 @@
             </div>
             <div style="text-align: left; max-width: 460px;">
               <div class="box-card" style="border-left: 6px solid var(--danger); margin-bottom: 15px;">
-                <h4 style="color: var(--danger); font-size: 1.25rem;"><i class="fa-solid fa-triangle-exclamation"></i> 這不是孩子壞，是大腦被演算法綁架</h4>
-                <p style="font-size: 1.1rem; line-height: 1.6;">手機遊戲與短影音的多巴胺刺激，會快速摧毀未成年人的自我控制能力。</p>
+                <h4 style="color: var(--danger); font-size: 1.25rem;"><i class="fa-solid fa-brain"></i> 大腦前額葉尚未成熟，易受多巴胺演算法影響</h4>
+                <p style="font-size: 1.1rem; line-height: 1.6;">手機遊戲與短影音的即時回饋，容易讓自制力仍在發育的孩子產生依賴與情緒反彈。</p>
               </div>
               <div class="quote-box fragment" style="font-size: 1.25rem; margin: 0; padding: 18px 22px; border-left-width: 6px;">
-                「如果我們沒有在一開始建立好家庭公約，等孩子成癮後，就只能在客廳上演親子衝突！」
+                「在成癮之前建立全家共守的規範，比事後在客廳爆發親子衝突有效百倍！」
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Slide 9｜親子天下震撼數據 -->
+      <!-- Slide 6｜親子天下調查 -->
       <section data-transition="convex">
         <div class="slide-card">
-          <span class="badge-tag"><i class="fa-solid fa-newspaper"></i> 親子天下 2026 全國親師生大調查</span>
-          <h2 class="slide-title">三個讓家長冒冷汗的全國調查數字</h2>
+          <span class="badge-tag"><i class="fa-solid fa-newspaper"></i> 親子天下 2026 全國親師生調查</span>
+          <h2 class="slide-title">三個值得家長關注的真實趨勢</h2>
           <div class="grid-3">
             <div class="box-card fragment" style="text-align: center; border-top: 6px solid var(--danger);">
-              <h3 style="font-size: 2.8rem; color: var(--danger); margin: 10px 0;">近 6 倍</h3>
-              <h4>認知卸載落差</h4>
-              <p>學生自稱有思考，但老師觀察到<b>「整段外包給 AI 抄答案」</b>的比例高出近 6 倍！</p>
+              <h3 style="font-size: 2.5rem; color: var(--danger); margin: 10px 0;">親師落差</h3>
+              <h4>大腦外包認知</h4>
+              <p>79.1% 教師觀察到學生依賴 AI 抄答案，但僅 13.5% 學生自覺有依賴，存在顯著認知落差！</p>
             </div>
             <div class="box-card fragment" style="text-align: center; border-top: 6px solid var(--primary);">
-              <h3 style="font-size: 2.8rem; color: var(--primary); margin: 10px 0;">27.7%</h3>
+              <h3 style="font-size: 2.5rem; color: var(--primary); margin: 10px 0;">27.7%</h3>
               <h4>情感樹洞現象</h4>
               <p>近三成孩子不只查功課，還在<b>跟 AI 說心事、說不敢告訴爸媽的話</b>！</p>
             </div>
             <div class="box-card fragment" style="text-align: center; border-top: 6px solid var(--success);">
-              <h3 style="font-size: 2.8rem; color: var(--success); margin: 10px 0;">已超越</h3>
-              <h4>理性判讀能力</h4>
-              <p>孩子對 AI 的操作熟悉度與好奇心，<b>已經遠遠走在大人前面！</b></p>
+              <h3 style="font-size: 2.5rem; color: var(--success); margin: 10px 0;">原生世代</h3>
+              <h4>探索速度超前</h4>
+              <p>孩子對新工具的摸索與好奇心，<b>往往走在大人的直覺前面！</b></p>
             </div>
+          </div>
+          <div style="font-size: 0.85rem; color: #888; text-align: right; margin-top: 10px;">
+            * 資料來源：親子天下 2026 全國親師生 AI 調查報告
           </div>
         </div>
       </section>
@@ -447,41 +453,41 @@
         </div>
       </section>
 
-      <!-- Slide 13｜CEPR 大型研究數據 -->
+      <!-- Slide 11｜CEPR 大型研究數據 -->
       <section data-transition="zoom">
         <div class="slide-card">
-          <span class="badge-tag"><i class="fa-solid fa-flask"></i> CEPR 2026 大型長期追蹤研究</span>
-          <h2 class="slide-title">AI 讓作業變快，但考試成績暴跌 20%！</h2>
+          <span class="badge-tag"><i class="fa-solid fa-flask"></i> 國際長期實證研究</span>
+          <h2 class="slide-title">一項中學生研究提醒：作業進步，考試未必進步！</h2>
           <div class="lead-text">
-            <p>（追蹤 26,811 名學生長達 30 個月的真實學業表現）</p>
+            <p>（CEPR 針對 2.6 萬名中學生長期追蹤：作業表現與實體閉卷測驗的落差）</p>
           </div>
           <div class="grid-3" style="margin-top: 15px;">
             <div class="box-card fragment" style="text-align: center;">
               <h3 style="font-size: 2.4rem; color: var(--success);">+18%</h3>
-              <p><b>作業分數提高</b><br>作業全部打大勾勾</p>
+              <p><b>作業正確率提高</b><br>有 AI 幫忙時作業全對</p>
             </div>
             <div class="box-card fragment" style="text-align: center;">
               <h3 style="font-size: 2.4rem; color: var(--primary);">-19 分鐘</h3>
-              <p><b>作業時間縮短</b><br>64分降至45分，好輕鬆</p>
+              <p><b>作業時間縮短</b><br>省下大把時間好輕鬆</p>
             </div>
             <div class="box-card fragment" style="text-align: center; border: 2px solid var(--danger); background: rgba(224, 122, 95, 0.08);">
               <h3 style="font-size: 2.4rem; color: var(--danger);">-20%</h3>
-              <p><b>實體考試暴跌</b><br>六個月後無AI考試慘敗</p>
+              <p><b>實體閉卷考試退步</b><br>關掉 AI 後無法獨立解題</p>
             </div>
           </div>
-          <p class="fragment" style="margin-top: 15px; font-size: 1rem; color: var(--danger); font-weight: 700;">
-            ⚠️ 退步最嚴重的，正是把作業時間壓到最短、完全把思考外包給 AI 的那群人！
+          <p class="fragment" style="margin-top: 15px; font-size: 1.1rem; color: var(--danger); font-weight: 700; text-align: center;">
+            💡 核心警訊：「作業完成了，不代表學會了。」若大腦過度外包，實體考場就無法獨立思考！
           </p>
         </div>
       </section>
 
-      <!-- Slide 14｜白紙真實故事 -->
+      <!-- Slide 12｜白紙真實故事 -->
       <section data-transition="slide">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-triangle-exclamation"></i> 真實教學案例</span>
           <h2 class="slide-title">那個坐在考場、面對白紙一個字寫不出的孩子</h2>
           <div class="lead-text">
-            <p>曾經有個學生從小抄網路作文，平時作業篇篇高分。五年級被班導選去代表學校參加作文比賽……</p>
+            <p>曾經有個學生從小習慣參考網路範文，平時作業篇篇高分。五年級代表學校參加作文比賽……</p>
             <p style="margin-top: 10px; font-size: 1.6rem; color: var(--danger); font-weight: 900;">
               坐在考場裡，面對一張空白稿紙，他整整坐了兩小時，一個字都寫不出來！
             </p>
@@ -493,27 +499,35 @@
         </div>
       </section>
 
-      <!-- Slide 15｜蘇格拉底學習法 -->
+      <!-- Slide 13｜蘇格拉底學習法（同題兩種問法強烈對比） -->
       <section data-transition="slide">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> 菩提老師核心心法一</span>
-          <h2 class="slide-title">AI 時代的「蘇格拉底學習法」——只給提示！</h2>
-          <div class="lead-text">
-            <p>蘇格拉底教學：<b>不直接給答案，用「反問與線索」引導自己想通！</b></p>
+          <h2 class="slide-title">AI 伴學實戰：同一個題目，兩種完全不同的問法！</h2>
+          <div class="grid-2" style="margin-top: 12px; gap: 16px;">
+            <div class="box-card fragment" style="border-left: 6px solid var(--danger); background: #FFF9F8;">
+              <h4 style="color: var(--danger);"><i class="fa-solid fa-circle-xmark"></i> ❌ 偷懶問法（大腦外包）</h4>
+              <p style="font-size: 1rem; color: #555; margin-top: 6px;">
+                <b>問法：</b>「這題數學怎麼算？直接把答案寫給我。」
+              </p>
+              <p style="font-size: 0.95rem; color: var(--danger); font-weight: 700; margin-top: 8px;">
+                💥 結果：AI 秒吐出算式與答案，孩子複製貼上交差，考場上一題都不會！
+              </p>
+            </div>
+            <div class="box-card fragment" style="border-left: 6px solid var(--success); background: #F8FDF9;">
+              <h4 style="color: var(--success);"><i class="fa-solid fa-circle-check"></i> ⭕ 蘇格拉底問法（引導思考）</h4>
+              <p style="font-size: 0.98rem; color: #2D2724; line-height: 1.5; margin-top: 6px;">
+                <b>黃金咒語：</b>「我是三年級學生，我先想到的是＿＿。請<b>每次只給我一個提示</b>；如果我算錯請指出卡在哪一步。最後<b>出一題類似題讓我關掉手機自己做！</b>」
+              </p>
+              <p style="font-size: 0.95rem; color: var(--success); font-weight: 700; margin-top: 8px;">
+                🌟 結果：AI 耐心引導想通，無 AI 獨立解題達成真學會！
+              </p>
+            </div>
           </div>
-          <div class="box-card fragment" style="margin-top: 20px; background: #FFFDF9; border-left: 6px solid var(--primary);">
-            <h4>🗣️ 現場示範黃金提問句：</h4>
-            <p style="font-size: 1.3rem; color: var(--primary); font-weight: 900; line-height: 1.6;">
-              「我是三年級學生，我先想到的是＿＿。請不要直接告訴我答案，每次只給我一個提示；如果我答錯請指出我卡在哪一步。最後出一題類似題讓我關掉手機自己做！」
-            </p>
-          </div>
-          <p class="fragment" style="margin-top: 15px; font-size: 1.15rem; color: var(--success); font-weight: 700;">
-            ✓ AI 不拍桌子、不發脾氣，問十次耐心教十次！
-          </p>
         </div>
       </section>
 
-      <!-- Slide 16｜簡立峰博士名言 -->
+      <!-- Slide 14｜簡立峰博士名言 -->
       <section data-transition="zoom">
         <div class="slide-card" style="text-align: center; padding: 50px 40px;">
           <span class="badge-tag"><i class="fa-solid fa-crown"></i> 頂尖科技權威指引</span>
@@ -530,41 +544,41 @@
         </div>
       </section>
 
-      <!-- Slide 17｜費曼學習法 -->
+      <!-- Slide 15｜費曼學習法（說出歷程 + 樹洞接話錦囊） -->
       <section data-transition="slide">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-comments"></i> 菩提老師核心心法二</span>
           <h2 class="slide-title">AI 時代的「費曼學習法」——說出歷程，說明懂了什麼！</h2>
-          <div class="lead-text">
-            <p>諾貝爾獎大師費曼：<b>「能用簡單的話講給別人聽懂，才算真正搞懂！」</b></p>
-          </div>
-          <div class="grid-2" style="margin-top: 15px;">
+          <div class="grid-2" style="margin-top: 12px; gap: 16px;">
             <div class="box-card" style="border-left: 6px solid var(--primary);">
               <h4>1. 說出使用歷程</h4>
-              <p>「我一開始卡在＿＿，我問了 AI 兩次提示，才發現我原本乘法算錯了……」</p>
+              <p>「我一開始卡在＿＿，我問了 AI 兩次提示，才發現我原本算錯了……」</p>
             </div>
             <div class="box-card" style="border-left: 6px solid var(--success);">
               <h4>2. 說明懂了什麼</h4>
               <p>「所以我現在真正搞懂了＿＿的觀念，其實道理就是＿＿！」</p>
             </div>
           </div>
-          <div class="box-card" style="margin-top: 15px; background: #FFFDF9;">
-            <p style="font-weight: 700; color: var(--primary);">
-              🌟 爸媽不用會解題！只要坐在沙發上當忠實聽眾，聽孩子說一遍，勝過寫十張考卷！
+          <div class="box-card fragment" style="margin-top: 12px; background: #FFFDF9; border-left: 6px solid var(--accent);">
+            <p style="font-weight: 700; color: var(--text-dark); font-size: 1.05rem;">
+              🌟 爸媽不用會解題！只要坐在沙發上當聽眾，「聽孩子說一遍，比重複刷題更能把觀念真正弄懂！」
+            </p>
+            <p style="font-size: 0.95rem; color: var(--primary); font-weight: 700; margin-top: 6px;">
+              💖 <b>樹洞接話錦囊：</b>孩子跟 AI 說心事被你發現時，溫柔接話：「謝謝你願意告訴我，你希望我先聽，還是我們一起想辦法？」
             </p>
           </div>
         </div>
       </section>
 
-      <!-- Slide 18｜三管一要 -->
+      <!-- Slide 16｜三管一要 -->
       <section data-transition="slide">
         <div class="slide-card">
-          <span class="badge-tag"><i class="fa-solid fa-shield-halved"></i> 農忙家庭做得到的防線</span>
+          <span class="badge-tag"><i class="fa-solid fa-shield-halved"></i> 忙碌家庭做得到的防線</span>
           <h2 class="slide-title">家庭載具管理公約：「三管一要」</h2>
-          <div class="grid-2">
+          <div class="grid-2" style="gap: 14px;">
             <div class="box-card">
               <h4>📍 管地點</h4>
-              <p>只在客廳、餐桌等公開地方使用，<b>嚴禁帶進房間關門滑</b>。</p>
+              <p>全家約定在客廳等<b>共同公開空間使用</b>，大人一起遵守。</p>
             </div>
             <div class="box-card">
               <h4>⏰ 管時段</h4>
@@ -572,17 +586,20 @@
             </div>
             <div class="box-card">
               <h4>🎯 管目的</h4>
-              <p>先完成必要學習任務，<b>先自己思考才能問 AI 提示</b>。</p>
+              <p>先完成必要學習任務，<b>先自己思考一分鐘才能問 AI 提示</b>。</p>
             </div>
             <div class="box-card" style="border: 2px solid var(--primary); background: #FFFDF9;">
               <h4>🗣️ 要說回來</h4>
-              <p>查完之後，<b>必須用自己的話把解題過程說給大人聽</b>。</p>
+              <p>查完之後，<b>用自己的話把解題過程說給大人聽</b>。</p>
             </div>
+          </div>
+          <div class="fragment" style="margin-top: 10px; text-align: center; background: rgba(42, 157, 143, 0.1); padding: 8px 16px; border-radius: 12px; font-weight: 700; color: var(--success); font-size: 1.05rem;">
+            🚀 <b>今晚最小任務：</b>請孩子說出一個卡住的地方，請 AI 給一個提示，關掉手機自己解一題！
           </div>
         </div>
       </section>
 
-      <!-- Slide 19｜三句黃金口訣 -->
+      <!-- Slide 17｜三句黃金口訣 -->
       <section data-transition="convex">
         <div class="slide-card">
           <span class="badge-tag"><i class="fa-solid fa-key"></i> 爸媽必備錦囊</span>
@@ -610,7 +627,7 @@
         </div>
       </section>
 
-      <!-- Slide 20｜今晚定心丸（感性昇華） -->
+      <!-- Slide 18｜今晚定心丸（感性昇華） -->
       <section data-transition="zoom">
         <div class="slide-card" style="text-align: center; padding: 45px 50px;">
           <span class="badge-tag"><i class="fa-solid fa-heart"></i> 菩提老師的真心話</span>
@@ -631,18 +648,24 @@
         </div>
       </section>
 
-      <!-- Slide 21｜QR Code 帶回家與 Q&A -->
+      <!-- Slide 19｜QR Code 帶回家與 Q&A -->
       <section data-transition="fade">
-        <div class="slide-card" style="text-align: center; padding: 40px;">
+        <div class="slide-card" style="text-align: center; padding: 35px 40px;">
           <span class="badge-tag"><i class="fa-solid fa-gift"></i> 伴學懶人包帶回家</span>
-          <h2 class="slide-title" style="margin-bottom: 12px !important;">感謝各位爸爸媽媽今天的參與！</h2>
-          <p class="lead-text" style="color: var(--text-muted);">掃描 QR Code 存下「三句口訣 ╳ 家庭手機公約小卡」</p>
+          <h2 class="slide-title" style="margin-bottom: 8px !important;">感謝各位爸爸媽媽今天的參與！</h2>
+          <p class="lead-text" style="color: var(--text-muted); font-size:1.15rem; margin-bottom:12px;">掃描 QR Code 存下「三句口訣 ╳ 家庭手機公約小卡」</p>
           
-          <div style="display: flex; justify-content: center; margin: 25px 0;">
-            <div id="slideQrCode" style="background: #FFF; padding: 16px; border-radius: 16px; border: 3px solid var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.08);"></div>
+          <div style="display: flex; justify-content: center; align-items:center; gap:30px; margin: 15px 0; flex-wrap:wrap;">
+            <div id="slideQrCode" style="background: #FFF; padding: 14px; border-radius: 16px; border: 3px solid var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.08);"></div>
+            <div style="text-align: left; max-width:320px;">
+              <p style="font-size:1.1rem; font-weight:700; color:var(--text-dark); margin-bottom:8px;">📱 手機掃描或直接點擊：</p>
+              <a href="card.html" target="_blank" style="display:inline-block; background:var(--primary); color:#FFF; padding:10px 20px; border-radius:12px; text-decoration:none; font-weight:700; box-shadow:0 4px 12px rgba(224,122,95,0.3);">
+                <i class="fa-solid fa-download"></i> 開啟伴學錦囊卡
+              </a>
+            </div>
           </div>
 
-          <h3 style="color: var(--primary); font-size: 1.6rem; margin-top: 10px;">歡迎現場提問與交流時間（Q&A）</h3>
+          <h3 style="color: var(--primary); font-size: 1.45rem; margin-top: 15px;">歡迎現場提問與交流時間（Q&A）</h3>
         </div>
       </section>
 
@@ -651,7 +674,7 @@
 
   <!-- 底部版權宣告與講者列 -->
   <div class="footer-bar">
-    <span>屏東縣後庄國小 黃朝榮老師作品 ｜ 惠農國小親職講座</span>
+    <span>屏東縣後庄國小黃朝榮老師作品，免費分享，歡迎擴散推廣，嚴禁商用與任何侵權、不尊重著作權的行為</span>
     <span>更多 Puti-AI 教學工具：<a href="https://padlet.com/clongwh/puti_ai_tools" target="_blank">點此前往</a></span>
   </div>
 
