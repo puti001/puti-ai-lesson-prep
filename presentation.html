@@ -640,21 +640,37 @@
     });
 
     // 簡報最後一頁 QR Code 自動生成（精準指向錦囊卡領取頁面 card.html）
-    window.addEventListener('load', () => {
+    function renderCardQrCode() {
       const qrBox = document.getElementById('slideQrCode');
       if (qrBox) {
-        // 取得基礎網址並指向 card.html
-        let baseUrl = window.location.href.split('?')[0];
-        baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1) + 'card.html';
+        qrBox.innerHTML = ''; // 清空舊內容防止重複渲染
         
+        // 精確去除 hash 與 query，取得正確的 card.html 絕對網址
+        const origin = window.location.origin;
+        const pathname = window.location.pathname;
+        let dir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+        if (!dir.endsWith('/')) dir += '/';
+        const cardUrl = origin + dir + 'card.html';
+        
+        console.log('Target Card URL:', cardUrl);
+
         new QRCode(qrBox, {
-          text: baseUrl,
-          width: 170,
-          height: 170,
+          text: cardUrl,
+          width: 180,
+          height: 180,
           colorDark: "#2D2724",
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H
         });
+      }
+    }
+
+    // 初始化與頁面切換時觸發
+    window.addEventListener('load', renderCardQrCode);
+    Reveal.on('slidechanged', event => {
+      // 翻到最後一頁時再次確認繪製
+      if (event.indexh >= 16) {
+        renderCardQrCode();
       }
     });
   </script>
