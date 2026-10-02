@@ -777,7 +777,11 @@
       }
     ];
 
-    // 本地即時廣播頻道（跨標籤頁即時同步）
+    // 跨裝置雲端房間 ID（專屬於惠農國小 10/03 親職講座）
+    const ROOM_ID = 'huinong_parent_20261003';
+    const CLOUD_SYNC_URL = 'https://api.counterapi.dev/v1/' + ROOM_ID;
+
+    // 本地跨標籤廣播頻道 + 雲端輪詢
     const channel = new BroadcastChannel('puti_kahoot_channel');
 
     let currentQIndex = 0;
@@ -785,6 +789,11 @@
     let currentRole = 'host'; // 'host' | 'player'
     let mySelectedChoice = null;
     let brandClickCount = 0;
+    let voterId = localStorage.getItem('puti_voter_id') || ('voter_' + Math.random().toString(36).substr(2, 9));
+    localStorage.setItem('puti_voter_id', voterId);
+
+    // 雲端同步輪詢定時器
+    let pollTimer = null;
 
     // 初始化讀取網址參數
     window.addEventListener('DOMContentLoaded', () => {
@@ -799,6 +808,10 @@
       renderNav();
       renderQuestion();
       setupQrCode();
+
+      // 載入雲端即時票數
+      syncFromCloud();
+      pollTimer = setInterval(syncFromCloud, 2500);
 
       // 接收跨視窗廣播訊息
       channel.onmessage = (event) => {
@@ -817,6 +830,61 @@
         }
       };
     });
+
+    // 雲端票數同步引擎
+    async function syncFromCloud() {
+      try {
+        const res = await fetch(`https://kvdb.io/8xWwWkU9sN8UfQk5mGq1Lg/${ROOM_ID}_state`);
+        if (res.ok) {
+          const cloudState = await res.json();
+          if (cloudState && cloudState.questions) {
+            cloudState.questions.forEach((cq, qIdx) => {
+              if (QUESTIONS[qIdx]) {
+                cq.options.forEach((co, oIdx) => {
+                  if (QUESTIONS[qIdx].options[oIdx]) {
+                    QUESTIONS[qIdx].options[oIdx].votes = co.votes;
+                  }
+                });
+                if (cq.revealed !== undefined) {
+                  QUESTIONS[qIdx].revealed = cq.revealed;
+                }
+              }
+            });
+
+            if (currentRole === 'player') {
+              if (cloudState.currentQ !== undefined && cloudState.currentQ !== currentQIndex) {
+                currentQIndex = cloudState.currentQ;
+                isRevealed = QUESTIONS[currentQIndex].revealed || false;
+                renderQuestion();
+              }
+            } else if (currentRole === 'host') {
+              updateHostStats();
+            }
+          }
+        }
+      } catch (e) {
+        // 離線或連線超時容錯
+      }
+    }
+
+    // 發送雲端狀態更新
+    async function pushToCloud() {
+      try {
+        const payload = {
+          currentQ: currentQIndex,
+          questions: QUESTIONS.map(q => ({
+            id: q.id,
+            revealed: q.revealed || false,
+            options: q.options.map(o => ({ key: o.key, votes: o.votes }))
+          }))
+        };
+        await fetch(`https://kvdb.io/8xWwWkU9sN8UfQk5mGq1Lg/${ROOM_ID}_state`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) {}
+    }
 
     // 角色切換
     function toggleRole() {
@@ -974,7 +1042,7 @@
     }
 
     // 提交手機投票
-    function submitPlayerVote(choice) {
+    async function submitPlayerVote(choice) {
       mySelectedChoice = choice;
       renderQuestion();
       document.getElementById('playerStatus').innerHTML = `
@@ -982,25 +1050,29 @@
         <small style="color:var(--text-muted)">請抬頭看大螢幕即時長條圖！</small>
       `;
 
-      // 廣播給大螢幕
+      // 本地數據同步增加
+      const opt = QUESTIONS[currentQIndex].options.find(o => o.key === choice);
+      if (opt) opt.votes++;
+
+      // 廣播給同主機分頁
       channel.postMessage({
         type: 'VOTE_SUBMIT',
         qIndex: currentQIndex,
         choice: choice
       });
 
-      // 本地數據同步增加
-      const opt = QUESTIONS[currentQIndex].options.find(o => o.key === choice);
-      if (opt) opt.votes++;
+      // 🔥 即時推送到雲端，跨手機與電腦連線
+      await pushToCloud();
     }
 
     // 開票/隱藏切換
-    function toggleReveal() {
+    async function toggleReveal() {
       isRevealed = !isRevealed;
       QUESTIONS[currentQIndex].revealed = isRevealed;
       renderNav();
       renderQuestion();
       broadcastState();
+      await pushToCloud();
 
       if (isRevealed) {
         // 彩帶特效
@@ -1013,7 +1085,7 @@
     }
 
     // 重置當前題目票數
-    function resetCurrentVotes() {
+    async function resetCurrentVotes() {
       if (confirm('確定要清空本題所有已投的票數嗎？')) {
         QUESTIONS[currentQIndex].options.forEach(o => o.votes = 0);
         isRevealed = false;
@@ -1021,6 +1093,7 @@
         renderNav();
         renderQuestion();
         broadcastState();
+        await pushToCloud();
       }
     }
 
