@@ -224,17 +224,29 @@
       font-weight: 700;
     }
 
-    /* 動畫彩帶 Canvas */
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
-      display: none;
+    /* 投票題號切換鈕樣式 */
+    .vote-tab-btn {
+      background: #FFF;
+      color: var(--text-dark);
+      border: 2px solid #D8CFC4;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
     }
+    .vote-tab-btn:hover {
+      background: #FDF9F3;
+      border-color: var(--primary);
+    }
+    .vote-tab-btn.active {
+      background: var(--primary);
+      color: #FFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(124, 77, 37, 0.25);
+    }
+
     /* 28 場經歷特製震撼動畫樣式（支援實體照片縮圖） */
     .exp-wall-container {
       display: flex;
@@ -493,25 +505,36 @@
 
       <!-- Slide 3｜現場互動投票入口（大尺寸 QR Code 乾淨掃描頁） -->
       <section data-transition="fade">
-        <div class="slide-card" style="text-align: center; padding: 40px 30px;">
+        <div class="slide-card" style="text-align: center; padding: 36px 30px;">
           <span class="badge-tag"><i class="fa-solid fa-bolt"></i> 現場即時互動思辨</span>
-          <h2 class="slide-title" style="margin-bottom: 8px !important; font-size: 2.2rem !important;">全場爸媽即時票選：4 個真心話小調查！</h2>
-          <p class="lead-text" style="color: var(--text-muted); font-size: 1.25rem;">請大家拿出手機掃描大螢幕 QR Code，免下載、免登入立即作答！</p>
+          <h2 class="slide-title" style="margin-bottom: 6px !important; font-size: 2.1rem !important;">全場爸媽即時票選：4 個真心話小調查！</h2>
+          <p class="lead-text" style="color: var(--text-muted); font-size: 1.15rem; margin-bottom: 12px;">請大家拿出手機掃描大螢幕 QR Code，免下載、免登入立即作答！</p>
           
-          <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 25px 0; flex-wrap: wrap;">
-            <div style="background: #FFF; padding: 18px; border-radius: 20px; border: 3px solid var(--accent); box-shadow: 0 10px 28px rgba(124, 77, 37, 0.12);">
+          <!-- 題目快速切換按鈕 -->
+          <div style="display: inline-flex; gap: 8px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap;">
+            <button class="vote-tab-btn active" id="vTab1" onclick="switchVoteSlideQr(1)">Q1 家長手機</button>
+            <button class="vote-tab-btn" id="vTab2" onclick="switchVoteSlideQr(2)">Q2 孩子手機</button>
+            <button class="vote-tab-btn" id="vTab3" onclick="switchVoteSlideQr(3)">Q3 AI 認知</button>
+            <button class="vote-tab-btn" id="vTab4" onclick="switchVoteSlideQr(4)">Q4 AI 抄作業</button>
+          </div>
+
+          <div style="display: flex; justify-content: center; align-items: center; gap: 36px; margin: 10px 0; flex-wrap: wrap;">
+            <div style="background: #FFF; padding: 16px; border-radius: 20px; border: 3px solid var(--accent); box-shadow: 0 10px 28px rgba(124, 77, 37, 0.12); text-align: center;">
               <div id="voteQrCode"></div>
-            </div>
-            <div style="text-align: left; max-width: 380px;">
-              <div class="box-card" style="border-left: 6px solid var(--primary); margin-bottom: 12px;">
-                <h4 style="margin-bottom:6px;"><i class="fa-solid fa-mobile-screen-button"></i> 手機掃描立即進場</h4>
-                <p style="font-size: 1.05rem;">現場實時統計，看看全場大人的真實使用數據！</p>
+              <div id="voteQrLabel" style="font-size: 0.92rem; font-weight: 900; color: var(--primary); margin-top: 8px;">
+                📱 掃描進入第 1 題作答
               </div>
-              <a href="index.html?role=host" target="_blank" class="btn-launch-poll" style="font-size: 1.15rem; padding: 12px 24px; display:inline-block; margin-bottom: 8px;">
+            </div>
+            <div style="text-align: left; max-width: 400px;">
+              <div class="box-card" style="border-left: 6px solid var(--primary); margin-bottom: 12px; padding: 14px 18px;">
+                <h4 style="margin-bottom:6px; font-size: 1.15rem;"><i class="fa-solid fa-mobile-screen-button"></i> 手機掃描立即進場</h4>
+                <p style="font-size: 1rem; line-height: 1.5;">手機作答端已支援 <b>Q1 ~ Q4 題號切換</b>，家長可一鍵連續作答！</p>
+              </div>
+              <a href="index.html?role=host" target="_blank" class="btn-launch-poll" style="font-size: 1.15rem; padding: 12px 24px; display:inline-flex; margin-bottom: 8px;">
                 <i class="fa-solid fa-chart-column"></i> 開啟大螢幕開票看板
               </a>
               <div style="font-size:0.9rem; color:#888;">
-                手機瀏覽者亦可：<a href="index.html?role=player" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">點此直接進作答端</a>
+                手機瀏覽者亦可：<a href="index.html?role=player&q=1" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">點此直接進第 1 題作答端</a>
               </div>
             </div>
           </div>
@@ -972,8 +995,11 @@
       margin: 0.04
     });
 
-    // Slide 3 投票 QR Code（指向 index.html?role=player）
-    function renderVoteQrCode() {
+    let currentVoteSlideQ = 1;
+
+    // Slide 3 投票 QR Code（精準支援 ?q=1 ~ ?q=4 各題專屬入口）
+    function renderVoteQrCode(qIdx = currentVoteSlideQ) {
+      currentVoteSlideQ = qIdx;
       const qrBox = document.getElementById('voteQrCode');
       if (qrBox) {
         qrBox.innerHTML = '';
@@ -981,7 +1007,7 @@
         const pathname = window.location.pathname;
         let dir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
         if (!dir.endsWith('/')) dir += '/';
-        const voteUrl = origin + dir + 'index.html?role=player';
+        const voteUrl = `${origin}${dir}index.html?role=player&q=${qIdx}`;
 
         new QRCode(qrBox, {
           text: voteUrl,
@@ -992,6 +1018,24 @@
           correctLevel: QRCode.CorrectLevel.H
         });
       }
+
+      // 更新按鈕 active 樣式與標籤文字
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`vTab${i}`);
+        if (btn) {
+          if (i === qIdx) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      }
+
+      const label = document.getElementById('voteQrLabel');
+      if (label) {
+        label.innerText = `📱 掃描進入第 ${qIdx} 題作答（亦可在手機隨時切換 Q1~Q4）`;
+      }
+    }
+
+    function switchVoteSlideQr(qIdx) {
+      renderVoteQrCode(qIdx);
     }
 
     // 簡報最後一頁 QR Code 自動生成（精準指向錦囊卡領取頁面 card.html）
