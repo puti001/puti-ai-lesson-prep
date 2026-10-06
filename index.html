@@ -687,6 +687,9 @@
 
     <!-- 手機作答端視圖 (Player View) -->
     <div id="playerView" class="player-view">
+      <!-- 手機題號切換導航（防止斷線時家長無法切題） -->
+      <div class="q-nav" id="pNav" style="margin-bottom: 8px;"></div>
+
       <div class="player-hero">
         <span class="q-badge" id="pBadge" style="margin-bottom:8px; display:inline-block;">第 1 題</span>
         <h3 id="pTitle" style="font-size:1.35rem; font-weight:900; margin-bottom:6px;">題目載入中</h3>
@@ -695,8 +698,18 @@
 
       <div class="player-options" id="playerOptions"></div>
 
-      <div class="player-status-card" id="playerStatus">
+      <div class="player-status-card" id="playerStatus" style="margin-top: 12px;">
         <i class="fa-solid fa-hand-pointer"></i> 請點選上方選項完成投票（可隨時修改）
+      </div>
+
+      <!-- 手機端前後翻題按鈕 -->
+      <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 14px;">
+        <button id="btnPrevQ" class="btn-role-switch" style="flex:1; justify-content:center; background:#EFE9E1; color:var(--text-main);" onclick="navigatePlayerQuestion(-1)">
+          <i class="fa-solid fa-chevron-left"></i> 上一題
+        </button>
+        <button id="btnNextQ" class="btn-role-switch" style="flex:1; justify-content:center; background:var(--accent-brown); color:#FFF;" onclick="navigatePlayerQuestion(1)">
+          下一題 <i class="fa-solid fa-chevron-right"></i>
+        </button>
       </div>
     </div>
 
@@ -706,10 +719,19 @@
   <div class="modal-overlay" id="qrModal" onclick="closeQrModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeQrModal()">&times;</button>
-      <h3 style="font-size:1.4rem; font-weight:900; color:var(--accent-brown);"><i class="fa-solid fa-mobile-screen"></i> 手機掃描立即作答</h3>
-      <p style="color:var(--text-muted); font-weight:700;">免下載、免登入，即時連線大螢幕</p>
+      <h3 style="font-size:1.4rem; font-weight:900; color:var(--accent-brown); margin-bottom: 4px;">
+        <i class="fa-solid fa-mobile-screen"></i> 手機掃描立即作答
+      </h3>
+      <p style="color:var(--text-muted); font-weight:700; margin-bottom: 10px;">免下載、免登入，即時連線大螢幕</p>
+      
+      <!-- 燈箱內題號切換鈕（讓講師可在燈箱中快速切換題目 QR Code） -->
+      <div class="q-nav" id="qrModalNav" style="margin-bottom: 12px;"></div>
+      <div id="qrModalBadge" style="display:inline-block; font-size:0.95rem; font-weight:900; background:rgba(224, 122, 95, 0.15); color:var(--color-a); padding:4px 14px; border-radius:20px; margin-bottom:10px;">
+        第 1 題專屬掃描碼
+      </div>
+
       <div class="qr-container" id="qrCodeBig"></div>
-      <p style="font-size:0.85rem; color:#888; font-weight:500;">或在手機網址輸入：<br><b id="qrUrlText" style="color:var(--text-main); word-break:break-all;"></b></p>
+      <p style="font-size:0.85rem; color:#888; font-weight:500; margin-top: 8px;">或在手機網址輸入：<br><b id="qrUrlText" style="color:var(--text-main); word-break:break-all;"></b></p>
     </div>
   </div>
 
@@ -790,7 +812,8 @@
     let currentQIndex = 0;
     let isRevealed = false;
     let currentRole = 'host'; // 'host' | 'player'
-    let mySelectedChoice = null;
+    let myChoices = {}; // 記錄已投的題目與選項 { 0: 'A', 1: 'B', ... }
+    let isPlayerManualNav = false;
     let brandClickCount = 0;
     let mqttClient = null;
 
@@ -798,15 +821,29 @@
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const roleParam = urlParams.get('role');
+      const qParam = parseInt(urlParams.get('q'), 10);
+
+      // 讀取本地作答記錄
+      try {
+        const saved = sessionStorage.getItem('puti_parent_choices');
+        if (saved) myChoices = JSON.parse(saved);
+      } catch(e) {}
+
       if (roleParam === 'player') {
         setRole('player');
       } else {
         setRole('host');
       }
 
+      // 若網址帶有題號參數 ?q=1 ~ ?q=4，精準跳轉至該題
+      if (!isNaN(qParam) && qParam >= 1 && qParam <= QUESTIONS.length) {
+        currentQIndex = qParam - 1;
+        isPlayerManualNav = true;
+      }
+
       renderNav();
       renderQuestion();
-      setupQrCode();
+      setupQrCode(currentQIndex);
       initMqtt();
 
       // 本地同主機廣播接收
@@ -815,10 +852,13 @@
         if (data.type === 'VOTE_SUBMIT') {
           handleIncomingVote(data.qIndex, data.choice);
         } else if (data.type === 'STATE_CHANGE') {
-          currentQIndex = data.qIndex;
-          isRevealed = data.isRevealed;
-          renderNav();
-          renderQuestion();
+          if (!isPlayerManualNav || currentRole === 'host') {
+            currentQIndex = data.qIndex;
+            isRevealed = data.isRevealed;
+            renderNav();
+            renderQuestion();
+            setupQrCode(currentQIndex);
+          }
         }
       };
     });
@@ -838,14 +878,11 @@
       mqttClient.on('connect', () => {
         console.log('✅ MQTT 雲端長連線成功！');
         if (currentRole === 'player') {
-          document.getElementById('playerStatus').innerHTML = `
-            <span style="color:var(--color-b); font-weight:900;"><i class="fa-solid fa-cloud-bolt"></i> 雲端即時連線就緒！請點選下方選項投票</span>
-          `;
-          // 手機訂閱狀態廣播
+          updatePlayerStatusMessage();
           mqttClient.subscribe(TOPIC_STATE);
         } else {
-          // 大螢幕主控端訂閱所有投票訊息
           mqttClient.subscribe(TOPIC_VOTE);
+          broadcastState(); // 主持人連線時主動廣播當前題號
         }
       });
 
@@ -856,9 +893,13 @@
             console.log('📥 收到手機雲端投票:', data);
             handleIncomingVote(data.qIndex, data.choice);
           } else if (topic === TOPIC_STATE && currentRole === 'player') {
-            currentQIndex = data.qIndex;
-            isRevealed = data.isRevealed;
-            renderQuestion();
+            // 手機端接收大螢幕題號廣播（若家長未手動點選其他題，自動跟隨大螢幕）
+            if (!isPlayerManualNav) {
+              currentQIndex = data.qIndex;
+              isRevealed = data.isRevealed;
+              renderNav();
+              renderQuestion();
+            }
           }
         } catch(e) {}
       });
@@ -898,47 +939,43 @@
         roleBadge.style.display = 'inline-flex';
         btnSwitch.style.display = 'inline-flex';
         roleBadge.innerHTML = '<i class="fa-solid fa-tv"></i> 大螢幕主控端';
-        btnSwitch.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 切換作答預覽';
+        btnSwitch.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> 切換手機端';
       } else {
         hostView.style.display = 'none';
         playerView.style.display = 'flex';
-        // 家長手機端：強制隱藏所有切換與管理控制項
         roleBadge.style.display = 'none';
         btnSwitch.style.display = 'none';
-        mySelectedChoice = null;
       }
+      renderNav();
       renderQuestion();
+      setupQrCode(currentQIndex);
     }
 
-    // 彩蛋後門：講者連點 3 下標題並輸入密碼切換主控
-    function handleBrandClick() {
-      brandClickCount++;
-      if (brandClickCount >= 3) {
-        brandClickCount = 0;
-        if (currentRole === 'player') {
-          const pwd = prompt('請輸入講者管理密碼：');
-          if (pwd === 'puti') {
-            setRole('host');
-            alert('已解鎖切換至大螢幕主控端！');
-          } else if (pwd !== null) {
-            alert('密碼錯誤');
-          }
-        } else {
-          setRole('player');
-        }
-      }
-    }
-
-    // 渲染題號導航
+    // 渲染題號導航（同步渲染大螢幕、手機端與燈箱內的導航）
     function renderNav() {
-      const navContainer = document.getElementById('qNav');
-      navContainer.innerHTML = '';
-      QUESTIONS.forEach((q, idx) => {
-        const btn = document.createElement('button');
-        btn.className = `q-tab-btn ${idx === currentQIndex ? 'active' : ''} ${q.revealed ? 'revealed' : ''}`;
-        btn.innerText = idx + 1;
-        btn.onclick = () => switchQuestion(idx);
-        navContainer.appendChild(btn);
+      const navElements = [
+        document.getElementById('qNav'),
+        document.getElementById('pNav'),
+        document.getElementById('qrModalNav')
+      ];
+
+      navElements.forEach(navContainer => {
+        if (!navContainer) return;
+        navContainer.innerHTML = '';
+        QUESTIONS.forEach((q, idx) => {
+          const btn = document.createElement('button');
+          const hasVoted = myChoices[idx] !== undefined;
+          btn.className = `q-tab-btn ${idx === currentQIndex ? 'active' : ''} ${q.revealed || hasVoted ? 'revealed' : ''}`;
+          btn.innerText = `Q${idx + 1}`;
+          btn.title = q.title;
+          btn.onclick = () => {
+            if (currentRole === 'player') {
+              isPlayerManualNav = true;
+            }
+            switchQuestion(idx);
+          };
+          navContainer.appendChild(btn);
+        });
       });
     }
 
@@ -948,7 +985,19 @@
       isRevealed = QUESTIONS[currentQIndex].revealed || false;
       renderNav();
       renderQuestion();
-      broadcastState();
+      setupQrCode(currentQIndex); // 🔥 每一題即時更新專屬 QR Code
+      if (currentRole === 'host') {
+        broadcastState();
+      }
+    }
+
+    // 手機端前後翻題
+    function navigatePlayerQuestion(step) {
+      const nextIdx = currentQIndex + step;
+      if (nextIdx >= 0 && nextIdx < QUESTIONS.length) {
+        isPlayerManualNav = true;
+        switchQuestion(nextIdx);
+      }
     }
 
     // 渲染當前題目
@@ -956,91 +1005,134 @@
       const q = QUESTIONS[currentQIndex];
       
       // 大螢幕端更新
-      document.getElementById('qBadge').innerText = q.badge;
-      document.getElementById('qTitle').innerText = q.title;
-      document.getElementById('qDesc').innerText = q.desc;
+      const qBadge = document.getElementById('qBadge');
+      const qTitle = document.getElementById('qTitle');
+      const qDesc = document.getElementById('qDesc');
+      if (qBadge) qBadge.innerText = q.badge;
+      if (qTitle) qTitle.innerText = q.title;
+      if (qDesc) qDesc.innerText = q.desc;
 
       const grid = document.getElementById('optionsGrid');
-      grid.innerHTML = '';
-
       const totalVotes = q.options.reduce((sum, opt) => sum + opt.votes, 0);
-      document.getElementById('voteTotalNum').innerText = totalVotes;
+      const voteTotalNum = document.getElementById('voteTotalNum');
+      if (voteTotalNum) voteTotalNum.innerText = totalVotes;
 
-      q.options.forEach(opt => {
-        const card = document.createElement('div');
-        card.className = `option-card card-${opt.key} ${isRevealed ? 'revealed' : ''}`;
-        
-        // 算百分比
-        const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+      if (grid) {
+        grid.innerHTML = '';
+        q.options.forEach(opt => {
+          const card = document.createElement('div');
+          card.className = `option-card card-${opt.key} ${isRevealed ? 'revealed' : ''}`;
+          
+          const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
 
-        card.innerHTML = `
-          <div class="vote-bar-fill" style="width: ${isRevealed ? percent : 0}%"></div>
-          <div class="opt-header">
-            <span class="opt-key">${opt.key}</span>
-            <span class="vote-stat">${opt.votes} 票 (${percent}%)</span>
-          </div>
-          <div class="opt-text">${opt.text}</div>
-        `;
+          card.innerHTML = `
+            <div class="vote-bar-fill" style="width: ${isRevealed ? percent : 0}%"></div>
+            <div class="opt-header">
+              <span class="opt-key">${opt.key}</span>
+              <span class="vote-stat">${opt.votes} 票 (${percent}%)</span>
+            </div>
+            <div class="opt-text">${opt.text}</div>
+          `;
 
-        // 點擊模擬投票
-        card.onclick = () => {
-          if (!isRevealed && currentRole === 'host') {
-            opt.votes++;
-            updateHostStats();
-          }
-        };
+          card.onclick = () => {
+            if (!isRevealed && currentRole === 'host') {
+              opt.votes++;
+              updateHostStats();
+            }
+          };
 
-        grid.appendChild(card);
-      });
+          grid.appendChild(card);
+        });
+      }
 
       // 解析卡片與按鈕狀態
       const analysisCard = document.getElementById('analysisCard');
       const btnRevealText = document.getElementById('btnRevealText');
       const stateSummary = document.getElementById('stateSummary');
 
-      if (isRevealed) {
-        analysisCard.classList.add('show');
-        document.getElementById('analysisContent').innerHTML = q.analysis;
-        document.getElementById('antidoteBadge').innerHTML = `<i class="fa-solid fa-quote-left"></i> 今晚家長心法：${q.antidote}`;
-        btnRevealText.innerText = '隱藏開票結果';
-        stateSummary.innerText = '已開票揭曉';
-        stateSummary.style.color = 'var(--color-b)';
-        stateSummary.style.background = '#EBF4F0';
-      } else {
-        analysisCard.classList.remove('show');
-        btnRevealText.innerText = '立即開票揭曉';
-        stateSummary.innerText = '作答收票中';
-        stateSummary.style.color = 'var(--accent-brown)';
-        stateSummary.style.background = '#F7F1E8';
+      if (analysisCard && btnRevealText && stateSummary) {
+        if (isRevealed) {
+          analysisCard.classList.add('show');
+          document.getElementById('analysisContent').innerHTML = q.analysis;
+          document.getElementById('antidoteBadge').innerHTML = `<i class="fa-solid fa-quote-left"></i> 今晚家長心法：${q.antidote}`;
+          btnRevealText.innerText = '隱藏開票結果';
+          stateSummary.innerText = '已開票揭曉';
+          stateSummary.style.color = 'var(--color-b)';
+          stateSummary.style.background = '#EBF4F0';
+        } else {
+          analysisCard.classList.remove('show');
+          btnRevealText.innerText = '立即開票揭曉';
+          stateSummary.innerText = '作答收票中';
+          stateSummary.style.color = 'var(--accent-brown)';
+          stateSummary.style.background = '#F7F1E8';
+        }
       }
 
       // 手機端更新
-      document.getElementById('pBadge').innerText = q.badge;
-      document.getElementById('pTitle').innerText = q.title;
-      document.getElementById('pDesc').innerText = q.desc;
+      const pBadge = document.getElementById('pBadge');
+      const pTitle = document.getElementById('pTitle');
+      const pDesc = document.getElementById('pDesc');
+      if (pBadge) pBadge.innerText = q.badge;
+      if (pTitle) pTitle.innerText = q.title;
+      if (pDesc) pDesc.innerText = q.desc;
 
       const pOptionsContainer = document.getElementById('playerOptions');
-      pOptionsContainer.innerHTML = '';
+      if (pOptionsContainer) {
+        pOptionsContainer.innerHTML = '';
+        const currentChoice = myChoices[currentQIndex];
 
-      q.options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = `btn-player-opt opt-${opt.key} ${mySelectedChoice === opt.key ? 'active' : ''}`;
-        btn.innerHTML = `
-          <span style="font-size:1.4rem; background:rgba(255,255,255,0.25); width:36px; height:36px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center;">${opt.key}</span>
-          <span>${opt.text}</span>
+        q.options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = `btn-player-opt opt-${opt.key} ${currentChoice === opt.key ? 'active' : ''}`;
+          btn.innerHTML = `
+            <span style="font-size:1.35rem; background:rgba(255,255,255,0.28); width:38px; height:38px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${opt.key}</span>
+            <span style="text-align:left; flex:1;">${opt.text}</span>
+            ${currentChoice === opt.key ? '<i class="fa-solid fa-circle-check" style="font-size:1.4rem;"></i>' : ''}
+          `;
+          btn.onclick = () => submitPlayerVote(opt.key);
+          pOptionsContainer.appendChild(btn);
+        });
+      }
+
+      updatePlayerStatusMessage();
+
+      // 更新手機上一題 / 下一題按鈕狀態
+      const btnPrev = document.getElementById('btnPrevQ');
+      const btnNext = document.getElementById('btnNextQ');
+      if (btnPrev) btnPrev.disabled = (currentQIndex === 0);
+      if (btnNext) btnNext.disabled = (currentQIndex === QUESTIONS.length - 1);
+    }
+
+    // 更新手機狀態列文字
+    function updatePlayerStatusMessage() {
+      const playerStatus = document.getElementById('playerStatus');
+      if (!playerStatus) return;
+
+      const currentChoice = myChoices[currentQIndex];
+      if (currentChoice) {
+        playerStatus.innerHTML = `
+          <span style="color:var(--color-b); font-size:1.05rem; font-weight:900;"><i class="fa-solid fa-circle-check"></i> 本題已選擇 [${currentChoice}]（可點擊上方選項修改）</span>
         `;
-        btn.onclick = () => submitPlayerVote(opt.key);
-        pOptionsContainer.appendChild(btn);
-      });
+      } else {
+        playerStatus.innerHTML = `
+          <i class="fa-solid fa-hand-pointer"></i> 請點選上方選項完成投票（可點上方 Q1~Q4 切換題目）
+        `;
+      }
     }
 
     // 提交手機投票
     function submitPlayerVote(choice) {
-      mySelectedChoice = choice;
+      myChoices[currentQIndex] = choice;
+      try {
+        sessionStorage.setItem('puti_parent_choices', JSON.stringify(myChoices));
+      } catch(e) {}
+
+      renderNav();
       renderQuestion();
+
       document.getElementById('playerStatus').innerHTML = `
-        <span style="color:var(--color-b); font-size:1.1rem; font-weight:900;"><i class="fa-solid fa-circle-check"></i> 投票成功！已選擇 [${choice}]</span><br>
-        <small style="color:var(--text-muted)">已透過雲端即時傳送到大螢幕！</small>
+        <span style="color:var(--color-b); font-size:1.05rem; font-weight:900;"><i class="fa-solid fa-circle-check"></i> 投票成功！已選擇 [${choice}]</span><br>
+        <small style="color:var(--text-muted)">數據已即時傳送至大螢幕！可點擊上方 Q1~Q4 繼續作答其他題</small>
       `;
 
       // 1. 🔥 透過 MQTT 雲端長連線將投票直接發布到大螢幕
@@ -1051,14 +1143,14 @@
         }));
       }
 
-      // 2. 本地廣播（同台電腦分頁備用）
+      // 2. 本地跨標籤廣播（同台電腦分頁備用）
       channel.postMessage({
         type: 'VOTE_SUBMIT',
         qIndex: currentQIndex,
         choice: choice
       });
 
-      // 3. 本地累加（若直接在 host 上測試）
+      // 3. 本地累加（若直接在主控端測試）
       const opt = QUESTIONS[currentQIndex].options.find(o => o.key === choice);
       if (opt && currentRole === 'host') {
         opt.votes++;
@@ -1075,9 +1167,8 @@
       broadcastState();
 
       if (isRevealed) {
-        // 彩帶特效
         confetti({
-          particleCount: 80,
+          particleCount: 70,
           spread: 70,
           origin: { y: 0.6 }
         });
@@ -1086,7 +1177,7 @@
 
     // 重置當前題目票數
     function resetCurrentVotes() {
-      if (confirm('確定要清空本題所有已投的票數嗎？')) {
+      if (confirm(`確定要清空第 ${currentQIndex + 1} 題所有已投的票數嗎？`)) {
         QUESTIONS[currentQIndex].options.forEach(o => o.votes = 0);
         isRevealed = false;
         QUESTIONS[currentQIndex].revealed = false;
@@ -1100,7 +1191,8 @@
     function updateHostStats() {
       const q = QUESTIONS[currentQIndex];
       const totalVotes = q.options.reduce((sum, opt) => sum + opt.votes, 0);
-      document.getElementById('voteTotalNum').innerText = totalVotes;
+      const voteTotalNum = document.getElementById('voteTotalNum');
+      if (voteTotalNum) voteTotalNum.innerText = totalVotes;
 
       const cards = document.querySelectorAll('#optionsGrid .option-card');
       cards.forEach((card, idx) => {
@@ -1113,13 +1205,13 @@
       });
     }
 
-    // 廣播狀態給所有連線端
+    // 廣播狀態給所有連線端（加入 retain: true 確保後進者即時同步）
     function broadcastState() {
       if (mqttClient && mqttClient.connected && currentRole === 'host') {
         mqttClient.publish(TOPIC_STATE, JSON.stringify({
           qIndex: currentQIndex,
           isRevealed: isRevealed
-        }));
+        }), { retain: true, qos: 1 });
       }
 
       channel.postMessage({
@@ -1129,50 +1221,42 @@
       });
     }
 
-    // 更新大螢幕即時數據
-    function updateHostStats() {
-      const q = QUESTIONS[currentQIndex];
-      const totalVotes = q.options.reduce((sum, opt) => sum + opt.votes, 0);
-      document.getElementById('voteTotalNum').innerText = totalVotes;
+    // 🔥 精準產生各題專屬 QR Code（支援 ?q=1, ?q=2, ?q=3, ?q=4）
+    function setupQrCode(idx = currentQIndex) {
+      const origin = window.location.origin;
+      const pathname = window.location.pathname;
+      const currentUrl = `${origin}${pathname}?role=player&q=${idx + 1}`;
 
-      const cards = document.querySelectorAll('#optionsGrid .option-card');
-      cards.forEach((card, idx) => {
-        const opt = q.options[idx];
-        const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
-        const bar = card.querySelector('.vote-bar-fill');
-        const stat = card.querySelector('.vote-stat');
-        if (bar && isRevealed) bar.style.width = percent + '%';
-        if (stat) stat.innerText = `${opt.votes} 票 (${percent}%)`;
+      const qrTextEl = document.getElementById('qrUrlText');
+      if (qrTextEl) qrTextEl.innerText = currentUrl;
+
+      const qrBadgeEl = document.getElementById('qrModalBadge');
+      if (qrBadgeEl && QUESTIONS[idx]) {
+        qrBadgeEl.innerText = `第 ${idx + 1} 題專屬掃描碼：${QUESTIONS[idx].badge}`;
+      }
+
+      // 更新 modal 導航按鈕狀態
+      const modalNavBtns = document.querySelectorAll('#qrModalNav .q-tab-btn');
+      modalNavBtns.forEach((btn, i) => {
+        btn.className = `q-tab-btn ${i === idx ? 'active' : ''}`;
       });
-    }
 
-    // 廣播狀態給所有連線端
-    function broadcastState() {
-      channel.postMessage({
-        type: 'STATE_CHANGE',
-        qIndex: currentQIndex,
-        isRevealed: isRevealed
-      });
-    }
-
-    // 設定 QR Code
-    function setupQrCode() {
-      const currentUrl = window.location.href.split('?')[0] + '?role=player';
-      document.getElementById('qrUrlText').innerText = currentUrl;
-      
       const qrBox = document.getElementById('qrCodeBig');
-      qrBox.innerHTML = '';
-      new QRCode(qrBox, {
-        text: currentUrl,
-        width: 220,
-        height: 220,
-        colorDark: "#2D2724",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+      if (qrBox) {
+        qrBox.innerHTML = '';
+        new QRCode(qrBox, {
+          text: currentUrl,
+          width: 230,
+          height: 230,
+          colorDark: "#2D2724",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
     }
 
     function showQrModal() {
+      setupQrCode(currentQIndex);
       document.getElementById('qrModal').classList.add('active');
     }
 
